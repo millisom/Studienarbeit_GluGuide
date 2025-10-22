@@ -1,0 +1,43 @@
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(#9d9bcf, #94b9ff);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    padding: 10px 20px; /* Adjust for visual spacing */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-left: 40px;
+}
+
+.navbar a {
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+    margin-right: 40px;
+}
+
+.navbar a::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: #fff;
+    transition: all 0.3s;
+}
+
+.navbar a:hover::before {
+    width: 100%;
+}

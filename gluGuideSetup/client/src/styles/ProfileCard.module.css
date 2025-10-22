@@ -1,0 +1,386 @@
+.profileCardContainer {
+    background-color: var(--color-text-white);
+    border-radius: 12px;
+    box-shadow: var(--color-shadow-card);
+    width: 100%;
+    max-width: 1100px;
+    margin: 20px auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.profileHeaderBanner {
+    background-color: var(--color-primary);
+    height: 70px;
+    width: 100%;
+}
+
+.profileGrid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    width: 100%;
+}
+
+.profileSidebar {
+    padding: 32px 24px;
+    background-color: var(--color-background-table-row-odd);
+    border-right: 1px solid var(--color-border-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.dpWrapper {
+    position: relative;
+    margin-top: -50px;
+}
+
+.profileDp {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid var(--color-text-white);
+    box-shadow: var(--color-shadow-card-hover);
+    background-color: var(--color-background-disabled);
+}
+
+.dpEditButton {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: var(--color-primary);
+    color: var(--color-text-white);
+    border: 2px solid var(--color-text-white);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: var(--color-shadow-card-hover);
+}
+
+.dpEditButton:hover {
+    background-color: var(--color-secondary);
+    transform: scale(1.1);
+}
+
+.dpEditControls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: var(--color-background-table-row-hover);
+    border-radius: 8px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.dpFileInput {
+    font-size: 0.9rem;
+    padding: 8px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    width: 100%;
+}
+
+.dpEditActions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.actionButtonSmall {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.saveButtonSmall {
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+}
+.saveButtonSmall:hover {
+    background-color: var(--color-secondary);
+    box-shadow: var(--color-shadow-card-hover);
+}
+
+.cancelButtonSmall {
+    background-color: var(--color-background-table-row-hover);
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-light);
+}
+.cancelButtonSmall:hover {
+    background-color: var(--color-background-disabled);
+}
+
+.deleteButtonSmall {
+    background-color: var(--color-error-background-light);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+}
+.deleteButtonSmall:hover {
+    background-color: var(--color-error-background-light);
+}
+
+
+.profileUsername {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.profileActions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.actionButton {
+    background-color: var(--color-text-white);
+    border: 1px solid var(--color-border-light);
+    color: var(--color-text-dark);
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.actionButton:hover {
+    background-color: var(--color-secondary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    box-shadow: var(--color-shadow-light);
+}
+
+.buttonIcon {
+    font-size: 1.1em;
+    width: 20px;
+    text-align: center;
+}
+
+.dangerZone {
+    margin-top: auto;
+    padding-top: 20px;
+    width: 100%;
+    border-top: 1px solid var(--color-border-highlight);
+}
+
+.deleteAccountButton {
+    composes: actionButtonSmall;
+    color: var(--color-text-white);
+    background-color: var(--color-error);
+}
+
+.deleteAccountButton:hover {
+    background-color: var(--color-error-dark);
+    color: var(--color-text-white);
+}
+
+.profileContent {
+    padding: 32px;
+    background-color: var(--color-text-white);
+}
+
+.bioSectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--color-border-highlight);
+    padding-bottom: 10px;
+}
+
+.bioTitle {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.bioEditIcon {
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.bioEditIcon:hover {
+    background-color: var(--color-secondary-light);
+}
+
+.bioDisplay {
+    color: var(--color-text-grey);
+    line-height: 1.7;
+    font-size: 1rem;
+    min-height: 150px;
+}
+
+.bioDisplay p {
+    margin-bottom: 1em;
+}
+.bioDisplay p:last-child {
+    margin-bottom: 0;
+}
+
+.bioEditSection {
+    margin-top: 10px;
+}
+
+.quillEditor .ql-toolbar.ql-snow {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-color: var(--color-border-light);
+}
+
+.quillEditor .ql-container.ql-snow {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-color: var(--color-border-light);
+    min-height: 200px;
+    font-size: 1rem;
+}
+
+.quillEditor .ql-editor {
+    padding: 12px;
+}
+
+.bioEditActions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.saveButton {
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+}
+.saveButton:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-text-white);
+}
+
+.cancelButton {
+  background-color: var(--color-error);
+  color: var(--color-text-white);
+}
+.cancelButton:hover {
+  background-color: var(--color-error-dark);
+  color: var(--color-text-white);
+}
+
+.loadingState {
+    font-size: 1.2rem;
+    color: var(--color-text-grey);
+    text-align: center;
+    padding: 50px;
+}
+
+.errorMessage {
+    background-color: var(--color-error-background-light);
+    color: var(--color-error);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--color-error);
+    margin: 0 32px 20px 32px;
+    text-align: center;
+}
+
+
+@media (max-width: 992px) {
+    .profileGrid {
+        grid-template-columns: 1fr;
+    }
+    .profileSidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border-light);
+        padding: 24px;
+    }
+    .dpWrapper {
+        margin-top: -40px;
+    }
+    .profileDp {
+        width: 150px;
+        height: 150px;
+    }
+    .profileUsername {
+        font-size: 1.8rem;
+    }
+    .dangerZone {
+        margin-top: 20px;
+    }
+    .profileContent {
+        padding: 24px;
+    }
+    .errorMessage {
+        margin: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .profileHeaderBanner {
+        height: 50px;
+    }
+    .dpWrapper {
+        margin-top: -30px;
+    }
+    .profileDp {
+        width: 120px;
+        height: 120px;
+        border-width: 3px;
+    }
+    .dpEditButton {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
+    .profileUsername {
+        font-size: 1.6rem;
+    }
+    .profileSidebar,
+    .profileContent {
+        padding: 20px;
+    }
+    .actionButton {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+    }
+    .bioTitle {
+        font-size: 1.5rem;
+    }
+     .dpEditControls {
+        padding: 10px;
+    }
+    .errorMessage {
+        margin: 15px;
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}

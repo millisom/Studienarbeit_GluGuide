@@ -1,0 +1,50 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(#faf3e3, #cfceed); /* Ensure the gradient applies to the html element */
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the footer is pushed down */
+}
+
+body {
+    min-height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: inherit; /* Inherit the gradient from the html element */
+}
+
+main {
+    margin-top: 50px;
+}
+
+.container {
+    flex: 1; /* This ensures the main content takes up available space */
+    padding: 20px;
+}
+
+/* Global link styling */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Button styling */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    transition: background-color 0.3s ease;
+}

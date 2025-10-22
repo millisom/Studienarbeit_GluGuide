@@ -1,0 +1,118 @@
+.recipeItemContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0;
+  font-family: var(--sds-typography-body-font-family);
+}
+
+.recipeName {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.recipeDescription {
+  font-size: 0.95rem;
+  color: var(--color-text-grey);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border-highlight);
+}
+
+.nutritionSection {
+  margin-bottom: 16px;
+}
+
+.nutritionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.nutritionItem {
+  background-color: var(--color-background-table-row-odd);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-highlight);
+}
+
+.nutritionLabel {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-grey);
+  margin-bottom: 4px;
+}
+
+.nutritionValue {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+
+.ingredientsSection {
+  margin-bottom: 20px;
+}
+
+.ingredientsList {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.ingredientItem {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  padding: 8px 0;
+  border-bottom: 1px dotted var(--color-border-highlight);
+}
+
+.ingredientItem:last-child {
+  border-bottom: none;
+}
+
+.addRecipeButton {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.addRecipeButton:hover {
+  background-color: var(--color-secondary);
+  box-shadow: var(--color-shadow-card-hover);
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 20px;
+  font-size: 1rem;
+  color: var(--color-text-grey);
+}
+
+.error {
+  color: var(--color-error-dark);
+}
+  

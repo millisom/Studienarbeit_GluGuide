@@ -1,0 +1,163 @@
+.cardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background-color: var(--color-background);
+  border: 8px solid var(--color-primary);
+  border-radius: 10px;
+  box-shadow: var(--color-shadow-card-hover);
+  width: 300px;
+  height: 300px; /* Fixed card height */
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Enable absolute positioning for child elements */
+  margin-top: 20px;
+  overflow: hidden; /* Prevent content from overflowing */
+}
+
+.cardImage img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.cardContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-text-dark);
+  cursor: pointer;
+}
+
+.cardTitle:hover {
+  color: var(--color-secondary);
+}
+
+.cardDescription {
+  font-size: 1rem;
+  color: var(--color-text-grey);
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between; /* Align likes and icons */
+  align-items: center;
+  position: absolute; /* Fixes the footer at the bottom of the card */
+  bottom: 0; /* Stick to the bottom */
+  left: 0;
+  right: 0;
+  padding: 10px; /* Add padding for spacing */
+  background-color: var(--color-background); /* Optional: Match the card's background */
+  border-top: 1px solid var(--color-primary); /* Optional: Add a border for separation */
+}
+
+.postLikes {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin: 0; /* Remove default margin */
+}
+
+.iconContainer {
+  display: flex;
+  gap: 10px; /* Space between icons */
+  align-items: center;
+}
+
+.iconButton {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  padding: 8px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.iconButton:hover {
+  background-color: var(--color-secondary);
+}
+
+.buttonWrapper {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.cardButton {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-text-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cardButton:hover {
+  background-color: var(--color-secondary);
+}
+
+.errorMessage {
+  text-align: center;
+  color: var(--color-error);
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+.squareButton {
+  border-radius: 8px;
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  font-weight: bold;
+  padding: 12px 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.squareButton:hover {
+  background-color: var(--color-secondary);
+}
+
+.heart {
+  color: var(--color-error);
+}
+
+.tagsContainer {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tagItem {
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.tagItem:hover {
+    background-color: var(--color-secondary);
+}
