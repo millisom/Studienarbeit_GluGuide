@@ -49,7 +49,7 @@ const Post = {
       }
 
       
-      return this.getPostById(newPost.id);
+      return this.getPostById(newPost.id, client);
     });
   },
 
@@ -129,31 +129,27 @@ const Post = {
     }
   },
 
+
   async updatePost(postId, userId, title, content, tags = []) {
     return await executeTransaction(async (client) => {
-      
       const updatePostQuery = 'UPDATE posts SET title = $1, content = $2, updated_at = NOW() WHERE id = $3 AND user_id = $4 RETURNING id';
       const updateResult = await client.query(updatePostQuery, [title, content, postId, userId]);
 
-      if (updateResult.rowCount === 0) {
- 
-        return null;
-      }
-
+      if (updateResult.rowCount === 0) return null;
 
       await client.query('DELETE FROM post_tags WHERE post_id = $1', [postId]);
 
- 
       const tagIds = await findOrCreateTags(tags, client);
       if (tagIds.length > 0) {
         await linkTagsToPost(postId, tagIds, client);
       }
 
-      return this.getPostById(postId);
+    
+      return this.getPostById(postId, client);
     });
   },
 
-  async getPostById(postId) {
+  async getPostById(postId, dbClient = pool) {
     const query = `
       SELECT
           p.*,
@@ -171,16 +167,17 @@ const Post = {
       WHERE
           p.id = $1
       GROUP BY
-          p.id, u.username -- Group by post ID and user username
+          p.id, u.username
     `;
     const values = [postId];
 
     try {
-      const result = await pool.query(query, values);
+    
+      const result = await dbClient.query(query, values);
       if (result.rows.length === 0) {
-        return null; // No post found
+        return null; 
       }
-      return result.rows[0]; // Return the found post with tags
+      return result.rows[0]; 
     } catch (error) {
       throw new Error('Error fetching post: ' + error.message);
     }
