@@ -71,22 +71,19 @@ describe('PostModel Transaction Safety', () => {
     it('createPost sollte bei Fehlern ein ROLLBACK machen und freigeben', async () => {
 
         mockClient.query.mockImplementation((sql) => {
-
             if (sql === 'BEGIN') return Promise.resolve();
-            
-
             if (sql === 'ROLLBACK') return Promise.resolve();
-            
-
             return Promise.reject(new Error('DB Error'));
         });
 
+
         await expect(Post.createPost(1, 'Title', 'Content', 'pic', []))
-            .rejects.toThrow('Failed to create post in database.');
+            .rejects.toThrow('DB Error'); 
 
 
         expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
         
+
         expect(mockClient.release).toHaveBeenCalledTimes(1);
     });
 });

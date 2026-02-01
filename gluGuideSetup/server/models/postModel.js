@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { executeTransaction } = require('../helpers/dbHelper');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
 
@@ -28,35 +29,28 @@ async function linkTagsToPost(postId, tagIds, dbClient) {
 }
 
 const Post = {
-  // Method to create a new post with tags
-  // tags are empty bydefault
-  async createPost(userId, title, content, postPicture, tags = []) {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
 
+  async createPost(userId, title, content, postPicture, tags = []) {
+   
+    return await executeTransaction(async (client) => {
+      
       const postQuery = 'INSERT INTO posts (user_id, title, content, created_at, post_picture) VALUES ($1, $2, $3, NOW(), $4) RETURNING *';
       const postValues = [userId, title, content, postPicture];
+      
+     
       const postResult = await client.query(postQuery, postValues);
       const newPost = postResult.rows[0];
 
+     
       const tagIds = await findOrCreateTags(tags, client);
 
       if (tagIds.length > 0) {
         await linkTagsToPost(newPost.id, tagIds, client);
       }
 
-      await client.query('COMMIT');
-      const createdPostWithTags = await this.getPostById(newPost.id);
-      return createdPostWithTags; // Return the newly created post with tags
-
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Error creating post with tags:', error);
-      throw new Error('Failed to create post in database.');
-    } finally {
-      client.release();
-    }
+      
+      return this.getPostById(newPost.id);
+    });
   },
 
   // Method to get User from usertabel by name and get ID
@@ -136,37 +130,27 @@ const Post = {
   },
 
   async updatePost(postId, userId, title, content, tags = []) {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-
+    return await executeTransaction(async (client) => {
+      
       const updatePostQuery = 'UPDATE posts SET title = $1, content = $2, updated_at = NOW() WHERE id = $3 AND user_id = $4 RETURNING id';
       const updateResult = await client.query(updatePostQuery, [title, content, postId, userId]);
 
       if (updateResult.rowCount === 0) {
-        await client.query('ROLLBACK');
+ 
         return null;
       }
 
+
       await client.query('DELETE FROM post_tags WHERE post_id = $1', [postId]);
 
+ 
       const tagIds = await findOrCreateTags(tags, client);
-
       if (tagIds.length > 0) {
         await linkTagsToPost(postId, tagIds, client);
       }
 
-      await client.query('COMMIT');
-
-      const updatedPostWithTags = await this.getPostById(postId);
-      return updatedPostWithTags;
-
-    } catch (error) {
-      await client.query('ROLLBACK');
-      throw new Error('Failed to update post in database.');
-    } finally {
-      client.release();
-    }
+      return this.getPostById(postId);
+    });
   },
 
   async getPostById(postId) {
