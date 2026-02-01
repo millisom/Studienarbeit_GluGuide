@@ -1,5 +1,3 @@
-
-// Validate creating or updating a FoodItem
 function validateFoodItem(req, res, next) {
     const { name, calories, carbs, proteins, fats } = req.body;
 
@@ -18,7 +16,7 @@ function validateFoodItem(req, res, next) {
     next();
 }
 
-// Validate creating or updating a Recipe
+
 function validateRecipe(req, res, next) {
     const { user_id, name, ingredients, instructions } = req.body;
 
@@ -28,7 +26,7 @@ function validateRecipe(req, res, next) {
         });
     }
 
-    // Validate ingredients
+
     if (!Array.isArray(ingredients) && typeof ingredients !== 'string') {
         return res.status(400).json({
             message: 'Ingredients must be either an array or a stringified JSON array.'
@@ -38,8 +36,31 @@ function validateRecipe(req, res, next) {
     next();
 }
 
+const validateGlucoseLog = (req, res, next) => {
+    const { date, time, glucoseLevel } = req.body;
+    
+    if (!date || !time || !glucoseLevel) {
+        return res.status(400).json({ error: 'All fields are required: userId, date, time, glucoseLevel' });
+    }
+
+    const glucoseNum = parseFloat(glucoseLevel);
+    if (isNaN(glucoseNum) || glucoseNum <= 0) {
+        return res.status(400).json({ error: 'Glucose level must be a positive number.' });
+    }
+
+    const submittedTimestamp = new Date(`${date}T${time}`);
+    const currentTimestamp = new Date();
+
+    if (submittedTimestamp > currentTimestamp) {
+        return res.status(400).json({ error: 'You cannot log glucose levels for a future date or time.' });
+    }
+
+    next(); 
+}
+
 
 module.exports = {
     validateFoodItem,
     validateRecipe,
+    validateGlucoseLog,
 };
