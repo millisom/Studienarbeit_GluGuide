@@ -2,46 +2,26 @@ const Log = require('../models/glucoseModel');
 
 const logController = {
 
-    async logGlucose(req, res) {
-        console.log('Received request at POST /glucose/log');
-        console.log('Request body:', req.body);
-    
+async logGlucose(req, res) {
         const userId = req.session?.userId;
         const { date, time, glucoseLevel } = req.body;
     
-        if (!userId || !date || !time || !glucoseLevel) {
-            console.error('Validation error: Missing fields in request body');
-            return res.status(400).json({ error: 'All fields are required: userId, date, time, glucoseLevel' });
-        }
-        if (isNaN(glucoseLevel) || glucoseLevel <= 0) {
-            console.error('Validation error: Invalid glucose level');
-            return res.status(400).json({ error: 'Glucose level must be a positive number.' });
-        }
-    
-        const submittedTimestamp = new Date(`${date}T${time}`);
-        const currentTimestamp = new Date();
-    
-  
-        if (submittedTimestamp > currentTimestamp) {
-            console.error('Validation error: Date and time are in the future');
-            return res.status(400).json({ error: 'You cannot log glucose levels for a future date or time.' });
+        // Session-Check (könnte man auch in eine Auth-Middleware auslagern
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required (Session).' });
         }
     
         try {
             console.log('Calling Log.createLog with:', { userId, date, time, glucoseLevel });
-    
+            
             const newLog = await Log.createLog(userId, date, time, glucoseLevel);
-            console.log('Database insert successful. New log:', newLog);
-    
-            return res.status(201).json({ success: true, log: newLog });
+            
+            return res.status(201).json(newLog);
         } catch (error) {
-            console.error('Error logging glucose:', error.message);
-            return res.status(500).json({ error: 'Failed to log glucose entry. Please try again later.' });
+            console.error('Error logging glucose:', error);
+            return res.status(500).json({ error: 'Failed to log glucose level' });
         }
-    }
-    
-    ,
-
+    },
 
     async getUserGlucoseLogs(req, res) {
         const { userId } = req.params;

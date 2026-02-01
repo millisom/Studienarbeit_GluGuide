@@ -1,24 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const glucoseController = require('../controllers/glucoseController'); // Import your glucose controller
-
-// Route to log a new glucose entry
-router.post('/log', glucoseController.logGlucose);
+const glucoseController = require('../controllers/glucoseController');
+const { validateGlucoseLog } = require('../middleware/validationMiddleware');
 
 
-// Route to retrieve logs for a specific time period
+router.post('/log', validateGlucoseLog, glucoseController.logGlucose);
+
 router.get('/:userId/time-period', glucoseController.getGlucoseLogsByTimePeriod);
 
-// Route to retrieve filtered glucose logs
 router.get('/:userId', glucoseController.getFilteredGlucoseLogs);
 
-// Route to retrieve a specific glucose log by ID
 router.get('/log/:id', glucoseController.getGlucoseLogById);
 
-// Route to update a glucose log by ID
-router.put('/log/:id', glucoseController.updateGlucoseLog);
+router.put('/log/:id', validateGlucoseLog, glucoseController.updateGlucoseLog);
 
-// Route to delete a glucose log by ID
 router.delete('/log/:id', glucoseController.deleteGlucoseLog);
 
 module.exports = router;

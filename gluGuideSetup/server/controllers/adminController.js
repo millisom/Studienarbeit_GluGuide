@@ -3,20 +3,16 @@ const pool = require('../config/db');
 const fs = require("fs");
 const path = require("path");
 const Post = require('../models/postModel');
+const UserModel = require('../models/userModel');
 
-// 👇 Add this once, at the top
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
 const adminController = {
 
   listUsers: async (req, res) => {
     try {
-      const result = await pool.query(`
-        SELECT id, username, email, created_at, is_admin, profile_bio, profile_picture
-        FROM users
-        ORDER BY created_at DESC
-      `);
-      res.status(200).json(result.rows);
+      const users = await UserModel.getAllUsers();
+      res.status(200).json(users);
     } catch (err) {
       console.error("Error retrieving users:", err);
       res.status(500).json({ error: "Server error retrieving users." });
@@ -26,19 +22,16 @@ const adminController = {
   getSingleUser: async (req, res) => {
     const userId = req.params.id;
     try {
-      const result = await pool.query(
-        `SELECT id, username, email, is_admin, profile_bio FROM users WHERE id = $1`,
-        [userId]
-      );
-      if (result.rows.length === 0) return res.status(404).json({ error: "User not found" });
-      return res.json(result.rows[0]);
+      const user = await UserModel.getUserById(userId);
+      
+      if (!user) return res.status(404).json({ error: "User not found" });
+      return res.json(user);
     } catch (err) {
       console.error("Error fetching user:", err);
       return res.status(500).json({ error: "Server error" });
     }
   },
 
-  // ✅ Updated avatar URL to use BASE_URL
   getUserAvatar: async (req, res) => {
     const userId = req.params.id;
     try {
@@ -166,12 +159,12 @@ const adminController = {
         return res.status(403).json({ error: "You cannot delete yourself!" });
       }
 
-      const existingUser = await pool.query("SELECT * FROM users WHERE id = $1", [userIdToDelete]);
-      if (existingUser.rows.length === 0) {
+      const existingUser = await UserModel.getUserById(userIdToDelete);
+      if (!existingUser) {
         return res.status(404).json({ error: "User not found." });
       }
 
-      await pool.query("DELETE FROM users WHERE id = $1", [userIdToDelete]);
+      await UserModel.deleteUserById(userIdToDelete);
       res.status(200).json({ message: "User deleted successfully." });
     } catch (err) {
       console.error("Error deleting user:", err);
