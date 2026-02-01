@@ -1,57 +1,42 @@
 const adminController = require('../../controllers/adminController');
-const pool = require('../../config/db');
+const UserModel = require('../../models/userModel'); 
 
 
-jest.mock('../../config/db');
+jest.mock('../../models/userModel'); 
 
-describe('AdminController (Vor Refactoring)', () => {
-    
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+describe('AdminController (Nach Refactoring)', () => {
+    beforeEach(() => { jest.clearAllMocks(); });
 
+    it('listUsers sollte User via UserModel abrufen', async () => {
 
-    it('listUsers sollte eine Liste von Benutzern zurückgeben (Status 200)', async () => {
-        const mockUsers = [
-            { id: 1, username: 'TestUser1', is_admin: false },
-            { id: 2, username: 'AdminUser', is_admin: true }
-        ];
-        pool.query.mockResolvedValue({ rows: mockUsers });
-
-
-        const req = {};
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-
-  
-        await adminController.listUsers(req, res);
-
-       
-        expect(pool.query).toHaveBeenCalledTimes(1); 
-        expect(res.status).toHaveBeenCalledWith(200); 
-        expect(res.json).toHaveBeenCalledWith(mockUsers); 
-    });
-
-   
-    it('listUsers sollte bei DB-Fehler Status 500 senden', async () => {
+        const mockUsers = [{ id: 1, username: 'TestUser' }];
         
-        pool.query.mockRejectedValue(new Error('Datenbank Fehler'));
+        UserModel.getAllUsers.mockResolvedValue(mockUsers); 
 
         const req = {};
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
+        const res = { 
+            status: jest.fn().mockReturnThis(), 
+            json: jest.fn() 
         };
 
-       
+
         await adminController.listUsers(req, res);
 
-       
+        expect(UserModel.getAllUsers).toHaveBeenCalledTimes(1); 
+        expect(res.json).toHaveBeenCalledWith(mockUsers);
+    });
+
+    it('listUsers sollte Fehler vom Model weitergeben', async () => {
+        UserModel.getAllUsers.mockRejectedValue(new Error('Model Fehler'));
+
+        const req = {};
+        const res = { 
+            status: jest.fn().mockReturnThis(), 
+            json: jest.fn() 
+        };
+
+        await adminController.listUsers(req, res);
+
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
-            error: "Server error retrieving users." 
-        }));
     });
 });

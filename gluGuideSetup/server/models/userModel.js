@@ -27,12 +27,29 @@ const UserModel = {
   },
 
 
-  async deleteUserById(id) {
-    const query = 'DELETE FROM users WHERE id = $1';
+async deleteUserById(id) {
+    const client = await pool.connect();
     try {
-      await pool.query(query, [id]);
+      await client.query('BEGIN'); 
+
+      await client.query('DELETE FROM meals WHERE user_id = $1', [id]);
+      await client.query('DELETE FROM glucose_logs WHERE user_id = $1', [id]);
+      await client.query('DELETE FROM posts WHERE user_id = $1', [id]);
+      await client.query('DELETE FROM comments WHERE author_id = $1', [id]);
+      await client.query('DELETE FROM alerts WHERE user_id = $1', [id]);
+      await client.query('DELETE FROM recipe_logs WHERE user_id = $1', [id]);
+
+
+ 
+      const query = 'DELETE FROM users WHERE id = $1';
+      await client.query(query, [id]);
+
+      await client.query('COMMIT'); 
     } catch (error) {
+      await client.query('ROLLBACK'); 
       throw new Error('Error deleting user: ' + error.message);
+    } finally {
+      client.release(); 
     }
   }
 };
