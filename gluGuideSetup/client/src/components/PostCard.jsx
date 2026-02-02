@@ -16,7 +16,12 @@ const PostCard = ({
   setSelectedTags 
 }) => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth(); 
+
+  const { user, isAdmin } = useAuth(); 
+
+
+  const isAuthor = user && post.username === user.username;
+  const canEditOrDelete = isAdmin || isAuthor;
 
   return (
     <div key={post.id} className={styles.postCard}>
@@ -59,13 +64,16 @@ const PostCard = ({
         )}
       </div>
 
-      {isAdmin && (
+      {canEditOrDelete && (
         <div className={styles.adminActions}>
           <button
             className={styles.editButton}
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/admin/editPost/${post.id}`);
+              const editPath = isAdmin 
+                ? `/admin/editPost/${post.id}` 
+                : `/blogs/edit/${post.id}`;
+              navigate(editPath);
             }}
           >
             <span><FontAwesomeIcon icon={faEdit} /> Edit</span>

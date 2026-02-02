@@ -15,6 +15,33 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* NEU: Container für Edit/Delete Buttons ganz oben */
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+}
+
+/* NEU: Styling für Edit/Delete Buttons */
+.editBtn, .deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.editBtn { background-color: #28a745; }
+.deleteBtn { background-color: #dc3545; }
+.editBtn:hover, .deleteBtn:hover { opacity: 0.8; }
+
 .postTitle {
   font-size: 2rem;
   font-weight: bold;
@@ -22,7 +49,7 @@
 }
 
 .authorButton {
-  background-color: var(--color-primary); /* Matches the 'like' button */
+  background-color: var(--color-primary);
   color: var(--color-text-white);
   border: none;
   border-radius: 8px;
@@ -31,17 +58,16 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 10px; /* Consistent spacing above */
-  margin-bottom: 15px; /* Added space below the button */
-  display: inline-flex; /* Center content inside the button */
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .authorButton:hover {
-  background-color: var(--color-secondary); /* Darker shade on hover */
+  background-color: var(--color-secondary);
 }
-
 
 .postDate {
   font-size: 0.9rem;
@@ -56,10 +82,14 @@
   margin-top: 20px;
 }
 
+/* KORREKTUR: Bild-Styling zentriert und begrenzt */
 .image {
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  width: auto;      /* Behebt das Problem der übermäßigen Breite */
+  max-height: 500px; /* Verhindert, dass das Bild zu riesig wird */
+  object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -70,6 +100,7 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Stellt sicher, dass die Box die volle Breite nutzt */
 }
 
 .likeButton {
@@ -82,7 +113,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .likeButton:hover {
@@ -100,23 +131,23 @@
 }
 
 .tagsContainer {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .tagItem {
-    background-color: #9d9bcf;
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 14px;
-    font-size: 0.9em;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  background-color: #9d9bcf;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .tagItem:hover {
-    background-color: var(--color-secondary);
+  background-color: var(--color-secondary);
 }

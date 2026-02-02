@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axiosInstance from '../api/axiosConfig';
 
-
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -13,9 +12,13 @@ export const AuthProvider = ({ children }) => {
     const checkStatus = async () => {
       try {
         const response = await axiosInstance.get('/status', { withCredentials: true });
-        if (response.data.loggedIn) {
-          setUser(response.data.user);
-          setIsAdmin(response.data.user.is_admin || false);
+
+        if (response.data.valid) {
+          setUser({
+            username: response.data.username,
+            is_admin: response.data.is_admin
+          });
+          setIsAdmin(response.data.is_admin || false);
         }
       } catch (error) {
         setUser(null);
@@ -27,26 +30,33 @@ export const AuthProvider = ({ children }) => {
     checkStatus();
   }, []);
 
+
   const login = async (credentials) => {
     try {
-      const response = await axiosInstance.post('/login', credentials);
+      await axiosInstance.post('/login', credentials);
 
-      if (response.data.user) {
-          setUser(response.data.user);
-          setIsAdmin(response.data.user.is_admin);
-      } else {
-          const statusRes = await axiosInstance.get('/status');
-          setUser(statusRes.data.user);
-          setIsAdmin(statusRes.data.user.is_admin);
+
+      const statusRes = await axiosInstance.get('/status');
+
+      if (statusRes.data.valid) {
+        const userData = {
+          username: statusRes.data.username,
+          is_admin: statusRes.data.is_admin
+        };
+        setUser(userData);
+        setIsAdmin(statusRes.data.is_admin);
+        return { success: true };
       }
-      return { success: true };
+      
+      return { success: false, message: 'Session could not be validated' };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.Message || error.response?.data?.message || 'Login failed' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Login failed'
       };
     }
   };
+
 
   const logout = async () => {
     try {
