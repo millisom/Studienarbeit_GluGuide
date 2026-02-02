@@ -1,20 +1,20 @@
-const Log = require('../models/glucoseModel'); 
+const Log = require('../models/glucoseModel');
 
 const logController = {
 
-async logGlucose(req, res) {
+    async logGlucose(req, res) {
         const userId = req.session?.userId;
         const { date, time, glucoseLevel } = req.body;
-    
+
         if (!userId) {
             return res.status(400).json({ error: 'User ID is required (Session).' });
         }
-    
+
         try {
             console.log('Calling Log.createLog with:', { userId, date, time, glucoseLevel });
-            
+
             const newLog = await Log.createLog(userId, date, time, glucoseLevel);
-            
+
             return res.status(201).json(newLog);
         } catch (error) {
             console.error('Error logging glucose:', error);
@@ -40,37 +40,35 @@ async logGlucose(req, res) {
     },
 
     async getFilteredGlucoseLogs(req, res) {
-        console.log('Request reached the controller'); 
+        console.log('Request reached the controller');
         const { userId } = req.params;
         const { filter } = req.query;
-    
+
         console.log('Controller: User ID:', userId);
         console.log('Controller: Filter received:', filter);
-    
+
         if (!userId) {
             return res.status(400).json({ error: 'User ID is required for this operation.' });
         }
-    
+
         try {
             const logs = await Log.getLogsByFilter(userId, filter);
-            console.log('Controller: Logs returned from model:', logs); 
-    
+            console.log('Controller: Logs returned from model:', logs);
+
             if (logs.length === 0) {
                 return res.status(404).json({ message: 'No logs found for the specified filter' });
             }
-    
+
             return res.status(200).json(logs);
         } catch (error) {
             console.error('Error fetching filtered logs:', error);
             return res.status(500).json({ error: 'Failed to fetch glucose logs.' });
         }
-    },    
-    
-    
+    },
 
     async getGlucoseLogsByTimePeriod(req, res) {
         const { userId } = req.params;
-        const { timePeriod } = req.query; 
+        const { timePeriod } = req.query;
 
         console.log('Controller: User ID:', userId);
         console.log('Controller: Time Period:', timePeriod);
@@ -79,14 +77,14 @@ async logGlucose(req, res) {
             console.error('Error: Missing user ID in session.');
             return res.status(400).json({ error: 'User ID is required for this operation.' });
         }
-    
+
         if (!timePeriod || !['1 day', '7 days', '30 days'].includes(timePeriod)) {
             console.error('Error: Invalid time period.');
             return res.status(400).json({ error: 'Valid time period is required (e.g., 1 day, 7 days, 30 days).' });
         }
 
         try {
-            const logs = await Log.getLogsByTimePeriod(userId, timePeriod); 
+            const logs = await Log.getLogsByTimePeriod(userId, timePeriod);
 
             if (logs.length === 0) {
                 return res.status(404).json({ message: 'No logs found for the specified time period' });
@@ -98,8 +96,6 @@ async logGlucose(req, res) {
             return res.status(500).json({ error: 'Failed to fetch glucose logs' });
         }
     },
-
-
 
     async getGlucoseLogById(req, res) {
         const { id } = req.params;
@@ -118,25 +114,26 @@ async logGlucose(req, res) {
         }
     },
 
-
     async updateGlucoseLog(req, res) {
-        const { id } = req.params;
+        const logId = parseInt(req.params.id, 10);
+        const userId = req.session.userId;
         const { date, time, glucoseLevel } = req.body;
-        const userId = req.session.userId; 
 
-        if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+        if (isNaN(logId) || !userId) {
+            return res.status(400).json({ error: 'Invalid ID or Session' });
+        }
 
         try {
-            const updatedLog = await Log.updateLog(id, userId, date, time, glucoseLevel);
+            const updatedLog = await Log.updateLog(logId, userId, date, time, glucoseLevel);
 
             if (!updatedLog) {
-                return res.status(403).json({ message: 'Forbidden: Log not found or unauthorized' });
+                return res.status(403).json({ message: 'Log not found or unauthorized' });
             }
 
             return res.status(200).json({ success: true, log: updatedLog });
         } catch (error) {
-            console.error('Error updating glucose log:', error);
-            return res.status(400).json({ error: 'Failed to update: Invalid data' });
+            console.error('Update Controller Error:', error.message);
+            return res.status(400).json({ error: 'Update failed: ' + error.message });
         }
     },
 

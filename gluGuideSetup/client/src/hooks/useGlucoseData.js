@@ -61,7 +61,7 @@ export const useGlucoseData = (userId) => {
   try {
     await axiosInstance.put(`/glucose/log/${logId}`, updatedData, { withCredentials: true });
     
-    await fetchLogs();
+    await fetchLogs(); 
     
     setSuccessMessage('Update successful!');
     return true;
