@@ -55,6 +55,13 @@ const GlucoseLog = () => {
     }
   };
 
+
+  const handleDeleteLog = async (logId) => {
+    if (window.confirm('Are you sure you want to delete this glucose log?')) {
+      await deleteLog(logId);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className={styles.glucoseLogContainer}>
@@ -155,8 +162,18 @@ const GlucoseLog = () => {
                       </>
                     ) : (
                       <>
-                        <button onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} className={styles.editButton}>Edit</button>
-                        <button onClick={() => deleteLog(log.id)} className={styles.deleteButton}>Delete</button>
+                        <button 
+                          onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} 
+                          className={styles.editButton}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteLog(log.id)} 
+                          className={styles.deleteButton}
+                        >
+                          Delete
+                        </button>
                       </>
                     )}
                   </td>
