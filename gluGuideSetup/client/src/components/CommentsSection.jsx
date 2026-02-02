@@ -3,19 +3,13 @@ import axiosInstance from '../api/axiosConfig';
 import CreateComment from "./createComment";
 import CommentsList from "./fetchComments";
 import PropTypes from 'prop-types';
+import { useAuth } from '../context/AuthContext'; 
 
 const CommentsSection = ({ postId }) => {
+  const { user, isAdmin } = useAuth();
   const [comments, setComments] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(null);
   const [error, setError] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
-    axiosInstance
-      .get("/status", { withCredentials: true })
-      .then((res) => setIsAdmin(res.data.is_admin))
-      .catch(() => setIsAdmin(false));
-  }, []);
 
   const fetchComments = async () => {
     try {
@@ -26,7 +20,6 @@ const CommentsSection = ({ postId }) => {
         }
       );
       setComments(response.data.comments || []);
-      setCurrentUserId(response.data.currentUserId);
       setError("");
     } catch (error) {
       console.error("Error loading comments:", error);
@@ -43,6 +36,9 @@ const CommentsSection = ({ postId }) => {
     fetchComments();
   };
 
+  
+  const currentUserId = user ? (user.id || user.userId) : null;
+
   return (
     <div style={{ marginTop: "20px" }}>
       <CreateComment 
@@ -55,8 +51,8 @@ const CommentsSection = ({ postId }) => {
 
       <CommentsList
         comments={comments}
-        currentUserId={currentUserId}
-        isAdmin={isAdmin}
+        currentUserId={currentUserId} 
+        isAdmin={isAdmin}             
         refreshComments={fetchComments}
       />
     </div>

@@ -7,26 +7,40 @@ import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/ProfileCard.module.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useAuth } from '../context/AuthContext';
 
 const ProfileCard = () => {
-  const [user, setUser] = useState(null);
+
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+
   const [bio, setBio] = useState('');
   const [currentBio, setCurrentBio] = useState('');
   const [dpUrl, setDpUrl] = useState('');
+  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [isEditingDp, setIsEditingDp] = useState(false);
   const [selectedDpFile, setSelectedDpFile] = useState(null);
   const [previewDp, setPreviewDp] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+   
+    if (!user) {
+ 
+        return;
+    }
+
+    const fetchProfileData = async () => {
       setLoading(true);
       try {
-        const [statusRes, bioRes, dpRes] = await Promise.all([
-          axiosInstance.get('/status'),
+
+        const [bioRes, dpRes] = await Promise.all([
           axiosInstance.get('/bio'),
           axiosInstance.get('/dp').catch(err => {
             if (err.response && err.response.status === 404) {
@@ -36,13 +50,6 @@ const ProfileCard = () => {
           })
         ]);
 
-        if (statusRes.data.valid) {
-          setUser(statusRes.data.username);
-        } else {
-          navigate('/login');
-          return;
-        }
-
         setBio(bioRes.data.profile_bio || '');
         setCurrentBio(bioRes.data.profile_bio || '');
         setDpUrl(dpRes.data.url || '');
@@ -50,16 +57,14 @@ const ProfileCard = () => {
       } catch (err) {
         console.error('Error fetching profile data:', err);
         setError('Failed to fetch profile data. Please try refreshing.');
-        setUser('User');
         setBio('Could not load bio.');
-        setCurrentBio('Could not load bio.');
-        setDpUrl('');
       } finally {
         setLoading(false);
       }
     };
-    fetchUserData();
-  }, [navigate]);
+
+    fetchProfileData();
+  }, [user]); 
 
   const handleBioEditToggle = () => {
     setCurrentBio(bio);
@@ -140,14 +145,21 @@ const ProfileCard = () => {
   const handleDeleteAccount = async () => {
     const confirmText = "DELETE";
     const confirmation = prompt(`To confirm account deletion, please type "${confirmText}" in the box below. This action is irreversible.`);
+    
     if (confirmation !== confirmText) {
         alert("Account deletion cancelled or confirmation text did not match.");
         return;
     }
+
     try {
-      const response = await axiosInstance.post('/deleteAccount', { confirmDelete: user });
+
+      const response = await axiosInstance.post('/deleteAccount', { confirmDelete: user.username });
+      
       if (response.status === 200) {
         alert('Account deleted successfully.');
+
+        await logout(); 
+
         navigate('/login');
       } else {
         setError('Failed to delete account. Server returned an error.');
@@ -168,8 +180,10 @@ const ProfileCard = () => {
     ],
   };
 
+
+  if (!user) return null; 
+
   if (loading) return <div className={styles.loadingState}>Loading profile...</div>;
-  
 
   return (
     <div className={styles.profileCardContainer}>
@@ -181,7 +195,7 @@ const ProfileCard = () => {
             <img
               className={styles.profileDp}
               src={previewDp || dpUrl || 'https://via.placeholder.com/180'}
-              alt={`${user || 'User'}'s profile`}
+              alt={`${user.username}'s profile`}
             />
             {!isEditingDp && (
               <button className={styles.dpEditButton} onClick={() => setIsEditingDp(true)} aria-label="Edit display picture">
@@ -209,7 +223,7 @@ const ProfileCard = () => {
             </div>
           )}
 
-          <h1 className={styles.profileUsername}>{user || 'Username'}</h1>
+          <h1 className={styles.profileUsername}>{user.username}</h1>
           
           <nav className={styles.profileActions}>
             <button className={styles.actionButton} onClick={() => navigate('/myBlogs')}>

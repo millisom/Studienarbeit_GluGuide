@@ -6,10 +6,13 @@ import 'react-quill/dist/quill.snow.css';
 import styles from '../styles/EditPost.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faXmark, faSave } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../context/AuthContext';
 
 const EditPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tagsInput, setTagsInput] = useState('');
@@ -17,6 +20,7 @@ const EditPost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -26,6 +30,8 @@ const EditPost = () => {
         const response = await axiosInstance.get(`/getPost/${id}`, {
           withCredentials: true,
         });
+        
+
         setTitle(response.data.title);
         setContent(response.data.content);
         setTagsInput(Array.isArray(response.data.tags) ? response.data.tags.join(', ') : '');
@@ -42,7 +48,7 @@ const EditPost = () => {
       }
     };
     fetchPost();
-  }, [id]);
+  }, [id, user, navigate]);
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -54,7 +60,7 @@ const EditPost = () => {
         payload,
         { withCredentials: true }
       );
-      navigate(`/viewPost/${id}`);
+      navigate(`/blogs/view/${id}`); 
     } catch (error) {
       setError('Failed to save changes. Please check your input.');
       console.error('Error saving post:', error.response ? error.response.data : error.message);
@@ -77,6 +83,7 @@ const EditPost = () => {
         withCredentials: true,
       });
       setImageUrl(response.data.imageUrl);
+      alert("Image uploaded successfully!");
     } catch (error) {
       console.error('Error uploading image:', error);
       setError("Failed to upload image.");
@@ -84,6 +91,7 @@ const EditPost = () => {
   };
 
   const handleDeleteImage = async () => {
+    if (!window.confirm("Delete current image?")) return;
     try {
       await axiosInstance.delete(`/deletePostImage/${id}`, {
         withCredentials: true,
@@ -95,6 +103,10 @@ const EditPost = () => {
     }
   };
 
+  if (!user && !isLoading) {
+      return <p className={styles.errorMessage}>Please log in to edit posts.</p>;
+  }
+
   return (
     <div className={styles.editPostContainer}>
       <h2 className={styles.title}>Edit Your Post</h2>
@@ -103,7 +115,6 @@ const EditPost = () => {
 
       {!isLoading && (
         <div className={styles.form}>
-          {/* Post Title */}
           <label className={styles.label}>Post Title:</label>
           <input
             type="text"
@@ -113,7 +124,6 @@ const EditPost = () => {
             className={styles.input}
           />
   
-          {/* Post Content */}
           <label className={styles.label}>Content:</label>
           <ReactQuill
             value={content}
@@ -121,7 +131,6 @@ const EditPost = () => {
             className={styles.quillEditor}
           />
   
-          {/* Tags Input */}
           <label className={styles.label}>Tags (comma-separated):</label>
           <input
             type="text"
@@ -131,58 +140,44 @@ const EditPost = () => {
             className={styles.input}
           />
   
-          {/* Image Upload Section */}
-          <label className={styles.label}>Current Post Image:</label>
-          {imageUrl ? (
-            <>
-              <div className={styles.imagePreview}>
-                <img
-                  src={imageUrl}
-                  alt="Post Preview"
-                  className={styles.previewImage}
-                />
-              </div>
-              <div className={styles.inputField}>
-                <button
-                  type="button"
-                  className={styles.deleteButton}
-                  onClick={handleDeleteImage}
-                >
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className={styles.iconSpacing}
-                  />
-                  Remove Image
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <p>There is no current image set.</p>
-              <button
-                type="button"
-                className={styles.deleteButton}
-                onClick={handleDeleteImage}
-                disabled
-              >
-                <FontAwesomeIcon icon={faTrash} className={styles.iconSpacing} />
-                Remove Image
-              </button>
-            </>
-          )}
+          <div className={styles.imageSection}>
+            <label className={styles.label}>Current Post Image:</label>
+            {imageUrl ? (
+                <>
+                <div className={styles.imagePreview}>
+                    <img
+                    src={imageUrl}
+                    alt="Post Preview"
+                    className={styles.previewImage}
+                    />
+                </div>
+                <div className={styles.inputField}>
+                    <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={handleDeleteImage}
+                    >
+                    <FontAwesomeIcon icon={faTrash} className={styles.iconSpacing} />
+                    Remove Image
+                    </button>
+                </div>
+                </>
+            ) : (
+                <p className={styles.noImageText}>No image set.</p>
+            )}
 
-          <label className={styles.label}>Upload New Image:</label>
-          <input
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
-            className={styles.fileInput}
-          />
-          <small>First choose a new image, then click "Upload Image"!</small>
-          <button onClick={handleUploadImage} className={styles.uploadButton}>
-            Upload Image
-          </button>
+            <label className={styles.label} style={{marginTop: '20px'}}>Upload New Image:</label>
+            <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
+                className={styles.fileInput}
+            />
+            <button onClick={handleUploadImage} className={styles.uploadButton} disabled={!image}>
+                Upload Image
+            </button>
+          </div>
   
-          {/* Action Buttons */}
           <div className={styles.buttonGroup}>
             <button
               onClick={handleSave}
@@ -190,10 +185,10 @@ const EditPost = () => {
               className={styles.saveButton}
             >
               <FontAwesomeIcon icon={faSave} className={styles.iconSpacing} />
-              {isLoading ? "Saving..." : "Save"}
+              {isLoading ? "Saving..." : "Save Changes"}
             </button>
             <button
-              onClick={() => navigate(`/viewPost/${id}`)}
+              onClick={() => navigate(`/blogs/view/${id}`)}
               className={styles.cancelButton}
             >
               <FontAwesomeIcon icon={faXmark} className={styles.iconSpacing} />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
@@ -8,37 +8,17 @@ import parse from 'html-react-parser';
 import styles from '../styles/Comments.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { useAuth } from '../context/AuthContext'; 
 
 const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => {
   const navigate = useNavigate();
+
+  const { user, loading } = useAuth();
+  
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [newContent, setNewContent] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSessionStatus = async () => {
-      setAuthLoading(true);
-      try {
-        const response = await fetch(`${API_BASE_URL}/status`, { credentials: 'include' });
-        if (response.ok) {
-            const data = await response.json();
-            setIsLoggedIn(data.valid);
-        } else {
-            console.error("Auth status check failed with status:", response.status);
-            setIsLoggedIn(false);
-        }
-      } catch (err) {
-        console.error("Error fetching session status:", err);
-        setIsLoggedIn(false);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-    fetchSessionStatus();
-  }, []);
+  const isLoggedIn = !!user;
 
   const handleAuthorClick = (username) => {
     navigate(`/profile/${username}`);
@@ -105,7 +85,7 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
     setNewContent(currentContent);
   };
 
-  if (authLoading) {
+  if (loading) {
     return <p className={styles.loadingMessage}>Loading comments...</p>;
   }
 
@@ -204,6 +184,7 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
                     <Link to="/login" className={styles.authLink}>Login</Link> or <Link to="/signUp" className={styles.authLink}>Sign Up</Link> to rate.
                   </p>
                 )}
+                
                 {(currentUserId === comment.author_id || isAdmin) && (
                   <>
                     <button

@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axiosInstance from '../api/axiosConfig';
-import ReactQuill from 'react-quill'; // Import Quill
-import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
+import ReactQuill from 'react-quill'; 
+import 'react-quill/dist/quill.snow.css'; 
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../styles/CreateBlogPost.module.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL; // For status check
+import { useAuth } from '../context/AuthContext'; 
 
 const CreatePost = () => {
+
+  const { user, loading } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [postPicture, setPostPicture] = useState(null);
@@ -16,30 +17,6 @@ const CreatePost = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // New state
-  const [authLoading, setAuthLoading] = useState(true); // New state
-
-  useEffect(() => {
-    const fetchSessionStatus = async () => {
-      setAuthLoading(true);
-      try {
-        const response = await fetch(`${API_BASE_URL}/status`, { credentials: 'include' });
-        if (response.ok) {
-            const data = await response.json();
-            setIsLoggedIn(data.valid);
-        } else {
-            console.error("CreatePost: Auth status check failed with status:", response.status);
-            setIsLoggedIn(false);
-        }
-      } catch (err) {
-        console.error("CreatePost: Error fetching session status:", err);
-        setIsLoggedIn(false);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-    fetchSessionStatus();
-  }, []);
 
   const handleFileChange = (e) => {
     setPostPicture(e.target.files[0]);
@@ -47,6 +24,11 @@ const CreatePost = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!user) {
+        setError('You must be logged in to create a post.');
+        return;
+    }
 
     const plainTextContent = content.replace(/<[^>]+>/g, '').trim();
     if (!title.trim() || !plainTextContent) {
@@ -99,11 +81,12 @@ const CreatePost = () => {
     }
   };
 
-  if (authLoading) {
+ 
+  if (loading) {
     return <div className={styles.createPostContainer}><p className={styles.loadingMessage || 'formLoading'}>Loading form...</p></div>;
   }
 
-  if (!isLoggedIn) {
+  if (!user) {
     return (
       <div className={styles.createPostContainer}> 
         <div className={styles.authPromptContainer}> 
@@ -180,4 +163,3 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
-

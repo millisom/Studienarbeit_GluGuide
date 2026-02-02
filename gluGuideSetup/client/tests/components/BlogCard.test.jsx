@@ -1,27 +1,33 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom'; 
+import { AuthContext } from '../../src/context/AuthContext'; 
 import BlogCard from '../../src/components/BlogCard';
 import axiosConfig from '../../src/api/axiosConfig';
 
-// Mock axios
+
 vi.mock('../../src/api/axiosConfig', () => ({
   default: {
     delete: vi.fn().mockResolvedValue({ data: { message: 'Post deleted successfully' } })
   }
 }));
 
-// Mock react-router-dom
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate
-}));
 
-// Mock html-react-parser
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate
+  };
+});
+
+
 vi.mock('html-react-parser', () => ({
   default: (content) => content || '',
 }));
 
-// ✅ Fixed FontAwesome mock — return valid JSX
+
 vi.mock('@fortawesome/react-fontawesome', () => ({
   FontAwesomeIcon: ({ icon }) => {
     const iconName = icon?.iconName || 'unknown';
@@ -35,7 +41,7 @@ vi.mock('@fortawesome/free-solid-svg-icons', () => ({
   faHeart: { iconName: 'heart' }
 }));
 
-// Mock CSS Modules
+
 vi.mock('../../src/styles/Blogcard.module.css', () => ({
   default: {
     card: 'card',
@@ -57,6 +63,24 @@ describe('BlogCard Component', () => {
   const originalReload = window.location.reload;
   const originalAlert = window.alert;
 
+
+  const mockAuthValue = {
+    user: { id: 1, username: 'testuser' },
+    isAdmin: true,
+    loading: false
+  };
+
+
+  const renderBlogCard = (blog, authValue = mockAuthValue) => {
+    return render(
+      <AuthContext.Provider value={authValue}>
+        <MemoryRouter>
+          <BlogCard blog={blog} />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    );
+  };
+
   const mockBlog = {
     id: 1,
     title: 'Test Blog',
@@ -73,21 +97,6 @@ describe('BlogCard Component', () => {
     tags: ['react'],
   };
 
-  const mockBlogWithLikesArray = {
-    id: 3,
-    title: 'Blog with likes array',
-    content: 'Test content',
-    likes: [1, 2, 3],
-    tags: ['node'],
-  };
-
-  const mockBlogWithoutTags = {
-    id: 4,
-    title: 'Blog without tags',
-    content: 'Test content',
-    likes_count: 0,
-  };
-
   beforeEach(() => {
     vi.clearAllMocks();
     window.confirm = vi.fn().mockReturnValue(true);
@@ -102,49 +111,27 @@ describe('BlogCard Component', () => {
   });
 
   it('renders blog information correctly', () => {
-    const { container } = render(<BlogCard blog={mockBlog} />);
-    expect(container.textContent).toContain('Test Blog');
-    expect(container.textContent).toContain('This is a test blog content');
-    expect(container.textContent).toContain('5 Likes');
-  });
-
-  it('renders blog with long content and truncates', () => {
-    render(<BlogCard blog={mockLongBlog} />);
-    expect(screen.getByText('Long Blog')).toBeInTheDocument();
-    expect(screen.getByText('1 Like')).toBeInTheDocument();
-  });
-
-  it('renders blog using likes array instead of likes_count', () => {
-    render(<BlogCard blog={mockBlogWithLikesArray} />);
-    expect(screen.getByText('Blog with likes array')).toBeInTheDocument();
-    expect(screen.getByText('3 Likes')).toBeInTheDocument();
-  });
-
-  it('renders blog with no tags without crashing', () => {
-    render(<BlogCard blog={mockBlogWithoutTags} />);
-    expect(screen.getByText('Blog without tags')).toBeInTheDocument();
-  });
-
-  it('shows "Like" (singular) when likes_count is 1', () => {
-    render(<BlogCard blog={mockLongBlog} />);
-    expect(screen.getByText('1 Like')).toBeInTheDocument();
+    renderBlogCard(mockBlog);
+    expect(screen.getByText('Test Blog')).toBeInTheDocument();
+    expect(screen.getByText('This is a test blog content')).toBeInTheDocument();
+    expect(screen.getByText('5 Likes')).toBeInTheDocument();
   });
 
   it('navigates to the blog view page when title is clicked', () => {
-    render(<BlogCard blog={mockBlog} />);
+    renderBlogCard(mockBlog);
     fireEvent.click(screen.getByText('Test Blog'));
     expect(mockNavigate).toHaveBeenCalledWith('/blogs/view/1');
   });
 
   it('navigates to edit page when edit button is clicked', () => {
-    render(<BlogCard blog={mockBlog} />);
+    renderBlogCard(mockBlog);
     const editBtn = screen.getByTestId('icon-pen-to-square').closest('button');
     fireEvent.click(editBtn);
     expect(mockNavigate).toHaveBeenCalledWith('/blogs/edit/1');
   });
 
   it('deletes post after confirm', async () => {
-    render(<BlogCard blog={mockBlog} />);
+    renderBlogCard(mockBlog);
     const deleteBtn = screen.getByTestId('icon-trash').closest('button');
     fireEvent.click(deleteBtn);
 

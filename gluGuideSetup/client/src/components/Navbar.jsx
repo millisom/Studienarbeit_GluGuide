@@ -1,40 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styles from '../styles/NavBar.module.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { useAuth } from '../context/AuthContext'; 
+import styles from '../styles/NavBar.module.css'; 
 
 const Navbar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
-
+    const { user, isAdmin, logout } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchSessionStatus = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/status`, {
-                    credentials: 'include'
-                });
-                const data = await response.json();
-                setIsLoggedIn(data.valid);
-                setIsAdmin(data.is_admin);
-            } catch (err) {
-                console.error("Error fetching session status:", err);
-            }
-        };
-
-        fetchSessionStatus();
-    }, []);
 
     const handleLogout = async () => {
         try {
-            await fetch(`${API_BASE_URL}/logout`, {
-                credentials: 'include'
-            });
-            setIsLoggedIn(false);
+            await logout();
             alert('You have been logged out successfully.');
-            navigate('/');
+            navigate('/'); 
         } catch (error) {
             console.error('Error during logout:', error);
             alert('Failed to log out. Please try again.');
@@ -46,12 +23,26 @@ const Navbar = () => {
             <Link to="/" className={styles.logo}>GluGuide</Link>
             <nav className={styles.navbar}>
                 <Link to="/">Home</Link>
-                {isLoggedIn ? (
+                
+                {user ? (
                     <>
+          
                         {isAdmin && <Link to="/admin">Admin Dashboard</Link>}
+                        
                         <Link to="/account">My Account</Link>
                         <Link to="/myBlogs">My Blogs</Link>
-                        <Link className={styles.navLink} onClick={handleLogout}>Logout</Link>
+                        
+        
+                        <Link 
+                            to="#"
+                            className={styles.navLink} 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleLogout();
+                            }}
+                        >
+                            Logout
+                        </Link>
                     </>
                 ) : (
                     <>
@@ -59,6 +50,7 @@ const Navbar = () => {
                         <Link to="/signUp">Sign Up</Link>
                     </>
                 )}
+
                 <Link to="/blogs">Blogs</Link>
                 <Link to="/about">About</Link>
                 <Link to="/contact">Contact</Link>

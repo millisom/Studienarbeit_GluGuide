@@ -2,13 +2,24 @@ import PropTypes from 'prop-types';
 import styles from '../styles/RecipeItem.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../context/AuthContext';
 
 const RecipeItem = ({ recipe, onAdd }) => {
+  const { user } = useAuth();
+
   if (!recipe) {
     return <div className={styles.loading}>Loading recipe details...</div>;
   }
 
   const { name, description, total_calories, total_proteins, total_fats, total_carbs, ingredients } = recipe;
+
+  const handleAddClick = () => {
+    if (!user) {
+        alert("Please log in to add recipes to your meal.");
+        return;
+    }
+    onAdd(recipe);
+  };
 
   return (
     <div className={styles.recipeItemContainer}>
@@ -53,7 +64,13 @@ const RecipeItem = ({ recipe, onAdd }) => {
         </div>
       )}
 
-      <button onClick={() => onAdd(recipe)} className={styles.addRecipeButton}>
+      <button 
+        onClick={handleAddClick} 
+        className={styles.addRecipeButton}
+        disabled={!user}
+        style={!user ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+        title={!user ? "Login to add recipes" : "Add to meal"}
+      >
         <FontAwesomeIcon icon={faPlusCircle} /> Add This Recipe to Meal
       </button>
     </div>

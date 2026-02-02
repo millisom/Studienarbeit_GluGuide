@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { getRecipeById, deleteRecipe } from '../api/recipeApi';
 import styles from '../styles/RecipeCard.module.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBook,         // For Recipe Name/Header
@@ -12,20 +14,27 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const RecipeCard = ({ recipeId }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth(); 
+
   const [recipe, setRecipe] = useState(null);
-  const [status, setStatus] = useState('Loading recipe details...');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchRecipe = async () => {
-      setStatus('Loading recipe details...');
+      setLoading(true);
+      setError('');
       try {
         const data = await getRecipeById(recipeId);
         setRecipe(data);
-        setStatus('');
       } catch (err) {
         console.error('Failed to fetch recipe:', err);
         setRecipe(null);
-        setStatus('❌ Failed to load recipe. Please check the ID or try again.');
+        setError('Failed to load recipe. Please check the ID or try again.');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,37 +44,50 @@ const RecipeCard = ({ recipeId }) => {
   }, [recipeId]);
 
   const handleDelete = async () => {
+    if (!user) return; 
+
     const confirmed = window.confirm(
       'Are you sure you want to permanently delete this recipe? This action cannot be undone.'
     );
     if (!confirmed) return;
 
-    setStatus('Deleting recipe...');
     try {
       await deleteRecipe(recipeId);
-      setStatus('✅ Recipe deleted successfully!');
-      setRecipe(null);
+      setSuccessMessage('✅ Recipe deleted successfully! Redirecting...');
+      
+   
+      setTimeout(() => {
+        navigate('/recipes'); 
+      }, 1500);
     } catch (error) {
       console.error('Error deleting recipe:', error);
-      setStatus('❌ Failed to delete recipe. Please try again.');
+      setError('Failed to delete recipe. Please try again.');
     }
   };
 
-  if (!recipe && status) {
-    let messageClass = styles.loadingMessage;
-    if (status.startsWith('✅')) messageClass = styles.successMessage;
-    else if (status.startsWith('❌')) messageClass = styles.errorMessage;
-    
+
+  if (loading) {
+    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>Preparing recipe...</div>;
+  }
+
+
+  if (successMessage) {
     return (
-      <div className={`${styles.statusMessage} ${messageClass}`}>
-        {status}
+      <div className={`${styles.statusMessage} ${styles.successMessage}`}>
+        {successMessage}
       </div>
     );
   }
 
-  if (!recipe) {
-    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>Preparing recipe...</div>;
+
+  if (error || !recipe) {
+    return (
+      <div className={`${styles.statusMessage} ${styles.errorMessage}`}>
+        {error || 'Recipe not found.'}
+      </div>
+    );
   }
+
 
   return (
     <div className={styles.recipeDetailContainer}>
@@ -122,15 +144,17 @@ const RecipeCard = ({ recipeId }) => {
         </div>
       )}
 
-      <div className={styles.deleteButtonContainer}>
-        <button onClick={handleDelete} className={styles.deleteButton} disabled={status === 'Deleting recipe...'}>
-          <FontAwesomeIcon icon={faTrashAlt} />
-          {status === 'Deleting recipe...' ? 'Deleting...' : 'Delete Recipe'}
-        </button>
-      </div>
+      {user && (
+        <div className={styles.deleteButtonContainer}>
+            <button onClick={handleDelete} className={styles.deleteButton}>
+            <FontAwesomeIcon icon={faTrashAlt} /> Delete Recipe
+            </button>
+        </div>
+      )}
       
-      {status && status.startsWith('❌') && recipe && (
-        <div className={`${styles.statusMessage} ${styles.errorMessage}`} style={{ marginTop: '15px' }}>{status}</div>
+
+      {error && !loading && recipe && (
+        <div className={`${styles.statusMessage} ${styles.errorMessage}`} style={{ marginTop: '15px' }}>{error}</div>
       )}
     </div>
   );

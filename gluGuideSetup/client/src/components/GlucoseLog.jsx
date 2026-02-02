@@ -1,139 +1,84 @@
-import { useState, useEffect } from 'react';
-import axiosInstance from '../api/axiosConfig';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { useGlucoseData } from '../hooks/useGlucoseData';
+import GlucoseChart from './GlucoseChart';
 import styles from '../styles/GlucoseLog.module.css';
+import { useAuth } from '../context/AuthContext';
 
 const GlucoseLog = () => {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [glucoseLevel, setGlucoseLevel] = useState('');
-  const [logs, setLogs] = useState([]);
-  const [userId, setUserId] = useState(null);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [filter, setFilter] = useState('24hours');
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { user, loading: authLoading } = useAuth();
   
+  const userId = user?.id || user?.userId || null;
+
+  const { 
+    logs, error, successMessage, filter, setFilter, 
+    addLog, deleteLog, updateLog 
+  } = useGlucoseData(userId);
+
+  const [formData, setFormData] = useState({ date: '', time: '', level: '' });
+  const [isExpanded, setIsExpanded] = useState(false);
   const [editingLogId, setEditingLogId] = useState(null);
-  const [editedGlucoseLevel, setEditedGlucoseLevel] = useState('');
+  const [editedLevel, setEditedLevel] = useState('');
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const response = await axiosInstance.get('/currentUser', { withCredentials: true });
-        console.log("✅ userId from /currentUser:", response.data.userId);
-        setUserId(response.data.userId);
-      } catch {
-        setError('Failed to retrieve user information. Please log in.');
-      }
-    };
-    fetchUserId();
+    const now = new Date();
+    setFormData({
+      date: now.toISOString().split('T')[0],
+      time: now.toTimeString().slice(0, 5),
+      level: ''
+    });
   }, []);
 
-  useEffect(() => {
-    const fetchLogs = async () => {
-      if (!userId) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!userId) return alert("Please log in.");
 
-      console.log("📡 Fetching glucose logs with:", {
-        userId,
-        filter,
-      });
-
-      try {
-        const response = await axiosInstance.get(`/glucose/${userId}`, {
-          params: { filter },
-          withCredentials: true,
-        });
-        setLogs(response.data);
-        setError('');
-    } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setLogs([]);
-          setError('');
-        } else {
-          setError('Failed to fetch glucose logs.');
-        }
-      }
-    };
-    fetchLogs();
-  }, [userId, filter]);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const data = { date, time, glucoseLevel, userId };
-      await axiosInstance.post('/glucose/log', data, { withCredentials: true });
-      setDate('');
-      setTime('');
-      setGlucoseLevel('');
-      setSuccessMessage('Glucose log added successfully!');
-      setError('');
-      const response = await axiosInstance.get(`/glucose/${userId}`, { params: { filter }, withCredentials: true });
-      setLogs(response.data);
-    } catch {
-      setError('Failed to add glucose log. Please try again.');
-      setSuccessMessage('');
+    if (parseFloat(formData.level) <= 0) {
+      alert("Please enter a valid glucose level.");
+      return;
     }
+
+    const success = await addLog({ 
+      date: formData.date, 
+      time: formData.time, 
+      glucoseLevel: formData.level, 
+      userId 
+    });
+
+    if (success) setFormData({ ...formData, level: '' });
   };
 
-  const handleEditClick = (log) => {
-    setEditingLogId(log.id);
-    setEditedGlucoseLevel(log.glucose_level);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingLogId(null);
-    setEditedGlucoseLevel('');
-  };
-
-  const handleSaveEdit = async (log) => {
-    try {
-      await axiosInstance.put(`/glucose/log/${log.id}`, {
-        date: log.date,
-        time: log.time,
-        glucoseLevel: editedGlucoseLevel,
-      }, { withCredentials: true });
+  const handleSaveEdit = async (logId) => {
+    const success = await updateLog(logId, { glucoseLevel: editedLevel });
+    if (success) {
       setEditingLogId(null);
-      setEditedGlucoseLevel('');
-      setSuccessMessage('Glucose log updated successfully!');
-      setError('');
-      const response = await axiosInstance.get(`/glucose/${userId}`, { params: { filter }, withCredentials: true });
-      setLogs(response.data);
-    } catch {
-      setError('Failed to update glucose log. Please try again.');
-      setSuccessMessage('');
+      setEditedLevel('');
     }
   };
+
 
   const handleDeleteLog = async (logId) => {
-    if (!window.confirm('Are you sure you want to delete this glucose log?')) return;
-    try {
-      await axiosInstance.delete(`/glucose/log/${logId}`, { withCredentials: true });
-      setSuccessMessage('Glucose log deleted successfully!');
-      setError('');
-      const response = await axiosInstance.get(`/glucose/${userId}`, { params: { filter }, withCredentials: true });
-      setLogs(response.data);
-    } catch {
-      setError('Failed to delete glucose log. Please try again.');
-      setSuccessMessage('');
+    if (window.confirm('Are you sure you want to delete this glucose log?')) {
+      await deleteLog(logId);
     }
   };
 
-  const formatLogsForGraph = logs.map((log) => ({
-    name: `${new Date(log.date).toLocaleDateString()} ${log.time}`,
-    glucose: parseFloat(log.glucose_level),
-  }));
+  if (authLoading) {
+    return (
+      <div className={styles.glucoseLogContainer}>
+        <p className={styles.loadingMessage}>Checking authentication...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className={styles.glucoseLogContainer}>
+        <p>Please log in to view your Glucose Logs.</p>
+      </div>
+    );
+  }
 
   const displayedLogs = isExpanded ? logs : logs.slice(-3);
-
-  // Map filter values to human-friendly text
-  const filterMap = {
-    '24hours': '24 hours',
-    '1week': 'the past week',
-    '3months': '3 months',
-    'all': 'all time',
-  };
-  const emptyMessage = `No logs in the past ${filterMap[filter] || ''}`;
 
   return (
     <div className={styles.glucoseLogContainer}>
@@ -142,34 +87,31 @@ const GlucoseLog = () => {
           <h2 className={styles.pb1}>Log Your Glucose Level</h2>
           <form onSubmit={handleSubmit}>
             <div className={styles.inputField}>
-              <label className={styles.label}>Date:</label>
-              <input
-                className={styles.input}
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
+              <label>Date:</label>
+              <input 
+                type="date" 
+                value={formData.date} 
+                onChange={(e) => setFormData({...formData, date: e.target.value})} 
+                required 
               />
             </div>
             <div className={styles.inputField}>
-              <label className={styles.label}>Time:</label>
-              <input
-                className={styles.input}
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                required
+              <label>Time:</label>
+              <input 
+                type="time" 
+                value={formData.time} 
+                onChange={(e) => setFormData({...formData, time: e.target.value})} 
+                required 
               />
             </div>
             <div className={styles.inputField}>
-              <label className={styles.label}>Glucose Level:</label>
-              <input
-                className={styles.input}
-                type="number"
-                step="0.01"
-                value={glucoseLevel}
-                onChange={(e) => setGlucoseLevel(e.target.value)}
-                required
+              <label>Level (mg/dL):</label>
+              <input 
+                type="number" 
+                step="0.01" 
+                value={formData.level} 
+                onChange={(e) => setFormData({...formData, level: e.target.value})} 
+                required 
               />
             </div>
             <button type="submit" className={styles.submitButton}>Log Glucose</button>
@@ -179,88 +121,64 @@ const GlucoseLog = () => {
         </div>
 
         <div className={styles.filterBox}>
-          <h3>Filter Data</h3>
+          <h3>Filter View</h3>
           <select onChange={(e) => setFilter(e.target.value)} value={filter} className={styles.filterSelect}>
             <option value="24hours">Last 24 Hours</option>
             <option value="1week">Last Week</option>
-            <option value="3months">Last 3 Months</option>
-            <option value="all">All Data</option>
+            <option value="all">All Time</option>
           </select>
         </div>
       </div>
 
       <div className={styles.rightColumn}>
-        <div className={styles.graphBox}>
-          <h3>Glucose Levels Over Time</h3>
-          <div className={styles.graphContainer}>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={formatLogsForGraph}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="glucose" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
+        <GlucoseChart logs={logs} />
+        
         <div className={styles.glucoseLogsListContainer}>
-          <h3 className={styles.tableHeader}>Logged Data</h3>
+          <h3 className={styles.tableHeader}>History</h3>
           <table className={styles.glucoseLogsTable}>
             <thead>
-              <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Glucose Level</th>
-                <th>Actions</th>
-              </tr>
+              <tr><th>Date</th><th>Time</th><th>Level</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              {displayedLogs.length > 0 ? (
-                displayedLogs.map((log) =>
-                  editingLogId === log.id ? (
-                    <tr key={log.id}>
-                      <td>{new Date(log.date).toLocaleDateString()}</td>
-                      <td>{log.time}</td>
-                      <td>
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={editedGlucoseLevel}
-                          onChange={(e) => setEditedGlucoseLevel(e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <button onClick={() => handleSaveEdit(log)} className={styles.saveButton}>
-                          Save
-                        </button>
-                        <button onClick={handleCancelEdit} className={styles.cancelButton}>
-                          Cancel
-                        </button>
-                        <button onClick={() => handleDeleteLog(log.id)} className={styles.deleteButton}>
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ) : (
-                    <tr key={log.id}>
-                      <td>{new Date(log.date).toLocaleDateString()}</td>
-                      <td>{log.time}</td>
-                      <td>{log.glucose_level}</td>
-                      <td>
-                        <button onClick={() => handleEditClick(log)} className={styles.editButton}>
+              {displayedLogs.map((log) => (
+                <tr key={log.id}>
+                  <td>{new Date(log.date).toLocaleDateString()}</td>
+                  <td>{log.time}</td>
+                  <td>
+                    {editingLogId === log.id ? (
+                      <input 
+                        type="number" 
+                        value={editedLevel} 
+                        onChange={(e) => setEditedLevel(e.target.value)} 
+                        className={styles.editInput}
+                      />
+                    ) : log.glucose_level}
+                  </td>
+                  <td>
+                    {editingLogId === log.id ? (
+                      <>
+                        <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton}>Save</button>
+                        <button onClick={() => setEditingLogId(null)} className={styles.cancelButton}>Cancel</button>
+                      </>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} 
+                          className={styles.editButton}
+                        >
                           Edit
                         </button>
-                      </td>
-                    </tr>
-                  )
-                )
-              ) : (
-                <tr>
-                  <td colSpan="4">{emptyMessage}</td>
+                        <button 
+                          onClick={() => handleDeleteLog(log.id)} 
+                          className={styles.deleteButton}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
           {logs.length > 3 && (

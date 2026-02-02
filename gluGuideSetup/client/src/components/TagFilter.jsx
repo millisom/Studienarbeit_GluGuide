@@ -6,18 +6,19 @@ import styles from '../styles/ViewBlogEntries.module.css';
 const TagFilter = ({ 
   tagOptions, 
   selectedTags, 
-  selectedTagValues, 
   handleTagMultiSelectChange, 
   handleTagRemove, 
   clearAllTags 
 }) => {
+  const selectedValues = tagOptions.filter(option => selectedTags.includes(option.value));
+
   return (
     <div className={styles.tagFilterSection}>
       <h4 className={styles.filterTitle}>Filter by Tags:</h4>
       <Select
         isMulti
         options={tagOptions}
-        value={selectedTagValues}
+        value={selectedValues}
         onChange={handleTagMultiSelectChange}
         placeholder="Select tags..."
         classNamePrefix="react-select"
@@ -30,7 +31,11 @@ const TagFilter = ({
           {selectedTags.map(tag => (
             <span key={tag} className={styles.selectedTagItem}>
               {tag}
-              <button onClick={() => handleTagRemove(tag)} className={styles.removeTagButton}>
+              <button 
+                onClick={() => handleTagRemove(tag)} 
+                className={styles.removeTagButton}
+                aria-label={`Remove ${tag} filter`}
+              >
                 <FontAwesomeIcon icon={faTimes} size="xs" />
               </button>
             </span>
@@ -44,4 +49,4 @@ const TagFilter = ({
   );
 };
 
-export default TagFilter; 
+export default TagFilter;

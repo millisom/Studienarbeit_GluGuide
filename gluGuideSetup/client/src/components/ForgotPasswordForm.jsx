@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/LoginForm.module.css';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';  
 
 const ForgotPasswordForm = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
+
+
+  useEffect(() => {
+    if (user) {
+      navigate('/blogs'); 
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,6 +27,9 @@ const ForgotPasswordForm = () => {
     try {
       const response = await axiosInstance.post('/forgotPassword', { email });
       setNotification({ message: response.data.message, type: 'success' });
+      if (response.data.success) {
+          setEmail('');
+      }
     } catch (error) {
       setNotification({
         message: error.response?.data?.message || 'Something went wrong. Please try again.',

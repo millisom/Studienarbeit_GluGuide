@@ -5,9 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faHeart } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from '../api/axiosConfig';
 import PropTypes from 'prop-types';
+import { useAuth } from '../context/AuthContext'; 
 
 const BlogCard = ({ blog }) => {
     const navigate = useNavigate();
+    const { user, isAdmin } = useAuth(); 
 
     const handleViewClick = () => {
         navigate(`/blogs/view/${blog.id}`);
@@ -27,6 +29,10 @@ const BlogCard = ({ blog }) => {
             }
         }
     };
+
+
+    const isAuthor = user && blog.username === user.username;
+    const canEditOrDelete = isAdmin || isAuthor;
 
     return (
         <div className={styles.card}>
@@ -65,22 +71,25 @@ const BlogCard = ({ blog }) => {
                             );
                         })()}
                     </p>
-                    <div className={styles.iconContainer}>
-                        <button
-                            className={styles.iconButton}
-                            onClick={() => navigate(`/blogs/edit/${blog.id}`)}
-                            aria-label={`Edit post titled ${blog.title}`}
-                        >
-                            <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                            className={styles.iconButton}
-                            onClick={handleDelete}
-                            aria-label={`Delete post titled ${blog.title}`}
-                        >
-                            <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                    </div>
+                    
+                    {canEditOrDelete && (
+                        <div className={styles.iconContainer}>
+                            <button
+                                className={styles.iconButton}
+                                onClick={() => navigate(`/blogs/edit/${blog.id}`)}
+                                aria-label={`Edit post titled ${blog.title}`}
+                            >
+                                <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                            <button
+                                className={styles.iconButton}
+                                onClick={handleDelete}
+                                aria-label={`Delete post titled ${blog.title}`}
+                            >
+                                <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -92,6 +101,7 @@ BlogCard.propTypes = {
         id: PropTypes.number.isRequired,
         title: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
+        username: PropTypes.string,
         likes: PropTypes.array,
         likes_count: PropTypes.number,
         tags: PropTypes.arrayOf(PropTypes.string),

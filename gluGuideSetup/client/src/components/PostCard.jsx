@@ -1,19 +1,28 @@
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import PostTags from './PostTags';
 import styles from '../styles/ViewBlogEntries.module.css';
+import { useAuth } from '../context/AuthContext'; 
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const PostCard = ({ 
   post, 
-  isAdmin, 
   handleViewClick, 
   handleAdminDelete, 
   selectedTags, 
   setSelectedTags 
 }) => {
+  const navigate = useNavigate();
+
+  const { user, isAdmin } = useAuth(); 
+
+
+  const isAuthor = user && post.username === user.username;
+  const canEditOrDelete = isAdmin || isAuthor;
+
   return (
     <div key={post.id} className={styles.postCard}>
       <div
@@ -55,13 +64,16 @@ const PostCard = ({
         )}
       </div>
 
-      {isAdmin && (
+      {canEditOrDelete && (
         <div className={styles.adminActions}>
           <button
             className={styles.editButton}
             onClick={(e) => {
               e.stopPropagation();
-              window.location.href = `/admin/editPost/${post.id}`;
+              const editPath = isAdmin 
+                ? `/admin/editPost/${post.id}` 
+                : `/blogs/edit/${post.id}`;
+              navigate(editPath);
             }}
           >
             <span><FontAwesomeIcon icon={faEdit} /> Edit</span>
@@ -92,7 +104,6 @@ PostCard.propTypes = {
     likes: PropTypes.array,
     tags: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
-  isAdmin: PropTypes.bool,
   handleViewClick: PropTypes.func.isRequired,
   handleAdminDelete: PropTypes.func,
   selectedTags: PropTypes.arrayOf(PropTypes.string),
@@ -100,7 +111,6 @@ PostCard.propTypes = {
 };
 
 PostCard.defaultProps = {
-  isAdmin: false,
   handleAdminDelete: () => {},
   selectedTags: [],
 };

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axiosConfig';
+import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LoginForm.module.css';
 import '../styles/signUp.module.css';
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  
+  const { login } = useAuth();
+
   const [values, setValues] = useState({
     username: '',
     password: '',
@@ -22,21 +25,15 @@ const LoginForm = () => {
     setIsLoading(true);
     setError('');
 
-    try {
-      const response = await axiosInstance.post('/login', values, {
-        withCredentials: true,
-      });
-      if (response.data.Login) {
-        navigate('/account');
-        window.location.reload();
-      } else {
-        setError(response.data.Message || 'Invalid username or password');
-      }
-    } catch (error) {
-      setError('An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
+    const result = await login(values);
+
+    if (result.success) {
+      navigate('/account');
+    } else {
+      setError(result.message || 'Invalid username or password');
     }
+    
+    setIsLoading(false);
   };
 
   return (

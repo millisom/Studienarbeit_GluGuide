@@ -5,8 +5,10 @@ import styles from '../styles/SearchFoodItem.module.css';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../context/AuthContext';
 
 const SearchFoodItem = ({ onAdd }) => {
+  const { user, loading: authLoading } = useAuth(); 
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
@@ -15,10 +17,12 @@ const SearchFoodItem = ({ onAdd }) => {
 
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (skipSuggestions || query.length < 2) {
+
+      if (skipSuggestions || query.length < 2 || !user) {
         setSuggestions([]);
         return;
       }
+
       setError('');
       try {
         const response = await getFoodItemByName(query.toLowerCase());
@@ -30,7 +34,7 @@ const SearchFoodItem = ({ onAdd }) => {
           return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
         });
 
-        if (sorted.length === 0 && query.length >=2) {
+        if (sorted.length === 0) {
             setError('No food items found matching your query.');
         }
         setSuggestions(sorted);
@@ -42,7 +46,7 @@ const SearchFoodItem = ({ onAdd }) => {
 
     const debounce = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounce);
-  }, [query, skipSuggestions]);
+  }, [query, skipSuggestions, user]);
 
   const handleSuggestionClick = (food) => {
     setSelectedFood(food);
@@ -62,8 +66,9 @@ const SearchFoodItem = ({ onAdd }) => {
       <div className={styles.searchSection}>
         <input
           type="text"
-          placeholder="Search food item..."
+          placeholder={user ? "Search food item..." : "Log in to search food..."}
           value={query}
+          disabled={!user || authLoading} 
           onChange={(e) => {
             setQuery(e.target.value);
             setSkipSuggestions(false);
@@ -85,6 +90,7 @@ const SearchFoodItem = ({ onAdd }) => {
           </ul>
         )}
       </div>
+      
       {error && !selectedFood && <p className={styles.searchError}>{error}</p>}
 
       {selectedFood && (
