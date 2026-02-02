@@ -23,24 +23,20 @@ const ViewBlogEntries = () => {
 
   const navigate = useNavigate();
 
-
   const handleViewClick = (id) => navigate(`/blogs/view/${id}`);
-  
+
   const handleAdminDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this post?")) {
-        try {
-            await axiosInstance.delete(`/deletePost/${id}`, { withCredentials: true });
-            alert('Post deleted.');
-            
-  
-            if (refreshPosts) {
-                refreshPosts(); 
-            } else {
-                window.location.reload(); 
-            }
-        } catch (error) {
-            alert('Failed to delete.');
+      try {
+        await axiosInstance.delete(`/deletePost/${id}`, { withCredentials: true });
+        
+        if (refreshPosts) {
+          refreshPosts(); 
         }
+      } catch (error) {
+        console.error('Deletion failed:', error);
+        alert('Failed to delete the post. Please try again.');
+      }
     }
   };
 

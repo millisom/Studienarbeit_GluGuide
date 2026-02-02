@@ -6,7 +6,6 @@ async logGlucose(req, res) {
         const userId = req.session?.userId;
         const { date, time, glucoseLevel } = req.body;
     
-        // Session-Check (könnte man auch in eine Auth-Middleware auslagern
         if (!userId) {
             return res.status(400).json({ error: 'User ID is required (Session).' });
         }
@@ -41,7 +40,7 @@ async logGlucose(req, res) {
     },
 
     async getFilteredGlucoseLogs(req, res) {
-        console.log('Request reached the controller'); // Debug log at the start
+        console.log('Request reached the controller'); 
         const { userId } = req.params;
         const { filter } = req.query;
     
@@ -54,7 +53,7 @@ async logGlucose(req, res) {
     
         try {
             const logs = await Log.getLogsByFilter(userId, filter);
-            console.log('Controller: Logs returned from model:', logs); // Log the result from the model
+            console.log('Controller: Logs returned from model:', logs); 
     
             if (logs.length === 0) {
                 return res.status(404).json({ message: 'No logs found for the specified filter' });
@@ -71,7 +70,7 @@ async logGlucose(req, res) {
 
     async getGlucoseLogsByTimePeriod(req, res) {
         const { userId } = req.params;
-        const { timePeriod } = req.query; // Expect 'timePeriod' to be passed as a query parameter
+        const { timePeriod } = req.query; 
 
         console.log('Controller: User ID:', userId);
         console.log('Controller: Time Period:', timePeriod);
@@ -87,7 +86,7 @@ async logGlucose(req, res) {
         }
 
         try {
-            const logs = await Log.getLogsByTimePeriod(userId, timePeriod); // Call the new model function
+            const logs = await Log.getLogsByTimePeriod(userId, timePeriod); 
 
             if (logs.length === 0) {
                 return res.status(404).json({ message: 'No logs found for the specified time period' });
@@ -123,36 +122,39 @@ async logGlucose(req, res) {
     async updateGlucoseLog(req, res) {
         const { id } = req.params;
         const { date, time, glucoseLevel } = req.body;
+        const userId = req.session.userId; 
+
+        if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
         try {
-            const updatedLog = await Log.updateLog(id, date, time, glucoseLevel);
+            const updatedLog = await Log.updateLog(id, userId, date, time, glucoseLevel);
 
             if (!updatedLog) {
-                return res.status(404).json({ message: 'Log not found' });
+                return res.status(403).json({ message: 'Forbidden: Log not found or unauthorized' });
             }
 
             return res.status(200).json({ success: true, log: updatedLog });
         } catch (error) {
             console.error('Error updating glucose log:', error);
-            return res.status(500).json({ error: 'Failed to update glucose log' });
+            return res.status(400).json({ error: 'Failed to update: Invalid data' });
         }
     },
 
-
     async deleteGlucoseLog(req, res) {
         const { id } = req.params;
+        const userId = req.session.userId;
 
         try {
-            const deleted = await Log.deleteLog(id);
+            const deleted = await Log.deleteLog(id, userId);
 
             if (!deleted) {
-                return res.status(404).json({ message: 'Log not found' });
+                return res.status(403).json({ message: 'Forbidden: Log not found or unauthorized' });
             }
 
             return res.status(200).json({ message: 'Log deleted successfully' });
         } catch (error) {
             console.error('Error deleting glucose log:', error);
-            return res.status(500).json({ error: 'Failed to delete glucose log' });
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
 };

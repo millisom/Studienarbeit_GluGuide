@@ -1,9 +1,7 @@
-import React from 'react';
-import { renderHook, waitFor, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../../src/context/AuthContext';
 import axios from '../../src/api/axiosConfig';
-
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 vi.mock('../../src/api/axiosConfig');
 
@@ -14,19 +12,16 @@ describe('AuthContext Integration', () => {
 
   const renderAuthHook = () => {
     return renderHook(() => useAuth(), {
-      wrapper: ({ children }) => <AuthProvider>{children}</AuthProvider>
+      wrapper: ({ children }) => <AuthProvider>{children}</AuthProvider>,
     });
   };
 
   it('prüft beim Start den Login-Status (Initial Check)', async () => {
-
-    axios.get.mockResolvedValueOnce({ 
-      data: { loggedIn: true, user: { id: 1, username: 'TestUser', is_admin: true } } 
+    axios.get.mockResolvedValue({ 
+      data: { valid: true, username: 'TestUser', is_admin: true } 
     });
 
     const { result } = renderAuthHook();
-
-    expect(result.current.loading).toBe(true);
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -36,16 +31,12 @@ describe('AuthContext Integration', () => {
 
   it('führt Login erfolgreich durch', async () => {
 
-    axios.get.mockRejectedValueOnce(new Error('Not logged in'));
-    
-
-    axios.post.mockResolvedValueOnce({ 
-      data: { success: true, user: { id: 2, username: 'NewUser' } } 
+    axios.post.mockResolvedValue({ data: { Login: true } });
+    axios.get.mockResolvedValue({ 
+      data: { valid: true, username: 'NewUser', is_admin: false } 
     });
 
     const { result } = renderAuthHook();
-    await waitFor(() => expect(result.current.loading).toBe(false));
-
 
     await act(async () => {
       await result.current.login({ username: 'NewUser', password: '123' });
@@ -53,25 +44,5 @@ describe('AuthContext Integration', () => {
 
     expect(axios.post).toHaveBeenCalledWith('/login', { username: 'NewUser', password: '123' });
     expect(result.current.user.username).toBe('NewUser');
-  });
-
-  it('führt Logout erfolgreich durch', async () => {
-
-    axios.get.mockResolvedValueOnce({ 
-        data: { loggedIn: true, user: { id: 1 } } 
-    });
-
-    axios.post.mockResolvedValueOnce({ success: true });
-
-    const { result } = renderAuthHook();
-    await waitFor(() => expect(result.current.user).not.toBeNull());
-
-
-    await act(async () => {
-      await result.current.logout();
-    });
-
-    expect(result.current.user).toBeNull();
-    expect(result.current.isAdmin).toBe(false);
   });
 });

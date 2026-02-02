@@ -116,9 +116,24 @@ const LogModel = {
         }
     },
 
-    updateLog: async (id, date, time, glucoseLevel) => {
-        const query = `UPDATE glucose_logs SET date = $1, time = $2, glucose_level = $3 WHERE id = $4 RETURNING *`;
-        const values = [date, time, glucoseLevel, id];
+    updateLog: async (id, userId, date, time, glucoseLevel) => {
+        const query = `
+            UPDATE glucose_logs 
+            SET date = COALESCE($3, date), 
+                time = COALESCE($4, time), 
+                glucose_level = COALESCE($5, glucose_level) 
+            WHERE id = $1 AND user_id = $2 
+            RETURNING *`;
+    
+
+        const values = [
+            id, 
+            userId, 
+            date || null, 
+            time || null, 
+            glucoseLevel || null
+        ];
+
         try {
             const result = await db.query(query, values);
             return result.rows[0];
@@ -128,11 +143,11 @@ const LogModel = {
         }
     },
 
-    deleteLog: async (id) => {
-        const query = `DELETE FROM glucose_logs WHERE id = $1`;
+    deleteLog: async (id, userId) => {
+        const query = `DELETE FROM glucose_logs WHERE id = $1 AND user_id = $2`;
         try {
-            await db.query(query, [id]);
-            return true;
+            const result = await db.query(query, [id, userId]);
+            return result.rowCount > 0; 
         } catch (err) {
             console.error('Error deleting log:', err);
             throw err;

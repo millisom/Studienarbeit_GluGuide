@@ -8,17 +8,27 @@ export const AuthProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Hilfsfunktion zum Setzen der User-Daten (DRY - Don't Repeat Yourself)
+  const handleAuthSuccess = (data) => {
+    const userData = {
+      id: data.userId || data.id, // WICHTIG: Die ID muss hier mit rein!
+      username: data.username,
+      is_admin: data.is_admin
+    };
+    setUser(userData);
+    setIsAdmin(data.is_admin || false);
+  };
+
   useEffect(() => {
     const checkStatus = async () => {
       try {
         const response = await axiosInstance.get('/status', { withCredentials: true });
 
         if (response.data.valid) {
-          setUser({
-            username: response.data.username,
-            is_admin: response.data.is_admin
-          });
-          setIsAdmin(response.data.is_admin || false);
+          handleAuthSuccess(response.data);
+        } else {
+          setUser(null);
+          setIsAdmin(false);
         }
       } catch (error) {
         setUser(null);
@@ -30,21 +40,13 @@ export const AuthProvider = ({ children }) => {
     checkStatus();
   }, []);
 
-
   const login = async (credentials) => {
     try {
       await axiosInstance.post('/login', credentials);
-
-
       const statusRes = await axiosInstance.get('/status');
 
       if (statusRes.data.valid) {
-        const userData = {
-          username: statusRes.data.username,
-          is_admin: statusRes.data.is_admin
-        };
-        setUser(userData);
-        setIsAdmin(statusRes.data.is_admin);
+        handleAuthSuccess(statusRes.data);
         return { success: true };
       }
       
@@ -56,7 +58,6 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-
 
   const logout = async () => {
     try {

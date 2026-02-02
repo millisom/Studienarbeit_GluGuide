@@ -82,11 +82,17 @@ const authController = {
     }
   },
 
-  async getStatus(req, res) {
-    if (req.session.username) {
+async getStatus(req, res) {
+    if (req.session.username && req.session.userId) { 
       const result = await pool.query('SELECT is_admin FROM users WHERE username = $1', [req.session.username]);
       const is_admin = result.rows[0]?.is_admin || false;
-      return res.json({ valid: true, username: req.session.username, is_admin });
+      
+      return res.json({ 
+        valid: true, 
+        username: req.session.username, 
+        userId: req.session.userId,
+        is_admin 
+      });
     } else {
       return res.json({ valid: false });
     }

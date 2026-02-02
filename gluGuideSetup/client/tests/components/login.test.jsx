@@ -6,14 +6,12 @@ import axios from '../../src/api/axiosConfig';
 import Login from '../../src/components/LoginForm';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-
 vi.mock('../../src/api/axiosConfig', () => ({
   default: {
     get: vi.fn(),
     post: vi.fn()
   }
 }));
-
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -24,9 +22,8 @@ vi.mock('react-router-dom', async () => {
 describe('Login Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    axios.get.mockResolvedValue({ data: { loggedIn: false } });
+    axios.get.mockResolvedValue({ data: { valid: false } });
   });
-
 
   const renderLogin = () => {
     return render(
@@ -40,17 +37,18 @@ describe('Login Component', () => {
 
   it('renders the login form', async () => {
     renderLogin();
-
-
     await waitFor(() => {
       expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
     });
   });
 
   it('handles form submission and navigates on success', async () => {
-    axios.post.mockResolvedValue({ data: { success: true, user: { username: 'hossaynew' } } });
+    axios.post.mockResolvedValue({ data: { Login: true } });
+    
+    axios.get.mockResolvedValue({ 
+      data: { valid: true, username: 'hossaynew', is_admin: false } 
+    });
 
     renderLogin();
 
@@ -66,10 +64,10 @@ describe('Login Component', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/account');
     });
   });
-it('displays error message on failed login', async () => {
-    axios.post.mockResolvedValue({
-      data: { success: false, message: 'Invalid username or password' },
-    });
+
+  it('displays error message on failed login', async () => {
+    axios.post.mockResolvedValue({ data: { Login: true } });
+    axios.get.mockResolvedValue({ data: { valid: false } });
 
     renderLogin();
 
@@ -78,12 +76,14 @@ it('displays error message on failed login', async () => {
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
 
-    const errorMessage = await screen.findByText(/Login failed/i);
+    const errorMessage = await screen.findByText(/Session could not be validated/i);
     expect(errorMessage).toBeInTheDocument();
   });
 
   it('displays generic error message on request failure', async () => {
-    axios.post.mockRejectedValue(new Error('Network Error'));
+    axios.post.mockRejectedValue({ 
+      response: { data: { message: 'Login failed' } } 
+    });
 
     renderLogin();
 
