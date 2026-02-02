@@ -5,8 +5,10 @@ import styles from '../styles/RecipeSelector.module.css';
 import RecipeItem from './RecipeItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../context/AuthContext';
 
 const RecipeSelector = ({ onSelect }) => {
+  const { user, loading: authLoading } = useAuth();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -15,7 +17,7 @@ const RecipeSelector = ({ onSelect }) => {
 
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (skipSuggestions || query.length < 2) {
+      if (skipSuggestions || query.length < 2 || authLoading) {
         setSuggestions([]);
         return;
       }
@@ -37,15 +39,21 @@ const RecipeSelector = ({ onSelect }) => {
         setSuggestions(sorted);
       } catch (err) {
         console.error('Failed to load recipe suggestions', err);
-        setError('Could not load suggestions');
+        if (user) setError('Could not load suggestions');
       }
     };
 
     const debounce = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounce);
-  }, [query, skipSuggestions]);
+  }, [query, skipSuggestions, authLoading, user]);
 
   const handleSelect = async (recipe) => {
+    if (!user) {
+        setError('Please log in to view recipe details.');
+        setSuggestions([]);
+        return;
+    }
+
     setSkipSuggestions(true);
     setQuery(recipe.name);
     setSuggestions([]);
@@ -55,6 +63,7 @@ const RecipeSelector = ({ onSelect }) => {
     } catch (err) {
       console.error('Failed to load recipe details', err);
       setSelectedRecipe(null);
+      setError('Failed to load recipe details.');
     }
   };
 
@@ -69,8 +78,9 @@ const RecipeSelector = ({ onSelect }) => {
       <div className={styles.searchSection}>
         <input
           type="text"
-          placeholder="Search recipe..."
+          placeholder={user ? "Search recipe..." : "Log in to search recipes"}
           value={query}
+          disabled={!user && !authLoading}
           onChange={(e) => {
             setSkipSuggestions(false);
             setQuery(e.target.value);

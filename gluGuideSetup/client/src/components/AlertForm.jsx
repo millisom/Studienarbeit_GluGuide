@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertForm.module.css';
 
 const AlertForm = ({ fetchAlerts }) => {
+  const { user } = useAuth(); 
+
   const [reminderFrequency, setReminderFrequency] = useState('daily');
   const [reminderTime, setReminderTime] = useState('');
-  const [message, setMessage] = useState('');
+  
+
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!user) {
+        setError('You must be logged in to set alerts.');
+        return;
+    }
 
     try {
       const response = await axiosInstance.post('/alerts', {
@@ -18,17 +29,20 @@ const AlertForm = ({ fetchAlerts }) => {
         withCredentials: true,
       });
 
-      setMessage(response.data.message || 'Alert preferences saved!');
+      setSuccessMessage(response.data.message || 'Alert preferences saved!');
+      setError('');
+      
       setReminderFrequency('daily'); 
       setReminderTime(''); 
 
-  
       if (fetchAlerts) {
         fetchAlerts();
       }
-    } catch (error) {
-      console.error('Error setting alert preferences:', error);
-      setMessage('Failed to save alert preferences. Please try again.');
+
+    } catch (err) {
+      console.error('Error setting alert preferences:', err);
+      setError('Failed to save alert preferences. Please try again.');
+      setSuccessMessage(''); 
     }
   };
 
@@ -69,7 +83,9 @@ const AlertForm = ({ fetchAlerts }) => {
           Save Preferences
         </button>
       </form>
-      {message && <p className={styles.successMessage}>{message}</p>}
+
+      {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+      {error && <p className={styles.errorMessage || styles.error}>{error}</p>} 
     </div>
   );
 };

@@ -13,7 +13,7 @@ const FoodItem = ({ food, onAdd }) => {
         quantity_in_grams: qty,
       };
       onAdd(foodWithQuantity);
-      setQuantity(''); // clear input after add
+      setQuantity(''); 
     } else {
       alert('Please enter a valid quantity in grams.');
     }

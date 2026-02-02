@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { getMealById, deleteMeal } from '../api/mealApi';
 import styles from '../styles/MealCard.module.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAppleAlt,
@@ -17,9 +19,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const MealCard = ({ mealId }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [meal, setMeal] = useState(null);
-  const [status, setStatus] = useState('Loading meal details...');
-  const [deleted, setDeleted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const getMealIcon = (mealType) => {
     const type = mealType?.toLowerCase() || '';
@@ -32,15 +38,17 @@ const MealCard = ({ mealId }) => {
 
   useEffect(() => {
     const fetchMeal = async () => {
-      setStatus('Loading meal details...');
+      setLoading(true);
+      setError('');
       try {
         const data = await getMealById(mealId);
         setMeal(data);
-        setStatus('');
       } catch (err) {
         console.error('Failed to fetch meal:', err);
         setMeal(null);
-        setStatus('❌ Failed to load meal details. Please try again or check the meal ID.');
+        setError('Failed to load meal details. Please try again or check the meal ID.');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -50,41 +58,45 @@ const MealCard = ({ mealId }) => {
   }, [mealId]);
 
   const handleDelete = async () => {
+    if (!user) return;
+
     const confirmed = window.confirm(
       'Are you sure you want to permanently delete this meal? This action cannot be undone.'
     );
     if (!confirmed) return;
 
-    setStatus('Deleting meal...');
     try {
       await deleteMeal(mealId);
-      setDeleted(true);
-      setStatus('✅ Meal deleted successfully! You will be redirected shortly.');
+      setSuccessMessage('✅ Meal deleted successfully! Redirecting...');
+      
+      setTimeout(() => {
+        navigate('/meals');
+      }, 1500);
     } catch (error) {
       console.error('Error deleting meal:', error);
-      setStatus('❌ Failed to delete meal. Please try again.');
+      setError('Failed to delete meal. Please try again.');
     }
   };
 
-  if (deleted) {
+  if (loading) {
+    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>Loading meal details...</div>;
+  }
+
+
+  if (successMessage) {
     return (
       <div className={`${styles.statusMessage} ${styles.successMessage}`}>
-        {status}
+        {successMessage}
       </div>
     );
   }
   
-  if (!meal && status) {
-    const messageClass = status.startsWith('❌') ? styles.errorMessage : styles.loadingMessage;
+  if (error || !meal) {
     return (
-      <div className={`${styles.statusMessage} ${messageClass}`}>
-        {status}
+      <div className={`${styles.statusMessage} ${styles.errorMessage}`}>
+        {error || 'Meal not found.'}
       </div>
     );
-  }
-
-  if (!meal) {
-    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>Preparing meal details...</div>;
   }
 
   return (
@@ -165,15 +177,16 @@ const MealCard = ({ mealId }) => {
         </div>
       )}
 
-      <div className={styles.deleteButtonContainer}>
-        <button onClick={handleDelete} className={styles.deleteButton} disabled={status === 'Deleting meal...'}>
-          <FontAwesomeIcon icon={faTrashAlt} />
-          {status === 'Deleting meal...' ? 'Deleting...' : 'Delete Meal'}
-        </button>
-      </div>
+      {user && (
+        <div className={styles.deleteButtonContainer}>
+            <button onClick={handleDelete} className={styles.deleteButton}>
+            <FontAwesomeIcon icon={faTrashAlt} /> Delete Meal
+            </button>
+        </div>
+      )}
 
-      {status && !status.startsWith('✅') && !status.startsWith('Loading') && meal && (
-        <div className={`${styles.statusMessage} ${styles.errorMessage}`}>{status}</div>
+      {error && !loading && meal && (
+        <div className={`${styles.statusMessage} ${styles.errorMessage}`}>{error}</div>
       )} 
     </div>
   );

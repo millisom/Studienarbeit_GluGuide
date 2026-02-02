@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import SearchFoodItem from './SearchFoodItem';
 import IngredientList from './IngedientsList';
 import RecipeInstructionsInput from './RecipeInstructionsInput';
 import { createRecipe } from '../api/recipeApi';
 import styles from '../styles/LogMealPage.module.css';
+import { useAuth } from '../context/AuthContext';
 
 const RecipeDashboard = () => {
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [recipeName, setRecipeName] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [instructions, setInstructions] = useState([]);
   const [status, setStatus] = useState('');
-  const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
 
   const addIngredient = (item) => {
     setIngredients((prev) => [...prev, item]);
@@ -26,13 +31,22 @@ const RecipeDashboard = () => {
   };
 
   const handleSubmit = async () => {
+
+    if (!user) {
+        setStatus('You must be logged in to save a recipe.');
+        return;
+    }
+
     if (!recipeName.trim()) return setStatus('Please enter a recipe name');
     if (ingredients.length === 0) return setStatus('Please add at least one ingredient');
     if (instructions.length === 0) return setStatus('Please add instructions');
 
+    setIsSaving(true);
+    setStatus('');
+
     try {
       const payload = {
-        user_id: 1, // Ideally, fetch this from session or context
+        user_id: user.id || user.userId, 
         name: recipeName,
         ingredients,
         instructions,
@@ -45,14 +59,29 @@ const RecipeDashboard = () => {
       setIngredients([]);
       setInstructions([]);
 
+  
       if (newRecipe?.id) {
-        navigate(`/recipes/${newRecipe.id}`);
+        setTimeout(() => {
+            navigate(`/recipes/${newRecipe.id}`);
+        }, 1000);
       }
     } catch (err) {
       console.error('Save error:', err.response?.data || err.message);
       setStatus('Failed to create recipe');
+    } finally {
+        setIsSaving(false);
     }
   };
+
+
+  if (!user) {
+    return (
+        <div className={styles.container} style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h2>Create Your Recipe</h2>
+            <p>Please <Link to="/login" style={{ color: 'blue' }}>log in</Link> to create and save your own recipes.</p>
+        </div>
+    );
+  }
 
   return (
     <>
@@ -76,11 +105,19 @@ const RecipeDashboard = () => {
         setInstructions={updateInstructions}
       />
 
-      <button onClick={handleSubmit} className={styles.submitButton}>
-        Save Recipe
+      <button 
+        onClick={handleSubmit} 
+        className={styles.submitButton}
+        disabled={isSaving}
+      >
+        {isSaving ? 'Saving...' : 'Save Recipe'}
       </button>
 
-      {status && <p className={styles.status}>{status}</p>}
+      {status && (
+        <p className={status.startsWith('Failed') ? styles.errorMessage : styles.status}>
+            {status}
+        </p>
+      )}
     </>
   );
 };

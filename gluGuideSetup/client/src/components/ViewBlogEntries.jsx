@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import TagFilter from './TagFilter';
 import PostCard from './PostCard';
 import styles from '../styles/ViewBlogEntries.module.css';
 import { useBlogPosts } from '../hooks/useBlogPosts'; 
+import { useAuth } from '../context/AuthContext';
 
 const ViewBlogEntries = () => {
+  const { isAdmin } = useAuth();
+  
   const { 
     posts, 
     loading, 
@@ -15,23 +17,12 @@ const ViewBlogEntries = () => {
     setSearchTerm, 
     selectedTags, 
     setSelectedTags, 
-    availableTags 
+    availableTags,
+    refreshPosts 
   } = useBlogPosts();
 
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const res = await axiosInstance.get('/status', { withCredentials: true });
-        setIsAdmin(res.data.is_admin);
-      } catch (error) {
-        console.error("Error checking admin status:", error);
-      }
-    };
-    checkAdmin();
-  }, []);
 
   const handleViewClick = (id) => navigate(`/blogs/view/${id}`);
   
@@ -40,14 +31,20 @@ const ViewBlogEntries = () => {
         try {
             await axiosInstance.delete(`/deletePost/${id}`, { withCredentials: true });
             alert('Post deleted.');
-            window.location.reload(); 
+            
+  
+            if (refreshPosts) {
+                refreshPosts(); 
+            } else {
+                window.location.reload(); 
+            }
         } catch (error) {
             alert('Failed to delete.');
         }
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className={styles.loadingMessage}>Loading blog entries...</p>;
 
   return (
     <div className={styles.viewBlogEntries}>

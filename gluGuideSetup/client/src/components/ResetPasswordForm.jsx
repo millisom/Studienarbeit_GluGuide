@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/LoginForm.module.css';
-
+import { useAuth } from '../context/AuthContext';
 
 const ResetPasswordForm = () => {
-  const { token } = useParams(); // Retrieve the token from the URL
+  const { token } = useParams();
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
+
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/account');
+    }
+  }, [user, authLoading, navigate]);
 
   const handlePasswordReset = async (event) => {
     event.preventDefault();
@@ -18,6 +27,12 @@ const ResetPasswordForm = () => {
 
     if (newPassword !== confirmPassword) {
       setNotification({ message: 'Passwords do not match', type: 'error' });
+      return;
+    }
+
+
+    if (newPassword.length < 8) {
+      setNotification({ message: 'Password must be at least 8 characters long', type: 'error' });
       return;
     }
 
@@ -30,10 +45,10 @@ const ResetPasswordForm = () => {
 
       setNotification({ message: response.data.message, type: 'success' });
 
-      // Redirect to login after a short delay
+    
       setTimeout(() => {
         navigate('/login');
-      }, 2000);
+      }, 2500);
     } catch (error) {
       setNotification({
         message: error.response?.data?.message || 'Something went wrong. Please try again.',
@@ -43,6 +58,9 @@ const ResetPasswordForm = () => {
       setIsLoading(false);
     }
   };
+
+
+  if (authLoading) return null;
 
   return (
     <form onSubmit={handlePasswordReset} className={styles.formLogIn}>
@@ -75,7 +93,7 @@ const ResetPasswordForm = () => {
         </button>
       </div>
       {notification.message && (
-        <p className={styles.errorMessage} style={{ color: notification.type === 'error' ? 'red' : 'green' }}>
+        <p className={notification.type === 'error' ? styles.errorMessage : styles.successMessage}>
           {notification.message}
         </p>
       )}

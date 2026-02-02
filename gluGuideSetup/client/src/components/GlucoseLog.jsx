@@ -1,28 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '../api/axiosConfig';
+import React, { useState } from 'react';
 import { useGlucoseData } from '../hooks/useGlucoseData';
-import GlucoseChart from './GlucoseChart'; 
+import GlucoseChart from './GlucoseChart';
 import styles from '../styles/GlucoseLog.module.css';
+import { useAuth } from '../context/AuthContext'; 
 
 const GlucoseLog = () => {
-  const [userId, setUserId] = useState(null);
+
+  const { user } = useAuth();
   
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const response = await axiosInstance.get('/currentUser', { withCredentials: true });
-        setUserId(response.data.userId);
-      } catch { }
-    };
-    fetchUserId();
-  }, []);
+  const userId = user ? (user.id || user.userId) : null;
 
   const { 
     logs, error, successMessage, filter, setFilter, 
-    addLog, deleteLog, updateLog, setSuccessMessage 
+    addLog, deleteLog, updateLog 
   } = useGlucoseData(userId);
 
-
+ 
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [glucoseLevel, setGlucoseLevel] = useState('');
@@ -33,7 +26,10 @@ const GlucoseLog = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!userId) return;
+    if (!userId) {
+        alert("Please log in to track glucose.");
+        return;
+    }
     const success = await addLog({ date, time, glucoseLevel, userId });
     if (success) {
       setDate(''); setTime(''); setGlucoseLevel('');
@@ -59,6 +55,10 @@ const GlucoseLog = () => {
 
   const displayedLogs = isExpanded ? logs : logs.slice(-3);
   const filterMap = { '24hours': '24 hours', '1week': 'the past week', '3months': '3 months', 'all': 'all time' };
+
+  if (!user) {
+      return <div className={styles.glucoseLogContainer}><p>Please log in to view your Glucose Logs.</p></div>;
+  }
 
   return (
     <div className={styles.glucoseLogContainer}>

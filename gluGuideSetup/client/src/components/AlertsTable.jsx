@@ -1,43 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertsTable.module.css';
 
 const AlertsTable = () => {
+  const { user } = useAuth();
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState('');
-  const [userId, setUserId] = useState(null);
 
-  // New state for editing alerts
+
   const [editingAlertId, setEditingAlertId] = useState(null);
   const [editedFrequency, setEditedFrequency] = useState('');
   const [editedTime, setEditedTime] = useState('');
 
+ 
   useEffect(() => {
-    const fetchUserAndAlerts = async () => {
-      try {
-        // Fetch userId first
-        const userResponse = await axiosInstance.get('/currentUser', { withCredentials: true });
-        const userId = userResponse.data.userId;
-        setUserId(userId);
+    const fetchAlerts = async () => {
+      if (!user) return;
 
-        // Then fetch alerts for that user
+      try {
+        const userId = user.id || user.userId;
+        
         const alertsResponse = await axiosInstance.get(`/alerts/${userId}`, {
           withCredentials: true,
         });
         console.log('Fetched Alerts:', alertsResponse.data);
         setAlerts(alertsResponse.data);
       } catch (err) {
-        console.error('Error fetching user or alerts:', err);
+        console.error('Error fetching alerts:', err);
         setError('Failed to fetch alerts. Please try again.');
       }
     };
 
-    fetchUserAndAlerts();
-  }, []);
+    fetchAlerts();
+  }, [user]); 
 
-  // Refresh alerts from the backend
   const refreshAlerts = async () => {
+    if (!user) return;
     try {
+      const userId = user.id || user.userId;
       const alertsResponse = await axiosInstance.get(`/alerts/${userId}`, { withCredentials: true });
       setAlerts(alertsResponse.data);
     } catch (err) {
@@ -45,25 +46,21 @@ const AlertsTable = () => {
     }
   };
 
-  // Called when the "Edit" button is clicked
   const handleEditClick = (alert) => {
     setEditingAlertId(alert.alert_id);
-    setEditedFrequency(alert.reminder_frequency); // prefill the current frequency
-    setEditedTime(alert.reminder_time); // prefill the current time
+    setEditedFrequency(alert.reminder_frequency);
+    setEditedTime(alert.reminder_time);
   };
 
-  // Reset editing state when canceling the edit
   const handleCancelEdit = () => {
     setEditingAlertId(null);
     setEditedFrequency('');
     setEditedTime('');
   };
 
-  // Save the new values to the backend
   const handleSaveEdit = async (alert) => {
     try {
-      // Use the alert's stored email (passed along by your model) when updating
-      const email = alert.email;
+      const email = alert.email; 
       await axiosInstance.put(
         `/alerts/${alert.alert_id}`,
         { email, reminderFrequency: editedFrequency, reminderTime: editedTime },
@@ -79,7 +76,6 @@ const AlertsTable = () => {
     }
   };
 
-  // Delete alert from the backend
   const handleDeleteAlert = async (alertId) => {
     if (!window.confirm('Are you sure you want to delete this alert?')) return;
     try {
@@ -136,9 +132,6 @@ const AlertsTable = () => {
                         <button onClick={handleCancelEdit} className={styles.cancelButton}>
                           Cancel
                         </button>
-                        <button onClick={() => handleDeleteAlert(alert.alert_id)} className={styles.deleteButton}>
-                          Delete
-                        </button>
                       </td>
                     </>
                   ) : (
@@ -149,6 +142,13 @@ const AlertsTable = () => {
                       <td>
                         <button onClick={() => handleEditClick(alert)} className={styles.editButton}>
                           Edit
+                        </button>
+                        <button 
+                            onClick={() => handleDeleteAlert(alert.alert_id)} 
+                            className={styles.deleteButton}
+                            style={{ marginLeft: '8px' }}
+                        >
+                          Delete
                         </button>
                       </td>
                     </>

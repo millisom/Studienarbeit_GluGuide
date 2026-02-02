@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getAllMealsForUser } from '../api/mealApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styles from '../styles/MealsCards.module.css';
+import { useAuth } from '../context/AuthContext'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAppleAlt,
@@ -9,13 +10,17 @@ import {
   faBreadSlice,
   faLeaf,
   faMugHot,
-  faQuestionCircle
+  faQuestionCircle,
+  faUtensils
 } from '@fortawesome/free-solid-svg-icons';
 
 const MealsCards = () => {
-  const [meals, setMeals] = useState([]);
-  const [status, setStatus] = useState('Loading meals...');
+  const { user } = useAuth(); 
   const navigate = useNavigate();
+  
+  const [meals, setMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const getMealIcon = (mealType) => {
     const type = mealType?.toLowerCase() || '';
@@ -28,36 +33,68 @@ const MealsCards = () => {
 
   useEffect(() => {
     const fetchMeals = async () => {
-      setStatus('Loading meals...');
+  
+      if (!user) {
+          setLoading(false);
+          return;
+      }
+
+      setLoading(true);
+      setError('');
       try {
         const data = await getAllMealsForUser();
         setMeals(data);
-        if (data.length === 0) {
-          setStatus('No meals found. Time to log your first one!');
-        } else {
-          setStatus('');
-        }
       } catch (error) {
         console.error('Failed to fetch meals:', error);
-        setStatus('❌ Failed to load meals. Please try again later.');
+        setError('Failed to load meals. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMeals();
-  }, []);
+  }, [user]); 
 
-  if (status && meals.length === 0) {
-    let statusStyle = styles.statusMessageContainer;
-    if (status.startsWith('No meals')) {
-      statusStyle = `${styles.statusMessageContainer} ${styles.noMealsMessage}`;
-    } else if (status.startsWith('❌')) {
-      statusStyle = `${styles.statusMessageContainer} ${styles.errorMessage}`;
-    }
+
+  if (!user) {
+      return (
+        <div className={styles.statusMessageContainer}>
+            <FontAwesomeIcon icon={faUtensils} size="3x" style={{ marginBottom: '15px', color: '#ccc'}} />
+            <h2>Please Log In</h2>
+            <p>You need to be logged in to view your meal history.</p>
+            <Link to="/login" style={{ marginTop: '10px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 'bold' }}>
+                Go to Login
+            </Link>
+        </div>
+      );
+  }
+
+
+  if (loading) {
     return (
-      <div className={statusStyle}>
-        {status.startsWith('No meals') && <FontAwesomeIcon icon={faLeaf} size="3x" style={{ marginBottom: '15px'}} />}
-        <h2>{status.startsWith('No meals') ? 'Nothing Here Yet' : 'Oops!'}</h2>
-        <p>{status}</p>
+        <div className={styles.statusMessageContainer}>
+            <h2>Loading meals...</h2>
+        </div>
+    );
+  }
+
+
+  if (error) {
+    return (
+      <div className={`${styles.statusMessageContainer} ${styles.errorMessage}`}>
+        <h2>Oops!</h2>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+
+  if (meals.length === 0) {
+    return (
+      <div className={`${styles.statusMessageContainer} ${styles.noMealsMessage}`}>
+        <FontAwesomeIcon icon={faLeaf} size="3x" style={{ marginBottom: '15px'}} />
+        <h2>Nothing Here Yet</h2>
+        <p>No meals found. Time to log your first one!</p>
       </div>
     );
   }

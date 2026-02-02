@@ -1,43 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import axiosInstance from '../api/axiosConfig';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import styles from '../styles/Comments.module.css';
 import { Link } from 'react-router-dom';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { useAuth } from '../context/AuthContext'; 
 
 const CreateComment = ({ postId, onCommentCreated, hasExistingComments }) => {
+  const { user, loading } = useAuth(); 
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSessionStatus = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/status`, { credentials: 'include' });
-        if (response.ok) {
-            const data = await response.json();
-            setIsLoggedIn(data.valid);
-        } else {
-            console.error("Error fetching session status, response not OK:", response.status);
-            setIsLoggedIn(false);
-        }
-      } catch (err) {
-        console.error("Error fetching session status:", err);
-        setIsLoggedIn(false);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-    fetchSessionStatus();
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+
+    if (!user) return;
+
     const plainText = content.replace(/<[^>]+>/g, '').trim();
     if (!plainText) {
       setError("Comment cannot be empty");
@@ -62,11 +44,13 @@ const CreateComment = ({ postId, onCommentCreated, hasExistingComments }) => {
     }
   };
 
-  if (authLoading) {
+
+  if (loading) {
     return <p className={styles.loadingMessage}>Loading commenting section...</p>;
   }
 
-  if (!isLoggedIn) {
+
+  if (!user) {
     return (
       <div className={styles.loggedOutCommentPrompt}>
         {hasExistingComments ? (
