@@ -252,6 +252,9 @@ const GlucoseLog = () => {
                         <button onClick={() => handleEditClick(log)} className={styles.editButton}>
                           Edit
                         </button>
+                        <button onClick={() => handleDeleteLog(log.id)} className={styles.deleteButton} style={{ marginLeft: '10px' }}>
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   )
