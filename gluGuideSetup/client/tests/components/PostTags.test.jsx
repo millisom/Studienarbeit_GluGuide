@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PostTags from '../../src/components/PostTags';
 
-// ✅ Mock CSS module with virtual true
+
 vi.mock('../../src/styles/ViewBlogEntries.module.css', () => ({
   default: {
     tagsContainer: 'tagsContainer',
@@ -47,11 +47,10 @@ describe('PostTags Component', () => {
     render(<PostTags tags={defaultTags} selectedTags={[]} setSelectedTags={setSelectedTags} />);
   
     const tagButton = screen.getByText('javascript');
-  
-    // Create real event
+
     const event = new MouseEvent('click', { bubbles: true, cancelable: true });
   
-    // Patch in spy
+
     Object.defineProperty(event, 'stopPropagation', {
       value: stopPropagation,
       writable: true

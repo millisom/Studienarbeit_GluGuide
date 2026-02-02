@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TagFilter from '../../src/components/TagFilter';
 
-// ✅ Mock react-select
+
 vi.mock('react-select', () => ({
   default: ({ onChange, value = [], options = [], placeholder, isMulti, classNamePrefix }) => (
     <div data-testid="mock-select" className={classNamePrefix ? `${classNamePrefix}-container` : ''}>
@@ -36,7 +36,7 @@ vi.mock('react-select', () => ({
   )
 }));
 
-// ✅ Mock FontAwesomeIcon
+
 vi.mock('@fortawesome/react-fontawesome', () => ({
   FontAwesomeIcon: ({ icon, size }) => {
     const name = typeof icon === 'object' && icon.iconName ? icon.iconName : 'unknown';
@@ -48,7 +48,7 @@ vi.mock('@fortawesome/free-solid-svg-icons', () => ({
   faTimes: { iconName: 'times' }
 }));
 
-// ✅ Mock CSS module
+
 vi.mock('../../src/styles/ViewBlogEntries.module.css', () => ({
   default: {
     tagFilterSection: 'tagFilterSection',
