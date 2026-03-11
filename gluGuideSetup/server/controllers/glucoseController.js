@@ -114,28 +114,35 @@ const logController = {
         }
     },
 
-    async updateGlucoseLog(req, res) {
-        const logId = parseInt(req.params.id, 10);
-        const userId = req.session.userId;
-        const { date, time, glucoseLevel } = req.body;
+async updateGlucoseLog(req, res) {
+    const logId = parseInt(req.params.id, 10);
+    const userId = req.session.userId;
 
-        if (isNaN(logId) || !userId) {
-            return res.status(400).json({ error: 'Invalid ID or Session' });
+    console.log("DEBUG: logId:", logId, "userId:", userId, "body:", req.body);
+
+    if (isNaN(logId)) {
+        return res.status(400).json({ error: 'Invalid Log ID format' });
+    }
+    if (!userId) {
+        return res.status(401).json({ error: 'Session expired or User not logged in' });
+    }
+
+
+    const { date, time, glucoseLevel } = req.body;
+
+    try {
+        const updatedLog = await Log.updateLog(logId, userId, date, time, glucoseLevel);
+
+        if (!updatedLog) {
+            return res.status(403).json({ message: 'Log not found or unauthorized' });
         }
 
-        try {
-            const updatedLog = await Log.updateLog(logId, userId, date, time, glucoseLevel);
-
-            if (!updatedLog) {
-                return res.status(403).json({ message: 'Log not found or unauthorized' });
-            }
-
-            return res.status(200).json({ success: true, log: updatedLog });
-        } catch (error) {
-            console.error('Update Controller Error:', error.message);
-            return res.status(400).json({ error: 'Update failed: ' + error.message });
-        }
-    },
+        return res.status(200).json({ success: true, log: updatedLog });
+    } catch (error) {
+        console.error('Update Controller Error:', error.message);
+        return res.status(500).json({ error: 'Internal server error during update' });
+    }
+},
 
     async deleteGlucoseLog(req, res) {
         const { id } = req.params;

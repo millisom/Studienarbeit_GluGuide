@@ -47,13 +47,20 @@ const GlucoseLog = () => {
     if (success) setFormData({ ...formData, level: '' });
   };
 
-  const handleSaveEdit = async (logId) => {
-    const success = await updateLog(logId, { glucoseLevel: editedLevel });
-    if (success) {
-      setEditingLogId(null);
-      setEditedLevel('');
-    }
-  };
+ const handleSaveEdit = async (logId) => {
+  const currentLog = logs.find(l => l.id === logId);
+
+  const success = await updateLog(logId, { 
+    glucoseLevel: parseFloat(editedLevel),
+    date: currentLog.date, 
+    time: currentLog.time 
+  });
+
+  if (success) {
+    setEditingLogId(null);
+    setEditedLevel('');
+  }
+};
 
 
   const handleDeleteLog = async (logId) => {
