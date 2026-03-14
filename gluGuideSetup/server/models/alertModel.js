@@ -46,8 +46,8 @@ const Alert = {
   },
 
 
-  async getAlertsByUserId(userId) {
-    const query = 'SELECT * FROM alerts WHERE user_id = $1';
+async getAlertsByUserId(userId) {
+    const query = 'SELECT * FROM alerts WHERE user_id = $1 ORDER BY created_at ASC';
     const values = [userId];
     try {
       const result = await pool.query(query, values);

@@ -7,7 +7,7 @@ const createAlertReminderMessage = () => ({
   message: 'Hi! Just a friendly reminder to log your sugar levels today.',
 });
 
-// Internal helper to send reminder emails without response dependency
+
 async function sendReminderEmailsInternal() {
   try {
     const alerts = await Alert.getAlertsDueForSending();
@@ -26,7 +26,7 @@ async function sendReminderEmailsInternal() {
     console.log('Reminder emails sent successfully');
   } catch (error) {
     console.error('Error sending reminder emails:', error.message);
-    throw error; // Rethrow so caller can handle it if needed.
+    throw error; 
   }
 }
 

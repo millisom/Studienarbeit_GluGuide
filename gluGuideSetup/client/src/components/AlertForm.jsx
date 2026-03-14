@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertForm.module.css';
@@ -9,9 +9,18 @@ const AlertForm = ({ fetchAlerts }) => {
   const [reminderFrequency, setReminderFrequency] = useState('daily');
   const [reminderTime, setReminderTime] = useState('');
   
-
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 10000);
+
+      return () => clearTimeout(timer); 
+    }
+  }, [successMessage]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

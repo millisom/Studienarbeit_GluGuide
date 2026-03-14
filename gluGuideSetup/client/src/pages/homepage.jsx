@@ -68,7 +68,6 @@ const Homepage = () => {
         navigate(`/blogs/view/${postId}`);
     };
 
-    // New handler for tag clicks on the homepage
     const handleHomepageTagClick = (tag) => {
         navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
     };
@@ -94,7 +93,7 @@ const Homepage = () => {
                     <GlucoseLog />
                 </div>
 
-                {/* New combined container for Alerts */}
+
                 <div className={styles.alertsCombinedSection}>
                     <h2 className={styles.sectionTitle}>Manage Your Alerts</h2>
                     <div className={styles.alertsLayoutContainer}>

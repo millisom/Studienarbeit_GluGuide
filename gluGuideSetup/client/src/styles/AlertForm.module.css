@@ -3,56 +3,67 @@
   flex-direction: column;
   align-items: center;
   padding: 24px;
-  max-width: 400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 280px; 
   background-color: var(--color-text-white);
   border: 8px solid var(--color-primary);
   border-radius: 8px;
   box-shadow: var(--color-shadow-card-hover);
+  box-sizing: border-box;
+}
+
+.alertFormContainer form {
+  width: 100%;
+}
+
+.alertFormTitle {
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-align: center;
+  font-family: inherit;
 }
 
 .alertFormField {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 16px;
   width: 100%;
 }
 
 .alertFormLabel {
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-text-dark);
+  font-family: inherit;
 }
 
-.alertFormInput {
-  border-radius: 8px;
-  padding: 12px;
-  border: 2px solid var(--color-primary);
-  background-color: var(--color-text-white);
-  font-size: 1rem;
-  width: 100%;
-}
-
+.alertFormInput,
 .alertFormSelect {
   border-radius: 8px;
-  padding: 12px;
+  padding: 10px 12px;
   border: 2px solid var(--color-primary);
   background-color: var(--color-text-white);
   font-size: 1rem;
   width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .alertFormButton {
-  margin-top: 20px;
+  margin-top: 10px;
   border-radius: 8px;
   background-color: var(--color-primary);
   color: var(--color-text-white);
   font-size: 1rem;
-  padding: 12px 24px;
+  padding: 12px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  border: none;
+  width: 100%;
+  font-family: inherit;
 }
 
 .alertFormButton:hover {
@@ -64,10 +75,12 @@
   font-weight: bold;
   text-align: center;
   margin-top: 16px;
+  font-family: inherit;
 }
 
 .errorMessage {
   color: red;
   margin-top: 10px;
   text-align: center;
+  font-family: inherit;
 }

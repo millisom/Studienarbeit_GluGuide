@@ -33,7 +33,6 @@
     color: var(--color-primary);
 }
 
-/* Added styles for new sections */
 .loadingPage {
     display: flex;
     justify-content: center;
@@ -80,7 +79,7 @@
 }
 
 .featuresList li::before {
-    content: '\2713'; /* Checkmark character */
+    content: '\2713';
     color: var(--color-secondary);
     font-weight: bold;
     position: absolute;
@@ -120,7 +119,6 @@
     font-size: 1rem;
 }
 
-/* Card style similar to GlucoseLog for reuse */
 .homePageCard {
     background-color: var(--color-text-white);
     border: 8px solid var(--color-primary);
@@ -133,7 +131,6 @@
     flex-direction: column;
 }
 
-/* Styles for the combined Alerts section */
 .alertsCombinedSection {
     margin-top: 40px;
 }
@@ -141,20 +138,21 @@
 .alertsLayoutContainer {
     display: flex;
     gap: 24px;
-    align-items: stretch;
+    align-items: flex-start;
+    margin-top: 20px;
 }
 
 .alertFormWrapper {
     flex: 0 0 25%;
-    display: flex;
-}
-
-.alertFormWrapper > div {
-    width: 100%;
-    height: 100%;
+    min-width: 280px;
 }
 
 .alertsTableWrapper {
-    flex: 1 1 75%;
-    composes: homePageCard;
+    flex: 1;
+    background-color: var(--color-text-white);
+    border: 8px solid var(--color-primary);
+    border-radius: 8px;
+    padding: 24px; 
+    box-shadow: var(--color-shadow-card-hover);
+    box-sizing: border-box;
 }
