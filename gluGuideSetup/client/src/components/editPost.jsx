@@ -8,6 +8,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faXmark, faSave } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext';
 
+// Define your backend base URL here
+const BACKEND_URL = 'http://localhost:8080'; 
+
 const EditPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,7 +24,6 @@ const EditPost = () => {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
 
-
   useEffect(() => {
     const fetchPost = async () => {
       setIsLoading(true);
@@ -30,16 +32,17 @@ const EditPost = () => {
         const response = await axiosInstance.get(`/getPost/${id}`, {
           withCredentials: true,
         });
-        
 
         setTitle(response.data.title);
         setContent(response.data.content);
         setTagsInput(Array.isArray(response.data.tags) ? response.data.tags.join(', ') : '');
-        setImageUrl(
-          response.data.post_picture
-            ? `/uploads/${response.data.post_picture}`
-            : ""
-        );
+        
+        // FIX: Ensure the URL points to the backend server
+        if (response.data.post_picture) {
+          setImageUrl(`${BACKEND_URL}/uploads/${response.data.post_picture}`);
+        } else {
+          setImageUrl('');
+        }
       } catch (error) {
         setError('Failed to load post data. Please try again.');
         console.error('Error loading post:', error.response ? error.response.data : error.message);
@@ -60,7 +63,7 @@ const EditPost = () => {
         payload,
         { withCredentials: true }
       );
-      navigate(`/blogs/view/${id}`); 
+      navigate(`/blogs/view/${id}`);
     } catch (error) {
       setError('Failed to save changes. Please check your input.');
       console.error('Error saving post:', error.response ? error.response.data : error.message);
@@ -77,12 +80,14 @@ const EditPost = () => {
 
     const formData = new FormData();
     formData.append('postImage', image);
-  
+
     try {
       const response = await axiosInstance.post(`/uploadPostImage/${id}`, formData, {
         withCredentials: true,
       });
-      setImageUrl(response.data.imageUrl);
+      
+      // FIX: Prepend the backend URL to the returned path
+      setImageUrl(`${BACKEND_URL}${response.data.imageUrl}`);
       alert("Image uploaded successfully!");
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -104,7 +109,7 @@ const EditPost = () => {
   };
 
   if (!user && !isLoading) {
-      return <p className={styles.errorMessage}>Please log in to edit posts.</p>;
+    return <p className={styles.errorMessage}>Please log in to edit posts.</p>;
   }
 
   return (
@@ -123,14 +128,14 @@ const EditPost = () => {
             placeholder="Post title"
             className={styles.input}
           />
-  
+
           <label className={styles.label}>Content:</label>
           <ReactQuill
             value={content}
             onChange={setContent}
             className={styles.quillEditor}
           />
-  
+
           <label className={styles.label}>Tags (comma-separated):</label>
           <input
             type="text"
@@ -139,45 +144,50 @@ const EditPost = () => {
             placeholder="e.g., health, diet, tips"
             className={styles.input}
           />
-  
+
           <div className={styles.imageSection}>
             <label className={styles.label}>Current Post Image:</label>
             {imageUrl ? (
-                <>
+              <>
                 <div className={styles.imagePreview}>
-                    <img
+                  <img
                     src={imageUrl}
                     alt="Post Preview"
                     className={styles.previewImage}
-                    />
+                    onError={(e) => {
+                        // Helpful fallback if the image fails to load
+                        e.target.src = 'https://via.placeholder.com/150?text=Image+Not+Found';
+                    }}
+                  />
                 </div>
                 <div className={styles.inputField}>
-                    <button
+                  <button
                     type="button"
                     className={styles.deleteButton}
                     onClick={handleDeleteImage}
-                    >
+                  >
                     <FontAwesomeIcon icon={faTrash} className={styles.iconSpacing} />
                     Remove Image
-                    </button>
+                  </button>
                 </div>
-                </>
+              </>
             ) : (
-                <p className={styles.noImageText}>No image set.</p>
+              <p className={styles.noImageText}>No image set.</p>
             )}
 
-            <label className={styles.label} style={{marginTop: '20px'}}>Upload New Image:</label>
+            <label className={styles.label} style={{ marginTop: '20px' }}>Upload New Image:</label>
             <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])}
-                className={styles.fileInput}
+              type="file"
+              // Adding accept for security
+              accept="image/png, image/jpeg, image/webp"
+              onChange={(e) => setImage(e.target.files[0])}
+              className={styles.fileInput}
             />
             <button onClick={handleUploadImage} className={styles.uploadButton} disabled={!image}>
-                Upload Image
+              Upload Image
             </button>
           </div>
-  
+
           <div className={styles.buttonGroup}>
             <button
               onClick={handleSave}
