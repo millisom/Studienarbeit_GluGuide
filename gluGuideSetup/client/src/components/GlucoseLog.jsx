@@ -87,9 +87,13 @@ const GlucoseLog = () => {
 
   const displayedLogs = isExpanded ? logs : logs.slice(-3);
 
-  return (
-    <div className={styles.glucoseLogContainer}>
-      <div className={styles.leftColumn}>
+return (
+  <div className={styles.glucoseLogContainer}>
+    {/* This wrapper ensures the side-by-side layout logic from the CSS is applied */}
+    <div className={styles.horizontalWrapper}>
+      
+      {/* LEFT SIDE: Only the Form */}
+      <div className={styles.leftFormColumn}>
         <div className={styles.loggingFormContainer}>
           <h2 className={styles.pb1}>Log Your Glucose Level</h2>
           <form onSubmit={handleSubmit}>
@@ -126,20 +130,31 @@ const GlucoseLog = () => {
           {error && <p className={styles.errorMessage}>{error}</p>}
           {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
         </div>
+      </div>
 
+      {/* RIGHT SIDE: Filter, Diagram, and Table stacked with consistent spacing */}
+      <div className={styles.rightDisplayColumn}>
+        
+        {/* Filter Box */}
         <div className={styles.filterBox}>
           <h3>Filter View</h3>
-          <select onChange={(e) => setFilter(e.target.value)} value={filter} className={styles.filterSelect}>
+          <select 
+            onChange={(e) => setFilter(e.target.value)} 
+            value={filter} 
+            className={styles.filterSelect}
+          >
             <option value="24hours">Last 24 Hours</option>
             <option value="1week">Last Week</option>
             <option value="all">All Time</option>
           </select>
         </div>
-      </div>
 
-      <div className={styles.rightColumn}>
-        <GlucoseChart logs={logs} />
+        {/* Chart Card */}
+        <div className={styles.chartWrapper}>
+          <GlucoseChart logs={logs} />
+        </div>
         
+        {/* History Table Card */}
         <div className={styles.glucoseLogsListContainer}>
           <h3 className={styles.tableHeader}>History</h3>
           <table className={styles.glucoseLogsTable}>
@@ -162,27 +177,30 @@ const GlucoseLog = () => {
                     ) : log.glucose_level}
                   </td>
                   <td>
-                    {editingLogId === log.id ? (
-                      <>
-                        <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton}>Save</button>
-                        <button onClick={() => setEditingLogId(null)} className={styles.cancelButton}>Cancel</button>
-                      </>
-                    ) : (
-                      <>
-                        <button 
-                          onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} 
-                          className={styles.editButton}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteLog(log.id)} 
-                          className={styles.deleteButton}
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
+                    {/* The wrapper div below ensures table structure is preserved while buttons stay side-by-side */}
+                    <div className={styles.actionButtonsWrapper}>
+                      {editingLogId === log.id ? (
+                        <>
+                          <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton}>Save</button>
+                          <button onClick={() => setEditingLogId(null)} className={styles.cancelButton}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} 
+                            className={styles.editButton}
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteLog(log.id)} 
+                            className={styles.deleteButton}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -195,8 +213,10 @@ const GlucoseLog = () => {
           )}
         </div>
       </div>
+
     </div>
-  );
+  </div>
+);
 };
 
 export default GlucoseLog;
