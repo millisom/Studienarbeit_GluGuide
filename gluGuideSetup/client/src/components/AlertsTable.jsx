@@ -3,48 +3,42 @@ import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertsTable.module.css';
 
-const AlertsTable = () => {
+const AlertsTable = ({ registerFetchAlerts }) => {
   const { user } = useAuth();
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState('');
-
 
   const [editingAlertId, setEditingAlertId] = useState(null);
   const [editedFrequency, setEditedFrequency] = useState('');
   const [editedTime, setEditedTime] = useState('');
 
- 
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      if (!user) return;
 
-      try {
-        const userId = user.id || user.userId;
-        
-        const alertsResponse = await axiosInstance.get(`/alerts/${userId}`, {
-          withCredentials: true,
-        });
-        console.log('Fetched Alerts:', alertsResponse.data);
-        setAlerts(alertsResponse.data);
-      } catch (err) {
-        console.error('Error fetching alerts:', err);
-        setError('Failed to fetch alerts. Please try again.');
-      }
-    };
-
-    fetchAlerts();
-  }, [user]); 
-
-  const refreshAlerts = async () => {
+  const fetchAlerts = async () => {
     if (!user) return;
     try {
       const userId = user.id || user.userId;
-      const alertsResponse = await axiosInstance.get(`/alerts/${userId}`, { withCredentials: true });
-      setAlerts(alertsResponse.data);
+      const response = await axiosInstance.get(`/alerts/${userId}`, {
+        withCredentials: true,
+      });
+      setAlerts(response.data);
     } catch (err) {
-      console.error('Error refreshing alerts:', err);
+      console.error('Error fetching alerts:', err);
+      setError('Failed to fetch alerts.');
     }
   };
+
+  useEffect(() => {
+    if (registerFetchAlerts) {
+      registerFetchAlerts(fetchAlerts);
+    }
+  }, [registerFetchAlerts, user]);
+
+  useEffect(() => {
+    fetchAlerts();
+  }, [user]);
+
+
+  const refreshAlerts = () => fetchAlerts();
 
   const handleEditClick = (alert) => {
     setEditingAlertId(alert.alert_id);
@@ -60,15 +54,15 @@ const AlertsTable = () => {
 
   const handleSaveEdit = async (alert) => {
     try {
-      const email = alert.email; 
       await axiosInstance.put(
         `/alerts/${alert.alert_id}`,
-        { email, reminderFrequency: editedFrequency, reminderTime: editedTime },
+        { 
+            reminderFrequency: editedFrequency, 
+            reminderTime: editedTime 
+        },
         { withCredentials: true }
       );
       setEditingAlertId(null);
-      setEditedFrequency('');
-      setEditedTime('');
       refreshAlerts();
     } catch (error) {
       console.error('Error updating alert:', error);
