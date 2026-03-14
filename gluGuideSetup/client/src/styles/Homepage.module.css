@@ -138,7 +138,7 @@
 .alertsLayoutContainer {
     display: flex;
     gap: 24px;
-    align-items: flex-start; /* Keeps the form from stretching */
+    align-items: flex-start;
     margin-top: 20px;
 }
 
@@ -149,7 +149,6 @@
 
 .alertsTableWrapper {
     flex: 1;
-    /* Remove 'composes' if it's adding double borders */
     background-color: var(--color-text-white);
     border: 8px solid var(--color-primary);
     border-radius: 8px;

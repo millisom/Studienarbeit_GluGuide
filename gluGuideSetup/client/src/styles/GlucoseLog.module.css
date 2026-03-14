@@ -24,9 +24,39 @@
     gap: 24px;
 }
 
+/* ====================== Titles (Synced with History) ====================== */
+/* This block makes all section titles 1.5rem and Left Aligned */
+.sectionTitle,
+.tableHeader,
+.chartTitle,
+.filterBox h3 {
+    font-size: 1.5rem; 
+    color: var(--color-primary);
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-family: inherit;
+    text-align: left; /* Changed from center to left */
+    width: 100%;
+}
+
+/* Specific adjustment for the filter title spacing */
+.filterBox h3 {
+    margin-bottom: 15px;
+}
+
+.filterTitle {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: var(--color-text-dark);
+    font-family: inherit;
+    margin-bottom: 8px;
+}
+
 /* ====================== The "Rectangle" (Card) Style ====================== */
-/* We define this clearly so every box looks identical */
-.cardBase {
+.loggingFormContainer,
+.filterBox,
+.chartWrapper,
+.glucoseLogsListContainer {
     background-color: var(--color-text-white);
     border: 8px solid var(--color-primary);
     border-radius: 8px;
@@ -34,49 +64,13 @@
     box-shadow: var(--color-shadow-card-hover);
     width: 100%;
     box-sizing: border-box;
-}
-
-.loggingFormContainer {
-    composes: cardBase; /* Keeping it for now, but adding explicit styles below to be safe */
-    background-color: var(--color-text-white);
-    border: 8px solid var(--color-primary);
-    border-radius: 8px;
-    padding: 24px;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-/* Explicitly adding styles to Filter and Chart to ensure borders appear */
-.filterBox {
-    background-color: var(--color-text-white);
-    border: 8px solid var(--color-primary);
-    border-radius: 8px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.chartWrapper {
-    background-color: var(--color-text-white);
-    border: 8px solid var(--color-primary);
-    border-radius: 8px;
-    padding: 24px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.glucoseLogsListContainer {
-    background-color: var(--color-text-white);
-    border: 8px solid var(--color-primary);
-    border-radius: 8px;
-    padding: 24px;
-    width: 100%;
-    box-sizing: border-box;
+/* Align contents to the left to match the new title alignment */
+.loggingFormContainer, .filterBox {
+    align-items: flex-start; 
 }
 
 /* ====================== Table & Action Fixes ====================== */
@@ -89,6 +83,7 @@
     border: 1px solid var(--color-border-light);
     padding: 12px;
     text-align: center;
+    font-family: inherit;
 }
 
 .glucoseLogsTable th {
@@ -96,7 +91,6 @@
     color: white;
 }
 
-/* Fix for buttons staying side-by-side */
 .actionButtonsWrapper {
     display: flex;
     justify-content: center;
@@ -110,19 +104,27 @@
     cursor: pointer;
     font-weight: bold;
     white-space: nowrap;
+    font-family: inherit;
 }
 
 .editButton, .saveButton { background-color: var(--color-primary); color: white; }
 .deleteButton { background-color: var(--color-error); color: white; }
 .cancelButton { background-color: var(--color-text-grey); color: white; }
 
-/* ====================== Inputs ====================== */
+/* ====================== Inputs & Feedback ====================== */
 .inputField {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-bottom: 16px;
     width: 100%;
+}
+
+.inputField label {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: var(--color-text-dark);
+    font-family: inherit;
 }
 
 .inputField input, 
@@ -135,12 +137,6 @@
     box-sizing: border-box;
     font-family: inherit; 
     font-size: 1rem;
-    color: var(--color-text-dark);
-}
-
-/* Also ensure the options inside the dropdown match */
-.filterSelect option {
-    font-family: inherit;
 }
 
 .submitButton {
@@ -153,40 +149,40 @@
     width: 100%;
     border: none;
     cursor: pointer;
+    font-family: inherit;
+}
+
+/* SUCCESS MESSAGE FIX: Synced to Alert Form color */
+.successMessage {
+    color: var(--color-confirm); 
+    font-weight: bold;
+    text-align: center;
+    margin-top: 16px;
+    font-family: inherit;
+}
+
+.errorMessage {
+    color: var(--color-error);
+    margin-top: 10px;
+    text-align: center;
+    font-family: inherit;
 }
 
 /* ====================== See More Button ====================== */
-
 .toggleButton {
     display: block;
     margin: 20px auto 0 auto;
-    
-    /* SWITCHED COLORS */
-    background-color: var(--color-primary); /* Now blue */
-    color: var(--color-text-white);         /* Now white */
-    
-    border: none; /* Removed the border for a cleaner look */
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+    border: none;
     border-radius: 8px;
     padding: 10px 24px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: inherit; /* Matches the rest of your text */
+    font-family: inherit;
 }
 
 .toggleButton:hover {
-    background-color: var(--color-secondary); /* Darker blue on hover */
-}
-
-/* Ensure the container allows the button to show */
-.glucoseLogsListContainer {
-    background-color: var(--color-text-white);
-    border: 8px solid var(--color-primary);
-    border-radius: 8px;
-    padding: 24px;
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column; /* This allows the button to sit under the table */
-    align-items: center;    /* This helps center the button */
+    background-color: var(--color-secondary);
 }

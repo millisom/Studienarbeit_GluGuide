@@ -1,7 +1,7 @@
 .alertsTableContainer {
     width: 100%;
     margin: 0;
-    padding: 0; /* Remove padding here so it doesn't double up with the wrapper */
+    padding: 0; 
     text-align: left;
 }
 
@@ -16,7 +16,7 @@
 .alertsTable {
     width: 100%;
     border-collapse: collapse;
-    /* Remove box-shadow here if the wrapper already has one */
+
 }
   
   .alertsTable th,
@@ -45,9 +45,8 @@
     font-size: 1rem;
     margin-top: 20px;
   }
-  
-  /* Button styles similar to your other buttons */
-  
+
+
   .editButton,
   .saveButton,
   .cancelButton,
@@ -61,7 +60,6 @@
     margin: 2px;
   }
   
-  /* Edit button */
   .editButton {
     background-color: var(--color-primary);
     color: var(--color-text-white);
@@ -71,7 +69,6 @@
     background-color: var(--color-secondary);
   }
   
-  /* Save button (reusing primary if desired) */
   .saveButton {
     background-color: var(--color-primary);
     color: var(--color-text-white);
@@ -81,7 +78,6 @@
     background-color: var(--color-secondary);
   }
   
-  /* Cancel button */
   .cancelButton {
     background-color: var(--color-button-secondary-background-hover);
     color: var(--color-text-white);
@@ -91,7 +87,6 @@
     background-color: var(--color-text-grey);
   }
   
-  /* Delete button */
   .deleteButton {
     background-color: var(--color-error);
     color: var(--color-text-white);

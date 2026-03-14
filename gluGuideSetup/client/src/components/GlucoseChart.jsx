@@ -12,7 +12,8 @@ const GlucoseChart = ({ logs }) => {
 
   return (
     <div className={styles.graphBox}>
-      <h3>Glucose Levels Over Time</h3>
+      <h3 className={styles.chartTitle}>Glucose levels over time</h3>
+      
       <div className={styles.graphContainer}>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData}>
@@ -20,7 +21,13 @@ const GlucoseChart = ({ logs }) => {
             <XAxis dataKey="name" hide />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="glucose" stroke="#8884d8" strokeWidth={2} dot={{r: 4}} />
+            <Line 
+              type="monotone" 
+              dataKey="glucose" 
+              stroke="var(--color-primary)" 
+              strokeWidth={3} 
+              dot={{r: 4, fill: 'var(--color-primary)'}} 
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
