@@ -80,7 +80,6 @@ const GlucoseLog = () => {
     <div className={styles.glucoseLogContainer}>
       <div className={styles.horizontalWrapper}>
         
-        {/* LEFT SIDE: The Form */}
         <div className={styles.leftFormColumn}>
           <div className={styles.loggingFormContainer}>
             <h2 className={styles.sectionTitle}>Log Your Glucose Level</h2>
@@ -104,7 +103,6 @@ const GlucoseLog = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE: Display and History */}
         <div className={styles.rightDisplayColumn}>
           
           <div className={styles.filterBox}>
@@ -117,7 +115,6 @@ const GlucoseLog = () => {
           </div>
 
           <div className={styles.chartWrapper}>
-            {/* REMOVED: Doubled title removed from here */}
             <GlucoseChart logs={logs} />
           </div>
           

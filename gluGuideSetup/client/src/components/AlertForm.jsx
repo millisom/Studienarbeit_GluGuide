@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'; // Added useEffect import
+import { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertForm.module.css';
@@ -12,14 +12,13 @@ const AlertForm = ({ fetchAlerts }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
 
-  // EFFECT: Clear success message after 10 seconds
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage('');
-      }, 10000); // 10 seconds
+      }, 10000);
 
-      return () => clearTimeout(timer); // Cleanup timer if component unmounts
+      return () => clearTimeout(timer); 
     }
   }, [successMessage]);
 
