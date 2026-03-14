@@ -12,7 +12,6 @@ const AlertsTable = ({ registerFetchAlerts }) => {
   const [editedFrequency, setEditedFrequency] = useState('');
   const [editedTime, setEditedTime] = useState('');
 
-
   const fetchAlerts = async () => {
     if (!user) return;
     try {
@@ -20,7 +19,13 @@ const AlertsTable = ({ registerFetchAlerts }) => {
       const response = await axiosInstance.get(`/alerts/${userId}`, {
         withCredentials: true,
       });
-      setAlerts(response.data);
+
+
+      const sortedByCreation = response.data.sort((a, b) => 
+        new Date(a.created_at) - new Date(b.created_at)
+      );
+
+      setAlerts(sortedByCreation);
     } catch (err) {
       console.error('Error fetching alerts:', err);
       setError('Failed to fetch alerts.');
@@ -36,7 +41,6 @@ const AlertsTable = ({ registerFetchAlerts }) => {
   useEffect(() => {
     fetchAlerts();
   }, [user]);
-
 
   const refreshAlerts = () => fetchAlerts();
 
