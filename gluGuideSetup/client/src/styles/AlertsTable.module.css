@@ -1,21 +1,23 @@
 .alertsTableContainer {
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .tableHeader {
+    width: 100%;
+    margin: 0;
+    padding: 0; /* Remove padding here so it doesn't double up with the wrapper */
+    text-align: left;
+}
+
+.tableHeader {
     font-size: 1.5rem;
     margin-bottom: 20px;
     font-weight: bold;
     color: var(--color-primary);
-  }
-  
-  .alertsTable {
+    font-family: inherit;
+}
+
+.alertsTable {
     width: 100%;
     border-collapse: collapse;
-    box-shadow: var(--color-shadow-card-hover);
-  }
+    /* Remove box-shadow here if the wrapper already has one */
+}
   
   .alertsTable th,
   .alertsTable td {

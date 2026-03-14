@@ -11,7 +11,7 @@ const GlucoseLog = () => {
 
   const { 
     logs, error, successMessage, filter, setFilter, 
-    addLog, deleteLog, updateLog 
+    addLog, deleteLog, updateLog, setSuccessMessage 
   } = useGlucoseData(userId);
 
   const [formData, setFormData] = useState({ date: '', time: '', level: '' });
@@ -27,6 +27,16 @@ const GlucoseLog = () => {
       level: ''
     });
   }, []);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(''); 
+      }, 10000); 
+
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, setSuccessMessage]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
