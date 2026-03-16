@@ -1,0 +1,96 @@
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.mainTitle {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #2c3e50;
+}
+
+
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  color: #34495e;
+}
+
+/* Recipe Header Layout */
+.recipeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.createBtn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.createBtn:hover {
+  background-color: #27ae60;
+}
+
+
+.recipesCollapsed {
+  max-height: 800px;
+  overflow: hidden;
+  position: relative;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.seeMoreBtn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.seeMoreBtn:hover {
+  background: #2980b9;
+}
+
+
+.scrollableHistory {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .topGrid {
+    grid-template-columns: 1fr; /* Stack on mobile */
+  }
+}

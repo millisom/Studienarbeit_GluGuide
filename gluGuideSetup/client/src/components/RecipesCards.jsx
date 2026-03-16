@@ -6,7 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader, faPlusCircle, faUtensils } from '@fortawesome/free-solid-svg-icons';
 
-const RecipesCards = () => {
+
+const RecipesCards = ({ limit }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -37,7 +38,6 @@ const RecipesCards = () => {
     fetchRecipes();
   }, [user]);
 
-
   if (!user) {
     return (
       <div className={styles.statusMessageContainer}>
@@ -59,7 +59,6 @@ const RecipesCards = () => {
       </div>
     );
   }
-
 
   if (error) {
     return (
@@ -87,9 +86,12 @@ const RecipesCards = () => {
     );
   }
 
+
+  const displayedRecipes = limit ? recipes.slice(0, limit) : recipes;
+
   return (
       <div className={styles.recipesGrid}>
-        {recipes.map((recipe) => (
+        {displayedRecipes.map((recipe) => (
           <div key={recipe.id} className={styles.recipeSummaryCard}>
             <h3 className={styles.recipeName}>{recipe.name || 'Unnamed Recipe'}</h3>
             {recipe.total_calories != null && (
