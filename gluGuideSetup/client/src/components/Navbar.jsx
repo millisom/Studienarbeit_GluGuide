@@ -26,13 +26,14 @@ const Navbar = () => {
                 
                 {user ? (
                     <>
+                        {/* Added Nutrition Hub Link */}
+                        <Link to="/meals">Meals</Link>
           
                         {isAdmin && <Link to="/admin">Admin Dashboard</Link>}
                         
                         <Link to="/account">My Account</Link>
                         <Link to="/myBlogs">My Blogs</Link>
                         
-        
                         <Link 
                             to="#"
                             className={styles.navLink} 

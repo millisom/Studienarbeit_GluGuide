@@ -8,12 +8,12 @@ const RecipeCardRoute = lazy(() => import('../../components/RecipeCardRoute.jsx'
 const MealsOverviewPage = lazy(() => import('../../pages/MealsOverviewPage.jsx'));
 const MealCardRoute = lazy(() => import('../../components/MealCardRoute.jsx'));
 
-// Export routes as objects
 export const healthRoutes = [
+  { path: "/meals", element: MealsOverviewPage }, 
+  
   { path: "/logMeal", element: LogMealPage },
   { path: "/createRecipe", element: CreateRecipePage },
   { path: "/Recipes", element: SummaryPage },
   { path: "/recipes/:id", element: RecipeCardRoute },
-  { path: "/mealsOverview", element: MealsOverviewPage },
   { path: "/meals/:mealId", element: MealCardRoute },
-]; 
+];
