@@ -22,39 +22,31 @@ const Navbar = () => {
         <header className={styles.header}>
             <Link to="/" className={styles.logo}>GluGuide</Link>
             <nav className={styles.navbar}>
-                <Link to="/">Home</Link>
                 
                 {user ? (
                     <>
-                        {/* Added Nutrition Hub Link */}
+                        <Link to="/">Logging</Link>
                         <Link to="/meals">Meals</Link>
-          
-                        {isAdmin && <Link to="/admin">Admin Dashboard</Link>}
-                        
+                        <Link to="/blogs">Blogs</Link>
                         <Link to="/account">My Account</Link>
-                        <Link to="/myBlogs">My Blogs</Link>
-                        
-                        <Link 
-                            to="#"
-                            className={styles.navLink} 
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleLogout();
-                            }}
+                        {isAdmin && <Link to="/admin">Admin Dashboard</Link>}
+                        <Link to="/about">About</Link>
+                        <Link to="/contact">Contact Us</Link>
+                        <button 
+                            className={styles.logoutButton} 
+                            onClick={handleLogout}
                         >
-                            Logout
-                        </Link>
+                            Log Out
+                        </button>
                     </>
                 ) : (
                     <>
-                        <Link to="/login">Login</Link>
-                        <Link to="/signUp">Sign Up</Link>
+                        <Link to="/blogs">Blogs</Link>
+                        <Link to="/login">Log In / Register</Link>
+                        <Link to="/about">About</Link>
+                        <Link to="/contact">Contact Us</Link>
                     </>
                 )}
-
-                <Link to="/blogs">Blogs</Link>
-                <Link to="/about">About</Link>
-                <Link to="/contact">Contact</Link>
             </nav>
         </header>
     );
