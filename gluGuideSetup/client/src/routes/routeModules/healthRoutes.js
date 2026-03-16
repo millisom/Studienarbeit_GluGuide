@@ -1,6 +1,5 @@
 import { lazy } from 'react';
 
-// Lazy load health-related components
 const LogMealPage = lazy(() => import('../../pages/LogMealPage.jsx'));
 const CreateRecipePage = lazy(() => import('../../pages/CreateRecipePage.jsx'));
 const SummaryPage = lazy(() => import('../../pages/RecipeSummaryPage.jsx'));

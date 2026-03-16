@@ -1,28 +1,29 @@
 import { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faSave, faTimes, faSignOutAlt, faBlog, faUtensils, faBookOpen, faPlusCircle, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faEdit, faTrashAlt, faSave, faTimes, faSignOutAlt, 
+  faBlog, faUtensils, faBookOpen, faPlusCircle, faFileAlt 
+} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/ProfileCard.module.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useAuth } from '../context/AuthContext';
+import AlertForm from './AlertForm';
+import AlertsTable from './AlertsTable';
 
 const ProfileCard = () => {
-
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
 
   const [bio, setBio] = useState('');
   const [currentBio, setCurrentBio] = useState('');
   const [dpUrl, setDpUrl] = useState('');
-  
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
 
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [isEditingDp, setIsEditingDp] = useState(false);
@@ -30,16 +31,11 @@ const ProfileCard = () => {
   const [previewDp, setPreviewDp] = useState(null);
 
   useEffect(() => {
-   
-    if (!user) {
- 
-        return;
-    }
+    if (!user) return;
 
     const fetchProfileData = async () => {
       setLoading(true);
       try {
-
         const [bioRes, dpRes] = await Promise.all([
           axiosInstance.get('/bio'),
           axiosInstance.get('/dp').catch(err => {
@@ -53,10 +49,9 @@ const ProfileCard = () => {
         setBio(bioRes.data.profile_bio || '');
         setCurrentBio(bioRes.data.profile_bio || '');
         setDpUrl(dpRes.data.url || '');
-
       } catch (err) {
         console.error('Error fetching profile data:', err);
-        setError('Failed to fetch profile data. Please try refreshing.');
+        setError('Failed to fetch profile data.');
         setBio('Could not load bio.');
       } finally {
         setLoading(false);
@@ -64,7 +59,7 @@ const ProfileCard = () => {
     };
 
     fetchProfileData();
-  }, [user]); 
+  }, [user]);
 
   const handleBioEditToggle = () => {
     setCurrentBio(bio);
@@ -78,11 +73,8 @@ const ProfileCard = () => {
         setBio(currentBio);
         setIsEditingBio(false);
         setError(null);
-      } else {
-        setError('Failed to update bio. Server returned an error.');
       }
     } catch (error) {
-      console.error('Error updating bio:', error);
       setError(`Failed to update bio: ${error.response?.data?.error || error.message}`);
     }
   };
@@ -96,10 +88,7 @@ const ProfileCard = () => {
   };
 
   const handleSaveDp = async () => {
-    if (!selectedDpFile) {
-      alert("Please select a file before saving.");
-      return;
-    }
+    if (!selectedDpFile) return;
     const formData = new FormData();
     formData.append('dp', selectedDpFile);
     try {
@@ -110,10 +99,8 @@ const ProfileCard = () => {
       setIsEditingDp(false);
       setSelectedDpFile(null);
       setPreviewDp(null);
-      setError(null);
     } catch (error) {
-      console.error('Error updating DP:', error);
-      setError(`Failed to update display picture: ${error.response?.data?.error || error.message}`);
+      setError(`Failed to update display picture: ${error.message}`);
     }
   };
 
@@ -124,65 +111,42 @@ const ProfileCard = () => {
   };
 
   const handleDeleteDp = async () => {
-    if (!window.confirm('Are you sure you want to delete your display picture?')) return;
+    if (!window.confirm('Delete display picture?')) return;
     try {
-      const response = await axiosInstance.delete('/deleteDp');
-      if (response.status === 200) {
-        setDpUrl('');
-        setSelectedDpFile(null);
-        setPreviewDp(null);
-        setIsEditingDp(false);
-        setError(null);
-      } else {
-        setError('Failed to delete display picture. Server returned an error.');
-      }
+      await axiosInstance.delete('/deleteDp');
+      setDpUrl('');
+      setIsEditingDp(false);
     } catch (error) {
-      console.error('Error deleting DP:', error);
-      setError(`Error deleting display picture: ${error.response?.data?.error || error.message}`);
+      setError(`Error deleting display picture: ${error.message}`);
     }
   };
 
   const handleDeleteAccount = async () => {
     const confirmText = "DELETE";
-    const confirmation = prompt(`To confirm account deletion, please type "${confirmText}" in the box below. This action is irreversible.`);
-    
-    if (confirmation !== confirmText) {
-        alert("Account deletion cancelled or confirmation text did not match.");
-        return;
-    }
+    const confirmation = prompt(`Type "${confirmText}" to confirm.`);
+    if (confirmation !== confirmText) return;
 
     try {
-
       const response = await axiosInstance.post('/deleteAccount', { confirmDelete: user.username });
-      
       if (response.status === 200) {
-        alert('Account deleted successfully.');
-
-        await logout(); 
-
+        await logout();
         navigate('/login');
-      } else {
-        setError('Failed to delete account. Server returned an error.');
       }
     } catch (error) {
-      console.error('Error deleting account:', error);
-      setError(`Error deleting account: ${error.response?.data?.error || error.message}`);
+      setError(`Error deleting account: ${error.message}`);
     }
   };
 
   const quillModules = {
     toolbar: [
       [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
+      ['bold', 'italic', 'underline'],
       [{'list': 'ordered'}, {'list': 'bullet'}],
-      ['link'],
       ['clean']
     ],
   };
 
-
-  if (!user) return null; 
-
+  if (!user) return null;
   if (loading) return <div className={styles.loadingState}>Loading profile...</div>;
 
   return (
@@ -190,6 +154,8 @@ const ProfileCard = () => {
       {error && <p className={styles.errorMessage}>{error}</p>}
       <div className={styles.profileHeaderBanner}></div>
       <div className={styles.profileGrid}>
+        
+ 
         <aside className={styles.profileSidebar}>
           <div className={styles.dpWrapper}>
             <img
@@ -198,7 +164,7 @@ const ProfileCard = () => {
               alt={`${user.username}'s profile`}
             />
             {!isEditingDp && (
-              <button className={styles.dpEditButton} onClick={() => setIsEditingDp(true)} aria-label="Edit display picture">
+              <button className={styles.dpEditButton} onClick={() => setIsEditingDp(true)}>
                 <FontAwesomeIcon icon={faEdit} />
               </button>
             )}
@@ -215,11 +181,6 @@ const ProfileCard = () => {
                   <FontAwesomeIcon icon={faTimes} /> Cancel
                 </button>
               </div>
-              {dpUrl && (
-                <button onClick={handleDeleteDp} className={`${styles.actionButtonSmall} ${styles.deleteButtonSmall}`}>
-                  <FontAwesomeIcon icon={faTrashAlt} /> Remove Current
-                </button>
-              )}
             </div>
           )}
 
@@ -229,18 +190,12 @@ const ProfileCard = () => {
             <button className={styles.actionButton} onClick={() => navigate('/myBlogs')}>
               <FontAwesomeIcon icon={faBlog} className={styles.buttonIcon} /> My Blogs
             </button>
-            <button className={styles.actionButton} onClick={() => navigate('/logMeal')}>
-              <FontAwesomeIcon icon={faPlusCircle} className={styles.buttonIcon} /> Log New Meal
-            </button>
-            <button className={styles.actionButton} onClick={() => navigate('/mealsOverview')}>
-              <FontAwesomeIcon icon={faFileAlt} className={styles.buttonIcon} /> Meals Overview
-            </button>
-            <button className={styles.actionButton} onClick={() => navigate('/CreateRecipe')}>
-              <FontAwesomeIcon icon={faUtensils} className={styles.buttonIcon} /> Create Recipe
-            </button>
-            <button className={styles.actionButton} onClick={() => navigate('/Recipes')}>
-              <FontAwesomeIcon icon={faBookOpen} className={styles.buttonIcon} /> View Recipes
-            </button>
+
+
+
+            <div style={{ marginTop: '30px', width: '100%' }}>
+              <AlertForm />
+            </div>
           </nav>
 
           <div className={styles.dangerZone}>
@@ -250,11 +205,12 @@ const ProfileCard = () => {
           </div>
         </aside>
 
+
         <main className={styles.profileContent}>
           <div className={styles.bioSectionHeader}>
             <h2 className={styles.bioTitle}>About Me</h2>
             {!isEditingBio && (
-              <button className={styles.bioEditIcon} onClick={handleBioEditToggle} aria-label="Edit bio">
+              <button className={styles.bioEditIcon} onClick={handleBioEditToggle}>
                 <FontAwesomeIcon icon={faEdit} />
               </button>
             )}
@@ -283,6 +239,11 @@ const ProfileCard = () => {
               {bio ? parse(bio) : <p>No bio set yet. Click the edit icon to add one!</p>}
             </div>
           )}
+
+          <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
+             <AlertsTable />
+          </div>
+          
         </main>
       </div>
     </div>

@@ -1,7 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import GlucoseLog from "../components/GlucoseLog";
-import AlertForm from "../components/AlertForm";
-import AlertsTable from "../components/AlertsTable";
 import PostCard from '../components/PostCard';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
@@ -10,23 +8,12 @@ import styles from '../styles/Homepage.module.css';
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const Homepage = () => {
-    const fetchAlertsRef = useRef(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [latestPosts, setLatestPosts] = useState([]);
     const [postsError, setPostsError] = useState('');
 
     const navigate = useNavigate();
-
-    const registerFetchAlerts = (fetchFunction) => {
-        fetchAlertsRef.current = fetchFunction;
-    };
-
-    const refreshAlerts = () => {
-        if (fetchAlertsRef.current) {
-            fetchAlertsRef.current();
-        }
-    };
 
     useEffect(() => {
         const fetchSessionStatus = async () => {
@@ -76,35 +63,15 @@ const Homepage = () => {
         return <div className={styles.loadingPage}>Loading...</div>;
     }
 
-    if (isLoggedIn) {
+if (isLoggedIn) {
         return (
             <div className={styles.homepageContainer}>
-                <div className={styles.heroSection}>
-                    <h1 className={styles.title}>Welcome to GluGuide!</h1>
-                    <p className={styles.description}>
-                        GluGuide is your trusted platform to track blood sugar levels and receive
-                        personalized recommendations. We&apos;re here to help you manage your gestational
-                        diabetes with confidence and ease.
-                    </p>
-                </div>
 
                 <div className={styles.glucoseLogSection}>
                     <h2 className={styles.sectionTitle}>Track Your Glucose</h2>
                     <GlucoseLog />
                 </div>
-
-
-                <div className={styles.alertsCombinedSection}>
-                    <h2 className={styles.sectionTitle}>Manage Your Alerts</h2>
-                    <div className={styles.alertsLayoutContainer}>
-                        <div className={styles.alertFormWrapper}>
-                            <AlertForm fetchAlerts={refreshAlerts} />
-                        </div>
-                        <div className={styles.alertsTableWrapper}>
-                            <AlertsTable registerFetchAlerts={registerFetchAlerts} />
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         );
     } else {
@@ -160,4 +127,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-

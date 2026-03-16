@@ -41,3 +41,20 @@
 .navbar a:hover::before {
     width: 100%;
 }
+
+.logoutButton {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: background 0.3s;
+}
+
+.logoutButton:hover {
+    background: var(--color-secondary);
+}
