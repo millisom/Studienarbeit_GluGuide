@@ -2,48 +2,93 @@ const Meal = require('../models/mealModel');
 const Recipe = require('../models/recipeModel');
 
 const mealController = {
-  async createMeal(req, res, next) {
-    try {
-      const { meal_type, meal_time, notes, foodItems = [], recipe_id = null } = req.body;
-      const user_id = req.session.userId;
+// mealController.js
 
-      if (!user_id || !meal_type) {
-        return res.status(400).json({ message: 'user_id and meal_type are required' });
-      }
+async createMeal(req, res, next) {
+  try {
+    // 1. Destructure exactly what the Network tab shows
+    const { 
+      meal_type, 
+      meal_time, 
+      notes, 
+      items = [], 
+      recipe_id = null, 
+      quantity = 1,        // This is what the screenshot shows (3)
+      recipe_quantity      // Backup
+    } = req.body;
 
-      let combinedItems = [...foodItems];
-      let recipeSnapshot = null;
-      if (recipe_id) {
-        const recipe = await Recipe.getRecipeById(recipe_id);
-        if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
+    // Use Number() to ensure math works
+    const multiplier = Number(quantity || recipe_quantity || 1);
+    const user_id = req.session.userId;
 
-        recipeSnapshot = recipe;
+    console.log(`--- Logging Meal: ${meal_type} ---`);
+    console.log(`Multiplier detected: ${multiplier}`);
 
-        if (Array.isArray(recipe.ingredients)) {
-          combinedItems = [...combinedItems, ...recipe.ingredients];
-        }
-      }
-      const meal = await Meal.createMeal(
-        user_id,
-        meal_type,
-        meal_time,
-        notes,
-        recipe_id,
-        combinedItems,
-        recipeSnapshot
-      );
-
-      for (const item of combinedItems) {
-        await Meal.addFoodToMeal(meal.meal_id, item.food_id, item.quantity_in_grams || 100);
-      }
-
-      const updatedMeal = await Meal.updateMealNutrition(meal.meal_id);
-
-      res.status(201).json(updatedMeal);
-    } catch (error) {
-      next(error);
+    if (!user_id || !meal_type) {
+      return res.status(400).json({ message: 'user_id and meal_type are required' });
     }
-  },
+
+    let finalItemsToSave = [...items]; 
+    let recipeSnapshot = null;
+
+    if (recipe_id) {
+      const recipe = await Recipe.getRecipeById(recipe_id);
+      if (!recipe) return res.status(404).json({ message: 'Recipe not found' });
+
+      recipeSnapshot = recipe;
+
+      if (Array.isArray(recipe.ingredients)) {
+        // SCALE THE INGREDIENTS
+        const scaledIngredients = recipe.ingredients.map(ing => {
+          const baseGrams = Number(ing.quantity_in_grams) || 100;
+          const scaledGrams = baseGrams * multiplier;
+          
+          console.log(`Scaling ${ing.name}: ${baseGrams}g x ${multiplier} = ${scaledGrams}g`);
+          
+          return {
+            food_id: ing.food_id,
+            name: ing.name,
+            quantity_in_grams: scaledGrams
+          };
+        });
+
+        finalItemsToSave = [...finalItemsToSave, ...scaledIngredients];
+      }
+    }
+
+    // 2. Create the meal record
+    const meal = await Meal.createMeal(
+      user_id,
+      meal_type,
+      meal_time,
+      notes,
+      recipe_id,
+      finalItemsToSave, 
+      recipeSnapshot
+    );
+
+    // 3. Save to junction table
+    for (const item of finalItemsToSave) {
+      console.log(`Saving to DB: FoodID ${item.food_id} | ${item.quantity_in_grams}g`);
+      await Meal.addFoodToMeal(
+        meal.meal_id, 
+        item.food_id, 
+        item.quantity_in_grams
+      );
+    }
+
+    // 4. Update the totals in the meals table
+    const updatedMeal = await Meal.updateMealNutrition(meal.meal_id);
+
+    console.log(`Final Calories Saved: ${updatedMeal.total_calories}`);
+    console.log(`--- Log Complete ---`);
+
+    res.status(201).json(updatedMeal);
+  } catch (error) {
+    console.error("Backend Save Error:", error);
+    next(error);
+  }
+},
 
 
   async getMealById(req, res, next) {
@@ -61,7 +106,7 @@ const mealController = {
     }
   },
 
-  // ✅ Get all meals for a user from session
+
   async getMealsByUser(req, res, next) {
     try {
       const user_id = req.session.userId;
@@ -76,7 +121,7 @@ const mealController = {
     }
   },
 
-  // ✅ Recalculate and update nutrition totals for a meal
+
   async updateMealNutrition(req, res, next) {
     try {
       const meal_id = parseInt(req.params.id);
@@ -87,7 +132,7 @@ const mealController = {
     }
   },
 
-  // delete meal by id
+
   async deleteMeal(req, res, next) {
     try {
       const meal_id = parseInt(req.params.id);

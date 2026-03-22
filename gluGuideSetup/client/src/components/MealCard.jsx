@@ -67,7 +67,7 @@ const MealCard = ({ mealId }) => {
 
     try {
       await deleteMeal(mealId);
-      setSuccessMessage('✅ Meal deleted successfully! Redirecting...');
+      setSuccessMessage('Meal deleted successfully! Redirecting...');
       
       setTimeout(() => {
         navigate('/meals');

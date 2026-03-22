@@ -47,7 +47,7 @@ const authController = {
               return res.status(500).json({ Message: 'Failed to save session' });
             }
           
-            console.log("Session saved:", req.session); // ✅ For debugging
+            console.log("Session saved:", req.session); 
             return res.status(200).json({ Login: true });
           });
           

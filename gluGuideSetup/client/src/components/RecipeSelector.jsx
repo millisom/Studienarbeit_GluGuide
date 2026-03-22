@@ -14,6 +14,8 @@ const RecipeSelector = ({ onSelect }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [skipSuggestions, setSkipSuggestions] = useState(false);
   const [error, setError] = useState('');
+  
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -21,28 +23,23 @@ const RecipeSelector = ({ onSelect }) => {
         setSuggestions([]);
         return;
       }
-
       try {
         const data = await getRecipeByName(query.toLowerCase());
         const recipeArray = Array.isArray(data) ? data : [data];
-
         const filtered = recipeArray.filter(recipe =>
           recipe.name.toLowerCase().includes(query.toLowerCase())
         );
-
         const sorted = filtered.sort((a, b) => {
           const aStarts = a.name.toLowerCase().startsWith(query.toLowerCase());
           const bStarts = b.name.toLowerCase().startsWith(query.toLowerCase());
           return aStarts === bStarts ? 0 : aStarts ? -1 : 1;
         });
-
         setSuggestions(sorted);
       } catch (err) {
         console.error('Failed to load recipe suggestions', err);
         if (user) setError('Could not load suggestions');
       }
     };
-
     const debounce = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounce);
   }, [query, skipSuggestions, authLoading, user]);
@@ -53,13 +50,13 @@ const RecipeSelector = ({ onSelect }) => {
         setSuggestions([]);
         return;
     }
-
     setSkipSuggestions(true);
     setQuery(recipe.name);
     setSuggestions([]);
     try {
       const fullRecipe = await getRecipeById(recipe.id);
       setSelectedRecipe(fullRecipe);
+      setQuantity(1); 
     } catch (err) {
       console.error('Failed to load recipe details', err);
       setSelectedRecipe(null);
@@ -67,8 +64,12 @@ const RecipeSelector = ({ onSelect }) => {
     }
   };
 
-  const handleAdd = (recipe) => {
-    onSelect(recipe);
+  const handleAddWithQuantity = (recipe) => {
+    // BUG CATCHER: Force it to be a pure number before sending to LogMealPage
+    const finalQ = Number(quantity) || 1;
+    console.log("🛒 [1] RecipeSelector is passing quantity:", finalQ);
+    
+    onSelect({ ...recipe, quantity: finalQ });
     setSelectedRecipe(null);
     setQuery('');
   };
@@ -111,16 +112,26 @@ const RecipeSelector = ({ onSelect }) => {
       {selectedRecipe && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <button 
-              className={styles.closeButton} 
-              onClick={() => setSelectedRecipe(null)}
-              aria-label="Close recipe details"
-            >
+            <button className={styles.closeButton} onClick={() => setSelectedRecipe(null)}>
               <FontAwesomeIcon icon={faTimes} />
             </button>
+
+            <div style={{ backgroundColor: '#f8fbff', padding: '15px', borderRadius: '8px', marginBottom: '15px', border: '1px solid #d0e3ff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <label style={{ fontWeight: 'bold', color: '#0056b3' }}>Portion Size:</label>
+              <input 
+                type="number" 
+                step="0.1" 
+                min="0.1"
+                value={quantity} 
+                onChange={(e) => setQuantity(e.target.value)} // Just store what they type
+                style={{ width: '80px', padding: '5px', textAlign: 'center', border: '2px solid #007bff', borderRadius: '5px', fontSize: '1.1rem' }}
+              />
+            </div>
+
             <RecipeItem
               recipe={selectedRecipe}
-              onAdd={handleAdd}
+              quantity={Number(quantity) || 1} 
+              onAdd={() => handleAddWithQuantity(selectedRecipe)}
             />
           </div>
         </div>

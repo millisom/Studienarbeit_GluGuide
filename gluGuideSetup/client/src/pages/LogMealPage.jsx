@@ -12,7 +12,7 @@ const LogMealPage = () => {
   const [foodItems, setFoodItems] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [status, setStatus] = useState('');
-  const navigate = useNavigate(); // 🔁 import navigation
+  const navigate = useNavigate();
 
   const addFoodItem = (item) => {
     setFoodItems((prev) => [...prev, item]);
@@ -30,13 +30,18 @@ const LogMealPage = () => {
         meal_type: mealType,
         meal_time: new Date().toISOString(),
         notes,
-        foodItems,
+        // Match the backend controller which looks for 'items'
+        items: foodItems, 
         recipe_id: selectedRecipe?.id || null,
+        // THE MISSING LINK: Send the quantity to the backend!
+        quantity: Number(selectedRecipe?.quantity || 1),
       };
+
+      console.log("🚀 PAYLOAD LEAVING BROWSER:", payload);
 
       const meal = await createMeal(payload);
 
-      await recalculateMealNutrition(meal.meal_id); // Recalculate macros
+      await recalculateMealNutrition(meal.meal_id); 
 
       setStatus('Meal saved and macros calculated!');
       setMealType('');
@@ -44,7 +49,7 @@ const LogMealPage = () => {
       setFoodItems([]);
       setSelectedRecipe(null);
 
-      navigate(`/meals/${meal.meal_id}`); // 👈 Redirect to MealCard
+      navigate(`/meals/${meal.meal_id}`); 
     } catch (err) {
       console.error('Save error:', err.response?.data || err.message);
       setStatus('Error saving meal');
@@ -80,6 +85,8 @@ const LogMealPage = () => {
         <MealPreview
           items={foodItems}
           selectedRecipe={selectedRecipe}
+          // Pass the quantity to the preview so it displays correctly
+          recipeQuantity={Number(selectedRecipe?.quantity || 1)}
           onRemove={removeFoodItem}
           onEdit={() => {}}
           onEditRecipe={() => {}}
