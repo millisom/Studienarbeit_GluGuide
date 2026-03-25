@@ -1,18 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FoodItemInput from '../components/FoodItemInput';
 import RecipeSelector from '../components/RecipeSelector';
 import MealPreview from '../components/MealPreview';
-import { createMeal, recalculateMealNutrition } from '../api/mealApi';
+import { createMeal, recalculateMealNutrition, getAllMealsForUser } from '../api/mealApi';
+import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LogMealPage.module.css';
 
+// 📝 Import React Quill for the rich text editor
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 const LogMealPage = () => {
+  const { user } = useAuth();
+  const userId = user?.id || user?.userId;
+  const navigate = useNavigate();
+
   const [mealType, setMealType] = useState('');
+  
+  // States for Time and Snack Counting
+  const [mealTime, setMealTime] = useState(new Date().toISOString().slice(0, 16));
+  const [snackCount, setSnackCount] = useState(1);
+  const [requestReminder, setRequestReminder] = useState(false);
+
   const [notes, setNotes] = useState('');
   const [foodItems, setFoodItems] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [status, setStatus] = useState('');
-  const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Determine the correct snack number
+  useEffect(() => {
+    const fetchSnackCount = async () => {
+      if (mealType !== 'snack' || !userId) return;
+
+      try {
+        const allMeals = await getAllMealsForUser(userId);
+        const todayStr = new Date().toLocaleDateString('en-CA');
+        
+        let count = 1;
+        allMeals.forEach(meal => {
+          if (!meal.meal_time) return;
+          const mealDateStr = new Date(meal.meal_time).toLocaleDateString('en-CA');
+          
+          if (mealDateStr === todayStr && meal.meal_type === 'snack') {
+            count++;
+          }
+        });
+        
+        setSnackCount(count);
+      } catch (err) {
+        console.error("Failed to fetch past meals to calculate snack number:", err);
+      }
+    };
+
+    fetchSnackCount();
+  }, [mealType, userId]);
 
   const addFoodItem = (item) => {
     setFoodItems((prev) => [...prev, item]);
@@ -22,82 +65,167 @@ const LogMealPage = () => {
     setFoodItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+    
     if (!mealType) return setStatus('Please select a meal type');
+    if (foodItems.length === 0 && !selectedRecipe) return setStatus('Please add food or a recipe');
+
+    setIsSaving(true);
+    setStatus('');
 
     try {
       const payload = {
         meal_type: mealType,
-        meal_time: new Date().toISOString(),
-        notes,
-        // Match the backend controller which looks for 'items'
+        meal_time: new Date(mealTime).toISOString(),
+        notes, // Quill saves as an HTML string, which your DB text column will accept perfectly
         items: foodItems, 
         recipe_id: selectedRecipe?.id || null,
-        // THE MISSING LINK: Send the quantity to the backend!
         quantity: Number(selectedRecipe?.quantity || 1),
+        request_reminder: requestReminder
       };
 
-      console.log("🚀 PAYLOAD LEAVING BROWSER:", payload);
-
       const meal = await createMeal(payload);
-
       await recalculateMealNutrition(meal.meal_id); 
 
       setStatus('Meal saved and macros calculated!');
+      
+      if (requestReminder) {
+         scheduleLocalReminder(meal.meal_id, mealTime, mealType);
+      }
+
       setMealType('');
       setNotes('');
       setFoodItems([]);
       setSelectedRecipe(null);
+      setRequestReminder(false);
 
-      navigate(`/meals/${meal.meal_id}`); 
+      setTimeout(() => {
+        navigate(`/meals/${meal.meal_id}`); 
+      }, 1000);
+      
     } catch (err) {
       console.error('Save error:', err.response?.data || err.message);
       setStatus('Error saving meal');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const scheduleLocalReminder = (mealId, timeString, type) => {
+    const mealTimeMs = new Date(timeString).getTime();
+    const oneHourLater = mealTimeMs + (60 * 60 * 1000);
+    const delay = oneHourLater - Date.now();
+
+    if (delay > 0) {
+      setTimeout(() => {
+        alert(`Reminder: It has been 1 hour since your ${type === 'snack' ? 'Snack' : type}! Time to log your glucose.`);
+      }, delay);
+    } else {
+       console.log("Meal time was too far in the past to set a 1-hour reminder.");
     }
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Log Your Meal</h1>
-      <select
-        value={mealType}
-        onChange={(e) => setMealType(e.target.value)}
-        className={styles.input}
-      >
-        <option value="">Select Meal Type</option>
-        <option value="breakfast">Breakfast</option>
-        <option value="lunch">Lunch</option>
-        <option value="dinner">Dinner</option>
-        <option value="snack">Snack</option>
-      </select>
+      
+      <form onSubmit={handleSubmit} className={styles.mealForm}>
+        
+        {/* Row 1: Type and Time */}
+        <div className={styles.formRow}>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Meal Type</label>
+            <select
+              value={mealType}
+              onChange={(e) => setMealType(e.target.value)}
+              className={styles.input}
+              required
+            >
+              <option value="" disabled>Select Meal Type</option>
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">
+                {mealType === 'snack' ? `Snack ${snackCount}` : 'Snack'}
+              </option>
+            </select>
+          </div>
 
-      <textarea
-        value={notes}
-        placeholder="Notes"
-        onChange={(e) => setNotes(e.target.value)}
-        className={styles.textarea}
-      />
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Time Eaten</label>
+            <input 
+              type="datetime-local" 
+              value={mealTime} 
+              onChange={(e) => setMealTime(e.target.value)} 
+              className={styles.input} 
+              required 
+            />
+          </div>
+        </div>
 
-      <RecipeSelector onSelect={setSelectedRecipe} />
-      <FoodItemInput onAdd={addFoodItem} />
+        {/* Row 2: Reminder Opt-In */}
+        <div className={styles.checkboxGroup}>
+          <input 
+            type="checkbox" 
+            id="reminderCheck"
+            checked={requestReminder}
+            onChange={(e) => setRequestReminder(e.target.checked)}
+            className={styles.checkbox}
+          />
+          <label htmlFor="reminderCheck" className={styles.checkboxLabel}>
+            Remind me to test my glucose in 1 hour
+          </label>
+        </div>
 
-      {(foodItems.length > 0 || selectedRecipe) && (
-        <MealPreview
-          items={foodItems}
-          selectedRecipe={selectedRecipe}
-          // Pass the quantity to the preview so it displays correctly
-          recipeQuantity={Number(selectedRecipe?.quantity || 1)}
-          onRemove={removeFoodItem}
-          onEdit={() => {}}
-          onEditRecipe={() => {}}
-          onRemoveRecipe={() => setSelectedRecipe(null)}
-        />
+        {/* Row 3: Notes (Quill) */}
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>Notes</label>
+          <div className={styles.quillWrapper}>
+            <ReactQuill 
+              theme="snow" 
+              value={notes} 
+              onChange={setNotes} 
+              placeholder="How are you feeling? Any symptoms?"
+            />
+          </div>
+        </div>
+
+        {/* Food & Recipe Selectors */}
+        <div className={styles.selectorsSection}>
+          <RecipeSelector onSelect={setSelectedRecipe} />
+          <FoodItemInput onAdd={addFoodItem} />
+        </div>
+
+        {/* Preview Panel */}
+        {(foodItems.length > 0 || selectedRecipe) && (
+          <div className={styles.previewSection}>
+            <MealPreview
+              items={foodItems}
+              selectedRecipe={selectedRecipe}
+              recipeQuantity={Number(selectedRecipe?.quantity || 1)}
+              onRemove={removeFoodItem}
+              onEdit={() => {}}
+              onEditRecipe={() => {}}
+              onRemoveRecipe={() => setSelectedRecipe(null)}
+            />
+          </div>
+        )}
+
+        <button 
+          type="submit" 
+          className={styles.submitButton}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Save Meal'}
+        </button>
+      </form>
+
+      {status && (
+        <p className={status.includes('Error') ? styles.errorMessage : styles.status}>
+          {status}
+        </p>
       )}
-
-      <button onClick={handleSubmit} className={styles.submitButton}>
-        Save Meal
-      </button>
-      {status && <p className={styles.status}>{status}</p>}
     </div>
   );
 };

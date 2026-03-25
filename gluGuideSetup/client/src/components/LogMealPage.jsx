@@ -6,7 +6,7 @@ import MealPreview from '../components/MealPreview';
 import { createMeal } from '../api/mealApi';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LogMealPage.module.css';
-
+/*
 const LogMealPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -114,3 +114,5 @@ const LogMealPage = () => {
 };
 
 export default LogMealPage;
+
+*/
