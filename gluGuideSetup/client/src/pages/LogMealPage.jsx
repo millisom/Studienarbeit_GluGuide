@@ -7,7 +7,7 @@ import { createMeal, recalculateMealNutrition, getAllMealsForUser } from '../api
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LogMealPage.module.css';
 
-// 📝 Import React Quill for the rich text editor
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -18,7 +18,7 @@ const LogMealPage = () => {
 
   const [mealType, setMealType] = useState('');
   
-  // States for Time and Snack Counting
+
   const [mealTime, setMealTime] = useState(new Date().toISOString().slice(0, 16));
   const [snackCount, setSnackCount] = useState(1);
   const [requestReminder, setRequestReminder] = useState(false);
@@ -29,7 +29,7 @@ const LogMealPage = () => {
   const [status, setStatus] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Determine the correct snack number
+
   useEffect(() => {
     const fetchSnackCount = async () => {
       if (mealType !== 'snack' || !userId) return;
@@ -191,13 +191,13 @@ const LogMealPage = () => {
           </div>
         </div>
 
-        {/* Food & Recipe Selectors */}
+
         <div className={styles.selectorsSection}>
           <RecipeSelector onSelect={setSelectedRecipe} />
           <FoodItemInput onAdd={addFoodItem} />
         </div>
 
-        {/* Preview Panel */}
+
         {(foodItems.length > 0 || selectedRecipe) && (
           <div className={styles.previewSection}>
             <MealPreview

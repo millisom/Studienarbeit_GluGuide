@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getFoodItemByName } from '../api/foodItemApi';
 import FoodItem from './FoodItem';
-import styles from '../styles/SearchFoodItem.module.css';
+import searchStyles from '../styles/SearchFoodItem.module.css'; // Keep for modal/dropdown
+import styles from '../styles/LogMealPage.module.css'; // Import for unified inputs
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -62,8 +63,11 @@ const SearchFoodItem = ({ onAdd }) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.searchSection}>
+    // 1. Used the unified inputGroup wrapper so it takes up the full width evenly
+    <div className={styles.inputGroup}>
+      
+      {/* Added position relative so the dropdown suggestions list anchors to this input properly */}
+      <div style={{ position: 'relative' }}>
         <input
           type="text"
           placeholder={user ? "Search food item..." : "Log in to search food..."}
@@ -78,10 +82,11 @@ const SearchFoodItem = ({ onAdd }) => {
               setSuggestions([]);
             }
           }}
-          className={styles.searchInput}
+          // 2. Used the unified input class for identical styling
+          className={styles.input}
         />
         {suggestions.length > 0 && (
-          <ul className={styles.suggestions}>
+          <ul className={searchStyles.suggestions}>
             {suggestions.map((food, idx) => (
               <li key={food.food_id || `${food.name}-${idx}`} onClick={() => handleSuggestionClick(food)}>
                 {food.name}
@@ -91,13 +96,14 @@ const SearchFoodItem = ({ onAdd }) => {
         )}
       </div>
       
-      {error && !selectedFood && <p className={styles.searchError}>{error}</p>}
+      {error && !selectedFood && <p className={searchStyles.searchError}>{error}</p>}
 
+      {/* MODAL KEEPS ITS ORIGINAL STYLES */}
       {selectedFood && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+        <div className={searchStyles.modalOverlay}>
+          <div className={searchStyles.modalContent}>
             <button 
-              className={styles.closeButton} 
+              className={searchStyles.closeButton} 
               onClick={handleCloseModal}
               aria-label="Close food details"
             >
