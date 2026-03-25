@@ -153,6 +153,44 @@ const mealController = {
     }
   },
 
+  async updateMeal(req, res, next) {
+    try {
+      const meal_id = parseInt(req.params.id);
+      const user_id = req.session.userId;
+      
+
+      const { meal_time, items } = req.body;
+
+      if (!user_id) return res.status(401).json({ message: 'Unauthorized' });
+
+      const existingMeal = await Meal.getMealById(meal_id);
+      if (!existingMeal) return res.status(404).json({ message: 'Meal not found' });
+      if (existingMeal.user_id !== user_id) return res.status(403).json({ message: 'Forbidden' });
+
+
+      await Meal.updateMealDetails(meal_id, meal_time);
+
+
+      if (items && items.length > 0) {
+        await Meal.clearMealItems(meal_id);
+        
+        for (const item of items) {
+          const gramAmount = Number(item.quantity_in_grams);
+          if (gramAmount > 0) {
+            await Meal.addFoodToMeal(meal_id, item.food_id, gramAmount);
+          }
+        }
+      }
+
+      const updatedMeal = await Meal.updateMealNutrition(meal_id);
+
+      res.status(200).json(updatedMeal);
+    } catch (error) {
+      console.error("Backend Update Error:", error);
+      next(error);
+    }
+  },
+
   async deleteMeal(req, res, next) {
     try {
       const meal_id = parseInt(req.params.id);
@@ -162,6 +200,9 @@ const mealController = {
       next(error);
     }
   },
+
+  
+
 };
 
 module.exports = mealController;

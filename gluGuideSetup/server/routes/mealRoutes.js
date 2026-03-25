@@ -17,4 +17,7 @@ router.put('/:id/recalculate', mealController.updateMealNutrition);
 // Delete a meal
 router.delete('/deleteMeal/:id', mealController.deleteMeal);
 
+// Update a meal
+router.put('/updateMeal/:id', mealController.updateMeal);
+
 module.exports = router;

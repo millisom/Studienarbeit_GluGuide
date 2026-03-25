@@ -2,9 +2,8 @@ import axios from 'axios';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/meal`;
 
-
 const axiosConfig = {
-  withCredentials: true, // 🔐 important for session cookies
+  withCredentials: true, 
 };
 
 export const createMeal = async (mealData) => {
@@ -29,5 +28,11 @@ export const recalculateMealNutrition = async (id) => {
 
 export const deleteMeal = async (id) => {
   const response = await axios.delete(`${API_URL}/deleteMeal/${id}`, axiosConfig);
+  return response.data;
+};
+
+
+export const updateMeal = async (id, payload) => {
+  const response = await axios.put(`${API_URL}/updateMeal/${id}`, payload, axiosConfig);
   return response.data;
 };

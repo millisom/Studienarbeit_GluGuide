@@ -95,6 +95,23 @@ const Meal = {
     const query = 'DELETE FROM meals WHERE meal_id = $1';
     await pool.query(query, [meal_id]);
   },
+
+  async updateMealDetails(meal_id, meal_time) {
+    const query = `
+      UPDATE meals 
+      SET meal_time = $1 
+      WHERE meal_id = $2 
+      RETURNING *`;
+    const result = await pool.query(query, [meal_time, meal_id]);
+    return result.rows[0];
+  },
+
+
+  async clearMealItems(meal_id) {
+    const query = `DELETE FROM meal_food_items WHERE meal_id = $1`;
+    await pool.query(query, [meal_id]);
+  },
+
 };
 
 module.exports = Meal;
