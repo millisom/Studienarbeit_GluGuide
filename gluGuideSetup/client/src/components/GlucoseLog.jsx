@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGlucoseData } from '../hooks/useGlucoseData';
-import { getAllMealsForUser } from '../api/mealApi';
+import { getAllMealsForUser } from '../api/mealApi'; 
 import GlucoseChart from './GlucoseChart';
 import styles from '../styles/GlucoseLog.module.css';
 import { useAuth } from '../context/AuthContext';
@@ -22,31 +22,23 @@ const GlucoseLog = () => {
     meal_id: '' 
   });
   
-
   const [todaysMeals, setTodaysMeals] = useState([]);
-
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingLogId, setEditingLogId] = useState(null);
   const [editedLevel, setEditedLevel] = useState('');
-
 
   useEffect(() => {
     const fetchTodaysMeals = async () => {
       if (!userId) return;
       try {
         const allMeals = await getAllMealsForUser(userId);
-        
+        const todayStr = new Date().toLocaleDateString('en-CA'); 
 
-        const todayStr = new Date().toLocaleDateString('en-CA');
-
- 
         const mealsToday = allMeals.filter(meal => {
           if (!meal.meal_time) return false;
-
           const mealDateStr = new Date(meal.meal_time).toLocaleDateString('en-CA');
           return mealDateStr === todayStr;
         });
-
 
         mealsToday.sort((a, b) => new Date(a.meal_time) - new Date(b.meal_time));
 
@@ -58,7 +50,6 @@ const GlucoseLog = () => {
             displayName = `Snack ${snackCount}`;
             snackCount++;
           }
-
 
           const timeStr = new Date(meal.meal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           
@@ -102,6 +93,36 @@ const GlucoseLog = () => {
       alert("Please enter a valid glucose level.");
       return;
     }
+
+
+    if (formData.reading_type === '1h_post_meal' || formData.reading_type === '2h_post_meal') {
+      const selectedMeal = todaysMeals.find(m => m.meal_id === parseInt(formData.meal_id, 10));
+      
+      if (selectedMeal && selectedMeal.meal_time) {
+        const glucoseTime = new Date(`${formData.date}T${formData.time}`);
+        const mealTime = new Date(selectedMeal.meal_time);
+        
+
+        const diffInMinutes = (glucoseTime - mealTime) / (1000 * 60);
+
+        if (diffInMinutes < 0) {
+          alert("The time entered is before the meal even happened! Please check your time.");
+          return;
+        }
+
+        if (formData.reading_type === '1h_post_meal' && diffInMinutes < 50) {
+          alert("To get a good accuracy, logging must be at least 60 minutes after a meal. Please wait a bit longer!");
+          return;
+        }
+
+
+        if (formData.reading_type === '2h_post_meal' && diffInMinutes < 110) {
+          alert("For accurate 2-hour tracking, please wait until it has been at least 2 hours since your meal.");
+          return;
+        }
+      }
+    }
+
     
     const success = await addLog({ 
       date: formData.date, 
@@ -181,14 +202,13 @@ const GlucoseLog = () => {
                 </select>
               </div>
 
-              {/* 3. NEW: Replaced the manual ID input with a Smart Dropdown */}
               {(formData.reading_type === '1h_post_meal' || formData.reading_type === '2h_post_meal') && (
                 <div className={styles.inputField}>
                   <label>Select Meal:</label>
                   <select 
                     value={formData.meal_id} 
                     onChange={(e) => setFormData({...formData, meal_id: e.target.value})}
-                    required // Make this required so they don't accidentally skip it!
+                    required 
                   >
                     <option value="">-- Choose a Meal --</option>
                     {todaysMeals.length > 0 ? (
