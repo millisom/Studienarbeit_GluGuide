@@ -30,7 +30,7 @@ const MealCard = ({ mealId }) => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // --- NEW EDIT MODE STATES ---
+ 
   const [isEditing, setIsEditing] = useState(false);
   const [editTime, setEditTime] = useState('');
   const [consolidatedItems, setConsolidatedItems] = useState([]);

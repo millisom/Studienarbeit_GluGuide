@@ -11,7 +11,8 @@ import {
   faLeaf,
   faMugHot,
   faQuestionCircle,
-  faUtensils
+  faUtensils,
+  faHistory 
 } from '@fortawesome/free-solid-svg-icons';
 
 const MealsCards = () => {
@@ -43,7 +44,20 @@ const MealsCards = () => {
       setError('');
       try {
         const data = await getAllMealsForUser();
-        setMeals(data);
+        
+        // --- NEW LOGIC: Filter for TODAY and Sort Early to Late ---
+        const todayStr = new Date().toLocaleDateString('en-CA');
+        
+        const todaysMeals = data.filter(meal => {
+          if (!meal.meal_time) return false;
+          return new Date(meal.meal_time).toLocaleDateString('en-CA') === todayStr;
+        });
+
+        todaysMeals.sort((a, b) => new Date(a.meal_time) - new Date(b.meal_time));
+        
+        setMeals(todaysMeals);
+        // ---------------------------------------------------------
+        
       } catch (error) {
         console.error('Failed to fetch meals:', error);
         setError('Failed to load meals. Please try again later.');
@@ -69,15 +83,13 @@ const MealsCards = () => {
       );
   }
 
-
   if (loading) {
     return (
         <div className={styles.statusMessageContainer}>
-            <h2>Loading meals...</h2>
+            <h2>Loading today's meals...</h2>
         </div>
     );
   }
-
 
   if (error) {
     return (
@@ -88,51 +100,66 @@ const MealsCards = () => {
     );
   }
 
-
-  if (meals.length === 0) {
-    return (
-      <div className={`${styles.statusMessageContainer} ${styles.noMealsMessage}`}>
-        <FontAwesomeIcon icon={faLeaf} size="3x" style={{ marginBottom: '15px'}} />
-        <h2>Nothing Here Yet</h2>
-        <p>No meals found. Time to log your first one!</p>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.mealsGrid}>
-      {meals.map((meal) => (
-        <div key={meal.meal_id} className={styles.mealCard}>
-          <h3 className={styles.mealType}>
-            <FontAwesomeIcon icon={getMealIcon(meal.meal_type)} /> 
-            {meal.meal_type?.toUpperCase() || 'MEAL'}
-          </h3>
-          <p className={styles.mealDateTime}>
-            <strong>Date:</strong>{' '}
-            {new Date(meal.meal_time).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-            <br/>
-            <strong>Time:</strong>{' '}
-            {new Date(meal.meal_time).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true
-            })}
-          </p>
-          <p className={styles.mealCalories}>
-            <strong>Total Calories:</strong> {meal.total_calories ? `${meal.total_calories} kcal` : 'N/A'}
-          </p>
-          <button
-            className={styles.viewMealButton}
-            onClick={() => navigate(`/meals/${meal.meal_id}`)}
-          >
-            View Meal Details
-          </button>
+  
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      
+      {meals.length === 0 ? (
+        <div className={`${styles.statusMessageContainer} ${styles.noMealsMessage}`} style={{ padding: '20px', textAlign: 'center' }}>
+          <FontAwesomeIcon icon={faLeaf} size="3x" style={{ marginBottom: '15px', color: '#ccc'}} />
+          <h3>No Meals Logged Today</h3>
+          <p style={{ color: '#666' }}>Time to log your first one!</p>
         </div>
-      ))}
+      ) : (
+        <div className={styles.mealsGrid}>
+          {meals.map((meal) => (
+            <div key={meal.meal_id} className={styles.mealCard}>
+              <h3 className={styles.mealType}>
+                <FontAwesomeIcon icon={getMealIcon(meal.meal_type)} /> 
+                {meal.meal_type?.toUpperCase() || 'MEAL'}
+              </h3>
+              <p className={styles.mealDateTime}>
+                <strong>Time:</strong>{' '}
+                {new Date(meal.meal_time).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })}
+              </p>
+              <p className={styles.mealCalories}>
+                <strong>Total Calories:</strong> {meal.total_calories != null ? `${parseFloat(meal.total_calories).toFixed(1)} kcal` : 'N/A'}
+              </p>
+              <button
+                className={styles.viewMealButton}
+                onClick={() => navigate(`/meals/${meal.meal_id}`)}
+              >
+                View Meal Details
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+
+      <button 
+        onClick={() => navigate('/meal-history')}
+        className={styles.viewMealButton}
+        style={{ 
+          marginTop: '20px', 
+          backgroundColor: '#6c757d',
+          border: 'none',
+          padding: '12px',
+          fontWeight: 'bold',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '10px'
+        }}
+      >
+        <FontAwesomeIcon icon={faHistory} />
+        View Full Meal History
+      </button>
+
     </div>
   );
 };
