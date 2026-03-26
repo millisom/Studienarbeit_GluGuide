@@ -3,46 +3,50 @@ import { useNavigate } from 'react-router-dom';
 import LogMealPage from './LogMealPage'; 
 import MealsCards from '../components/MealsCards';
 import RecipesCards from '../components/RecipesCards';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUtensils, faHistory, faBook, faPlus } from "@fortawesome/free-solid-svg-icons";
 import styles from '../styles/MealsOverview.module.css';
 
 const MealsOverviewPage = () => {
   const navigate = useNavigate();
   const [showAllRecipes, setShowAllRecipes] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleMealLogged = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.mainTitle}>Nutrition Hub</h1>
+      <h1 className={styles.mainTitle} style={{ textAlign: 'center', marginBottom: '30px' }}>
+        Nutrition Hub
+      </h1>
 
-      <div className={styles.topGrid}>
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            <FontAwesomeIcon icon={faUtensils} /> Log a New Meal
-          </h2>
-          <LogMealPage />
-        </section>
+      {/* SECTION 1: Log Meal (Centered, Full Width) */}
+      <section className={`${styles.section} ${styles.fullWidth}`} style={{ maxWidth: '800px', margin: '0 auto 30px auto' }}>
+        <h2 className={styles.sectionTitle}>
+          Log a New Meal
+        </h2>
+        <LogMealPage onMealLogged={handleMealLogged} />
+      </section>
 
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            <FontAwesomeIcon icon={faHistory} /> Recent Meals
-          </h2>
-          <div className={styles.scrollableHistory}>
-             <MealsCards />
-          </div>
-        </section>
-      </div>
+      {/* SECTION 2: Recent Meals (Full Width, below Log Meal) */}
+      <section className={`${styles.section} ${styles.fullWidth}`} style={{ marginBottom: '30px' }}>
+        <h2 className={styles.sectionTitle}>
+          Recent Meals
+        </h2>
+        <MealsCards refreshTrigger={refreshKey} />
+      </section>
 
+      {/* SECTION 3: Recipes */}
       <section className={`${styles.section} ${styles.fullWidth}`}>
         <div className={styles.recipeHeader}>
           <h2 className={styles.sectionTitle}>
-            <FontAwesomeIcon icon={faBook} /> My Recipes
+            My Recipes
           </h2>
           <button 
             className={styles.createBtn} 
             onClick={() => navigate('/createRecipe')}
           >
-            <FontAwesomeIcon icon={faPlus} /> Create a New Recipe
+            Create a New Recipe
           </button>
         </div>
 
