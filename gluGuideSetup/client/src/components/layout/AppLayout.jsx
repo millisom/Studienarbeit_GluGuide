@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import Navbar from '../Navbar.jsx';
 import Footer from '../Footer';
 
-// Simple loading component
+
 const Loading = () => (
   <div className="loading-spinner">Loading...</div>
 );

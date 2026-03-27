@@ -22,13 +22,11 @@ const GlucoseLog = () => {
     meal_id: '' 
   });
   
-
   const [allUserMeals, setAllUserMeals] = useState([]); 
   const [dropdownMeals, setDropdownMeals] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingLogId, setEditingLogId] = useState(null);
   const [editedLevel, setEditedLevel] = useState('');
-
 
   useEffect(() => {
     const fetchAllMeals = async () => {
@@ -43,7 +41,6 @@ const GlucoseLog = () => {
     fetchAllMeals();
   }, [userId]);
 
-
   useEffect(() => {
     const now = new Date();
     setFormData(prev => ({
@@ -52,7 +49,6 @@ const GlucoseLog = () => {
       time: now.toTimeString().slice(0, 5),
     }));
   }, []);
-
 
   useEffect(() => {
     if (!formData.date || allUserMeals.length === 0) {
@@ -86,8 +82,6 @@ const GlucoseLog = () => {
     });
 
     setDropdownMeals(formattedMeals);
-    
-    
     setFormData(prev => ({...prev, meal_id: ''}));
 
   }, [formData.date, allUserMeals]);
@@ -166,8 +160,8 @@ const GlucoseLog = () => {
     }
   };
 
-  if (authLoading) return <div className={styles.glucoseLogContainer}><p>Checking authentication...</p></div>;
-  if (!user) return <div className={styles.glucoseLogContainer}><p>Please log in to view logs.</p></div>;
+  if (authLoading) return <div className={styles.container}><p>Checking authentication...</p></div>;
+  if (!user) return <div className={styles.container}><p>Please log in to view logs.</p></div>;
 
   const displayedLogs = isExpanded ? logs : logs.slice(-3);
 
@@ -181,7 +175,6 @@ const GlucoseLog = () => {
     }
   };
 
-
   const getAssociatedMealName = (mealId) => {
     if (!mealId) return null;
     const meal = allUserMeals.find(m => m.meal_id === parseInt(mealId, 10));
@@ -193,85 +186,88 @@ const GlucoseLog = () => {
   };
 
   return (
-    <div className={styles.glucoseLogContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px', margin: '0 auto', gap: '30px' }}>
+    <div className={styles.container}>
       
-      {/* 1. TOP: LOGGING FORM */}
-      <div className={styles.loggingFormContainer} style={{ width: '100%', backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0' }}>
-        <h2 className={styles.sectionTitle} style={{ textAlign: 'center', marginBottom: '20px' }}>Log Your Glucose Level</h2>
-        
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '500px', margin: '0 auto' }}>
+      <h1 className={styles.pageTitle}>Glucose Log</h1>
+
+      {/* 1. TOP SECTION: LOGGING FORM (Matches CreatePost Component exactly) */}
+      <div className={styles.formOuterContainer}>
+        <div className={styles.formInnerRectangle}>
+          <h2 className={styles.sectionTitle}>Log Your Glucose Level</h2>
           
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'space-between' }}>
-            <div className={styles.inputField} style={{ flex: 1 }}>
-              <label>Date:</label>
-              <input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required style={{ width: '100%' }} />
+          <form onSubmit={handleSubmit} className={styles.formWrapper}>
+            
+            <div className={styles.inputRow}>
+              <div className={styles.inputField}>
+                <label>Date:</label>
+                <input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required className={styles.input} />
+              </div>
+              
+              <div className={styles.inputField}>
+                <label>Time:</label>
+                <input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} required className={styles.input} />
+              </div>
             </div>
             
-            <div className={styles.inputField} style={{ flex: 1 }}>
-              <label>Time:</label>
-              <input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} required style={{ width: '100%' }} />
-            </div>
-          </div>
-          
-          <div className={styles.inputField}>
-            <label>Reading Type:</label>
-            <select 
-              value={formData.reading_type} 
-              onChange={(e) => setFormData({...formData, reading_type: e.target.value})}
-              required
-              style={{ width: '100%' }}
-            >
-              <option value="fasting">Fasting (Morning)</option>
-              <option value="1h_post_meal">1 Hour Post-Meal</option>
-              <option value="2h_post_meal">2 Hours Post-Meal</option>
-              <option value="random">Random / Other</option>
-            </select>
-          </div>
-
-          {(formData.reading_type === '1h_post_meal' || formData.reading_type === '2h_post_meal') && (
             <div className={styles.inputField}>
-              <label>Select Meal:</label>
+              <label>Reading Type:</label>
               <select 
-                value={formData.meal_id} 
-                onChange={(e) => setFormData({...formData, meal_id: e.target.value})}
-                required 
-                style={{ width: '100%' }}
+                value={formData.reading_type} 
+                onChange={(e) => setFormData({...formData, reading_type: e.target.value})}
+                required
+                className={styles.input}
               >
-                <option value="">-- Choose a Meal --</option>
-                {dropdownMeals.length > 0 ? (
-                  dropdownMeals.map(meal => (
-                    <option key={meal.meal_id} value={meal.meal_id}>
-                      {meal.dropdownName}
-                    </option>
-                  ))
-                ) : (
-                  <option value="" disabled>No meals logged on this date.</option>
-                )}
+                <option value="fasting">Fasting (Morning)</option>
+                <option value="1h_post_meal">1 Hour Post-Meal</option>
+                <option value="2h_post_meal">2 Hours Post-Meal</option>
+                <option value="random">Random / Other</option>
               </select>
             </div>
-          )}
 
-          <div className={styles.inputField}>
-            <label>Level (mg/dL):</label>
-            <input type="number" step="0.01" value={formData.level} onChange={(e) => setFormData({...formData, level: e.target.value})} required style={{ width: '100%' }} />
-          </div>
+            {(formData.reading_type === '1h_post_meal' || formData.reading_type === '2h_post_meal') && (
+              <div className={styles.inputField}>
+                <label>Select Meal:</label>
+                <select 
+                  value={formData.meal_id} 
+                  onChange={(e) => setFormData({...formData, meal_id: e.target.value})}
+                  required 
+                  className={styles.input}
+                >
+                  <option value="">-- Choose a Meal --</option>
+                  {dropdownMeals.length > 0 ? (
+                    dropdownMeals.map(meal => (
+                      <option key={meal.meal_id} value={meal.meal_id}>
+                        {meal.dropdownName}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>No meals logged on this date.</option>
+                  )}
+                </select>
+              </div>
+            )}
+
+            <div className={styles.inputField}>
+              <label>Level (mg/dL):</label>
+              <input type="number" step="0.01" value={formData.level} onChange={(e) => setFormData({...formData, level: e.target.value})} required className={styles.input} />
+            </div>
+            
+            <button type="submit" className={styles.submitButton}>Log Glucose</button>
+          </form>
           
-          <button type="submit" className={styles.submitButton} style={{ width: '100%', marginTop: '10px' }}>Log Glucose</button>
-        </form>
-        
-        {error && <p className={styles.errorMessage} style={{ textAlign: 'center', marginTop: '15px' }}>{error}</p>}
-        {successMessage && <p className={styles.successMessage} style={{ textAlign: 'center', marginTop: '15px' }}>{successMessage}</p>}
+          {error && <p className={styles.errorMessage}>{error}</p>}
+          {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+        </div>
       </div>
 
-
-      <div style={{ width: '100%', backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0' }}>
+      {/* 2. BOTTOM SECTION: FILTER, CHART, AND HISTORY TABLE */}
+      <div className={styles.historySection}>
         
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>
-          <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#1e293b' }}>Glucose History</h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontWeight: '500', color: '#64748b' }}>Filter:</span>
-            <select onChange={(e) => setFilter(e.target.value)} value={filter} style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+        <div className={styles.filterHeader}>
+          <h3 className={styles.filterTitle}>History & Analysis</h3>
+          <div className={styles.filterControls}>
+            <span className={styles.filterLabel}>Filter:</span>
+            <select onChange={(e) => setFilter(e.target.value)} value={filter} className={styles.input} style={{ width: 'auto', padding: '6px 12px' }}>
               <option value="24hours">Last 24 Hours</option>
               <option value="1week">Last Week</option>
               <option value="all">All Time</option>
@@ -279,55 +275,52 @@ const GlucoseLog = () => {
           </div>
         </div>
 
-
-        <div className={styles.chartWrapper} style={{ marginBottom: '30px' }}>
+        <div className={styles.chartWrapper}>
           <GlucoseChart logs={logs} filter={filter} />
         </div>
         
-
-        <div className={styles.glucoseLogsListContainer}>
-          <table className={styles.glucoseLogsTable} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-            <thead style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+        <div>
+          <table className={styles.glucoseLogsTable}>
+            <thead>
               <tr>
-                <th style={{ padding: '12px' }}>Date</th>
-                <th style={{ padding: '12px' }}>Time</th>
-                <th style={{ padding: '12px' }}>Type</th>
-                <th style={{ padding: '12px' }}>Associated Meal</th>
-                <th style={{ padding: '12px' }}>Level</th>
-                <th style={{ padding: '12px', textAlign: 'center' }}>Actions</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Type</th>
+                <th>Associated Meal</th>
+                <th>Level</th>
+                <th className={styles.textCenter}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {displayedLogs.map((log) => (
-                <tr key={log.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                  <td style={{ padding: '12px' }}>{new Date(log.date).toLocaleDateString()}</td>
-                  <td style={{ padding: '12px' }}>{log.time.slice(0, 5)}</td>
-                  <td style={{ padding: '12px' }}>{formatReadingType(log.reading_type)}</td>
+                <tr key={log.id}>
+                  <td>{new Date(log.date).toLocaleDateString()}</td>
+                  <td>{log.time.slice(0, 5)}</td>
+                  <td>{formatReadingType(log.reading_type)}</td>
                   
-
-                  <td style={{ padding: '12px', color: '#64748b', fontSize: '0.9rem' }}>
+                  <td className={styles.associatedMeal}>
                     {getAssociatedMealName(log.meal_id) || '-'}
                   </td>
                   
-                  <td style={{ padding: '12px', fontWeight: 'bold' }}>
+                  <td className={styles.levelBold}>
                     {editingLogId === log.id ? (
-                      <input type="number" value={editedLevel} onChange={(e) => setEditedLevel(e.target.value)} className={styles.editInput} style={{ width: '70px' }} />
+                      <input type="number" value={editedLevel} onChange={(e) => setEditedLevel(e.target.value)} className={styles.editInput} />
                     ) : (
                       `${Number(log.glucose_level)} mg/dL`
                     )}
                   </td>
 
-                  <td style={{ padding: '12px', textAlign: 'center' }}>
-                    <div className={styles.actionButtonsWrapper} style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                  <td className={styles.textCenter}>
+                    <div className={styles.actionButtonsWrapper}>
                       {editingLogId === log.id ? (
                         <>
-                          <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton} style={{ padding: '4px 8px', fontSize: '0.85rem' }}>Save</button>
-                          <button onClick={() => setEditingLogId(null)} className={styles.cancelButton} style={{ padding: '4px 8px', fontSize: '0.85rem' }}>Cancel</button>
+                          <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton}>Save</button>
+                          <button onClick={() => setEditingLogId(null)} className={styles.cancelButton}>Cancel</button>
                         </>
                       ) : (
                         <>
-                          <button onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} className={styles.editButton} style={{ padding: '4px 8px', fontSize: '0.85rem' }}>Edit</button>
-                          <button onClick={() => handleDeleteLog(log.id)} className={styles.deleteButton} style={{ padding: '4px 8px', fontSize: '0.85rem' }}>Delete</button>
+                          <button onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} className={styles.editButton}>Edit</button>
+                          <button onClick={() => handleDeleteLog(log.id)} className={styles.deleteButton}>Delete</button>
                         </>
                       )}
                     </div>
@@ -338,8 +331,8 @@ const GlucoseLog = () => {
           </table>
           
           {logs.length > 3 && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-              <button onClick={() => setIsExpanded(!isExpanded)} className={styles.toggleButton} style={{ padding: '8px 16px', backgroundColor: '#e2e8f0', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+            <div className={styles.toggleButtonContainer}>
+              <button onClick={() => setIsExpanded(!isExpanded)} className={styles.toggleButton}>
                 {isExpanded ? 'Show Less' : 'See Full History'}
               </button>
             </div>

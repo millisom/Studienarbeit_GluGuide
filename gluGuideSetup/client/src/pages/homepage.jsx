@@ -65,14 +65,10 @@ const Homepage = () => {
 
 if (isLoggedIn) {
         return (
-            <div className={styles.homepageContainer}>
-
-                <div className={styles.glucoseLogSection}>
-                    <h2 className={styles.sectionTitle}>Track Your Glucose</h2>
+                <>
                     <GlucoseLog />
-                </div>
+                </>
                 
-            </div>
         );
     } else {
         return (
