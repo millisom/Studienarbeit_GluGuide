@@ -16,30 +16,31 @@ const MealsOverviewPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.mainTitle} style={{ textAlign: 'center', marginBottom: '30px' }}>
+      <h1 className={styles.mainTitle}>
         Nutrition Hub
       </h1>
 
-      {/* SECTION 1: Log Meal (Centered, Full Width) */}
-      <section className={`${styles.section} ${styles.fullWidth}`} style={{ maxWidth: '800px', margin: '0 auto 30px auto' }}>
-        <h2 className={styles.sectionTitle}>
+      {/* SECTION 1: Log Meal 
+          Uses the new logMealSection which has BOTH the shadow box AND the thick frame */}
+      <section className={styles.logMealSection}>
+        <h2 className={styles.sectionTitle} style={{ margin: '0 0 20px 0' }}>
           Log a New Meal
         </h2>
         <LogMealPage onMealLogged={handleMealLogged} />
       </section>
 
-      {/* SECTION 2: Recent Meals (Full Width, below Log Meal) */}
-      <section className={`${styles.section} ${styles.fullWidth}`} style={{ marginBottom: '30px' }}>
+      {/* SECTION 2: Recent Meals (Standard box) */}
+      <section className={styles.section} style={{ marginBottom: '30px' }}>
         <h2 className={styles.sectionTitle}>
           Recent Meals
         </h2>
         <MealsCards refreshTrigger={refreshKey} />
       </section>
 
-      {/* SECTION 3: Recipes */}
-      <section className={`${styles.section} ${styles.fullWidth}`}>
+      {/* SECTION 3: Recipes (Standard box) */}
+      <section className={styles.section}>
         <div className={styles.recipeHeader}>
-          <h2 className={styles.sectionTitle}>
+          <h2 className={styles.sectionTitle} style={{ margin: 0 }}>
             My Recipes
           </h2>
           <button 

@@ -188,7 +188,7 @@ const GlucoseLog = () => {
   return (
     <div className={styles.container}>
       
-      <h1 className={styles.pageTitle}>Glucose Log</h1>
+      <h1 className={styles.pageTitle}>Glucose Readings</h1>
 
       {/* 1. TOP SECTION: LOGGING FORM (Matches CreatePost Component exactly) */}
       <div className={styles.formOuterContainer}>
