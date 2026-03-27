@@ -9,12 +9,22 @@ import styles from '../styles/LogMealPage.module.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+
+const getLocalDatetimeString = () => {
+  const now = new Date();
+  const tzOffset = now.getTimezoneOffset() * 60000; 
+  return new Date(now.getTime() - tzOffset).toISOString().slice(0, 16);
+};
+
 const LogMealPage = ({ onMealLogged }) => {
   const { user } = useAuth();
   const userId = user?.id || user?.userId;
 
   const [mealType, setMealType] = useState('');
-  const [mealTime, setMealTime] = useState(new Date().toISOString().slice(0, 16));
+  
+
+  const [mealTime, setMealTime] = useState(getLocalDatetimeString());
+  
   const [snackCount, setSnackCount] = useState(1);
   const [requestReminder, setRequestReminder] = useState(false);
   const [notes, setNotes] = useState('');
@@ -65,7 +75,7 @@ const LogMealPage = ({ onMealLogged }) => {
     try {
       const payload = {
         meal_type: mealType,
-        meal_time: new Date(mealTime).toISOString(),
+        meal_time: mealTime, 
         notes, 
         items: foodItems, 
         recipe_id: selectedRecipe?.id || null,
@@ -82,15 +92,17 @@ const LogMealPage = ({ onMealLogged }) => {
          scheduleLocalReminder(meal.meal_id, mealTime, mealType);
       }
 
-      // Reset form
+
       setMealType('');
       setNotes('');
       setFoodItems([]);
       setSelectedRecipe(null);
       setRequestReminder(false);
-      setMealTime(new Date().toISOString().slice(0, 16));
+      
 
-      // Trigger refresh in MealsOverviewPage
+      setMealTime(getLocalDatetimeString());
+
+
       if (onMealLogged) onMealLogged();
 
       setTimeout(() => setStatus(''), 3000);
