@@ -4,16 +4,39 @@ const logController = {
 
     async logGlucose(req, res) {
         const userId = req.session?.userId;
-        const { date, time, glucoseLevel } = req.body;
+        // 1. UPDATED: Destructure the new meal_id and reading_type fields
+        const { date, time, glucoseLevel, meal_id, reading_type } = req.body;
 
         if (!userId) {
             return res.status(400).json({ error: 'User ID is required (Session).' });
         }
 
         try {
-            console.log('Calling Log.createLog with:', { userId, date, time, glucoseLevel });
+            console.log('Calling Log.createLog with:', { userId, date, time, glucoseLevel, meal_id, reading_type });
 
-            const newLog = await Log.createLog(userId, date, time, glucoseLevel);
+            // 2. UPDATED: Pass the new fields to the model
+            const newLog = await Log.createLog(userId, date, time, glucoseLevel, meal_id, reading_type);
+
+            // ==========================================
+            // 💉 GESTATIONAL DIABETES: 2-HOUR TRAP
+            // ==========================================
+            const threshold = 140; // Alert threshold (Change to 7.8 if you use mmol/L)
+            const isOneHourCheck = reading_type === '1h_post_meal';
+            const isTooHigh = parseFloat(glucoseLevel) > threshold;
+
+            if (isOneHourCheck && isTooHigh) {
+                console.log(`⚠️ [WARNING] High 1-hour reading (${glucoseLevel}) for User ${userId}. Scheduling 2-hour check.`);
+                
+                // Set a timer for 1 hour from NOW (which equals 2 hours post-meal)
+                setTimeout(() => {
+                    console.log(`⏰ [ALERT] Triggering 2-hour glucose check for User ${userId} (Meal ${meal_id})`);
+                    
+                    // TODO: Call your existing email alert function here!
+                    // sendEmailAlert(userId, "Follow-up required", "Your 1-hour reading was elevated. Please check your glucose again now.");
+                    
+                }, 60 * 60 * 1000);
+            }
+            // ==========================================
 
             return res.status(201).json(newLog);
         } catch (error) {
@@ -114,35 +137,36 @@ const logController = {
         }
     },
 
-async updateGlucoseLog(req, res) {
-    const logId = parseInt(req.params.id, 10);
-    const userId = req.session.userId;
+    async updateGlucoseLog(req, res) {
+        const logId = parseInt(req.params.id, 10);
+        const userId = req.session.userId;
 
-    console.log("DEBUG: logId:", logId, "userId:", userId, "body:", req.body);
+        console.log("DEBUG: logId:", logId, "userId:", userId, "body:", req.body);
 
-    if (isNaN(logId)) {
-        return res.status(400).json({ error: 'Invalid Log ID format' });
-    }
-    if (!userId) {
-        return res.status(401).json({ error: 'Session expired or User not logged in' });
-    }
-
-
-    const { date, time, glucoseLevel } = req.body;
-
-    try {
-        const updatedLog = await Log.updateLog(logId, userId, date, time, glucoseLevel);
-
-        if (!updatedLog) {
-            return res.status(403).json({ message: 'Log not found or unauthorized' });
+        if (isNaN(logId)) {
+            return res.status(400).json({ error: 'Invalid Log ID format' });
+        }
+        if (!userId) {
+            return res.status(401).json({ error: 'Session expired or User not logged in' });
         }
 
-        return res.status(200).json({ success: true, log: updatedLog });
-    } catch (error) {
-        console.error('Update Controller Error:', error.message);
-        return res.status(500).json({ error: 'Internal server error during update' });
-    }
-},
+        // 3. UPDATED: Destructure the new fields for updates
+        const { date, time, glucoseLevel, meal_id, reading_type } = req.body;
+
+        try {
+            // 4. UPDATED: Pass the new fields to the update method
+            const updatedLog = await Log.updateLog(logId, userId, date, time, glucoseLevel, meal_id, reading_type);
+
+            if (!updatedLog) {
+                return res.status(403).json({ message: 'Log not found or unauthorized' });
+            }
+
+            return res.status(200).json({ success: true, log: updatedLog });
+        } catch (error) {
+            console.error('Update Controller Error:', error.message);
+            return res.status(500).json({ error: 'Internal server error during update' });
+        }
+    },
 
     async deleteGlucoseLog(req, res) {
         const { id } = req.params;

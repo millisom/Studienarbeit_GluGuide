@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AppLayout from '../../../src/components/layout/AppLayout';
 
-// Mock the Navbar and Footer components
+
 vi.mock('../../../src/components/Navbar.jsx', () => ({
   default: () => <div data-testid="navbar">Navbar</div>
 }));
@@ -12,7 +12,7 @@ vi.mock('../../../src/components/Footer', () => ({
   default: () => <div data-testid="footer">Footer</div>
 }));
 
-// Mock style module
+
 vi.mock('../../../src/components/layout/AppLayout.module.css', () => ({
   default: {
     container: 'container',
@@ -20,7 +20,7 @@ vi.mock('../../../src/components/layout/AppLayout.module.css', () => ({
   }
 }), { virtual: true });
 
-// ✅ Correct async Suspense setup
+
 const createAsyncComponent = () => {
   let resolve;
   const promise = new Promise((r) => {

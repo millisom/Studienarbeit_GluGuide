@@ -53,7 +53,7 @@ const RecipeCard = ({ recipeId }) => {
 
     try {
       await deleteRecipe(recipeId);
-      setSuccessMessage('✅ Recipe deleted successfully! Redirecting...');
+      setSuccessMessage('Recipe deleted successfully! Redirecting...');
       
    
       setTimeout(() => {

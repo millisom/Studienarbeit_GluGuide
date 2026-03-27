@@ -1,9 +1,13 @@
 const db = require('../config/db');
 
 const LogModel = {
-    createLog: async (userId, date, time, glucoseLevel) => {
-        const query = `INSERT INTO glucose_logs (user_id, date, time, glucose_level) VALUES ($1, $2, $3, $4) RETURNING *`;
-        const values = [userId, date, time, glucoseLevel];
+    // 1. UPDATED: Accept mealId and readingType in createLog
+    createLog: async (userId, date, time, glucoseLevel, mealId = null, readingType = null) => {
+        const query = `
+            INSERT INTO glucose_logs (user_id, date, time, glucose_level, meal_id, reading_type) 
+            VALUES ($1, $2, $3, $4, $5, $6) 
+            RETURNING *`;
+        const values = [userId, date, time, glucoseLevel, mealId, readingType];
         try {
             const result = await db.query(query, values);
             return result.rows[0];
@@ -106,12 +110,15 @@ const LogModel = {
         }
     },
 
-    updateLog: async (id, userId, date, time, glucoseLevel) => {
+    // 2. UPDATED: Accept and process mealId and readingType in updateLog
+    updateLog: async (id, userId, date, time, glucoseLevel, mealId, readingType) => {
         const query = `
             UPDATE glucose_logs 
             SET date = COALESCE($3, date), 
                 time = COALESCE($4, time), 
-                glucose_level = COALESCE($5, glucose_level) 
+                glucose_level = COALESCE($5, glucose_level),
+                meal_id = COALESCE($6, meal_id),
+                reading_type = COALESCE($7, reading_type)
             WHERE id = $1 AND user_id = $2 
             RETURNING *`;
 
@@ -120,7 +127,9 @@ const LogModel = {
             userId,
             date === undefined ? null : date,
             time === undefined ? null : time,
-            glucoseLevel === undefined ? null : glucoseLevel
+            glucoseLevel === undefined ? null : glucoseLevel,
+            mealId === undefined ? null : mealId,
+            readingType === undefined ? null : readingType
         ];
 
         try {

@@ -76,7 +76,7 @@ const RecipeDashboard = () => {
 
   if (!user) {
     return (
-        <div className={styles.container} style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h2>Create Your Recipe</h2>
             <p>Please <Link to="/login" style={{ color: 'blue' }}>log in</Link> to create and save your own recipes.</p>
         </div>
@@ -84,41 +84,50 @@ const RecipeDashboard = () => {
   }
 
   return (
-    <>
+    // Removed styles.container here so we don't get the "double frame" effect!
+    // Just using a standard div to hold the content.
+    <div style={{ width: '100%' }}>
       <h1 className={styles.title}>Create Your Recipe</h1>
 
-      <input
-        type="text"
-        value={recipeName}
-        onChange={(e) => setRecipeName(e.target.value)}
-        placeholder="Recipe Name"
-        className={styles.input}
-      />
-      <SearchFoodItem onAdd={addIngredient} />
+      {/* Keeps the 24px vertical spacing between elements */}
+      <div className={styles.mealForm}>
+        
+        <div className={styles.inputGroup}>
+          <input
+            type="text"
+            value={recipeName}
+            onChange={(e) => setRecipeName(e.target.value)}
+            placeholder="Recipe Name"
+            className={styles.input}
+          />
+        </div>
 
-      {ingredients.length > 0 && (
-        <IngredientList ingredients={ingredients} onRemove={removeIngredient} />
-      )}
+        <SearchFoodItem onAdd={addIngredient} />
 
-      <RecipeInstructionsInput
-        instructions={instructions}
-        setInstructions={updateInstructions}
-      />
+        {ingredients.length > 0 && (
+          <IngredientList ingredients={ingredients} onRemove={removeIngredient} />
+        )}
 
-      <button 
-        onClick={handleSubmit} 
-        className={styles.submitButton}
-        disabled={isSaving}
-      >
-        {isSaving ? 'Saving...' : 'Save Recipe'}
-      </button>
+        <RecipeInstructionsInput
+          instructions={instructions}
+          setInstructions={updateInstructions}
+        />
 
-      {status && (
-        <p className={status.startsWith('Failed') ? styles.errorMessage : styles.status}>
-            {status}
-        </p>
-      )}
-    </>
+        <button 
+          onClick={handleSubmit} 
+          className={styles.submitButton}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Save Recipe'}
+        </button>
+
+        {status && (
+          <p className={status.startsWith('Failed') ? styles.errorMessage : styles.status}>
+              {status}
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 

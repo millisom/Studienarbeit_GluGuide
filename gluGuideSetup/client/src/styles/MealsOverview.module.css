@@ -7,9 +7,24 @@
 .mainTitle {
   text-align: center;
   margin-bottom: 2rem;
-  color: #2c3e50;
+  color: var(--color-primary, #2c3e50);
+  font-size: 2.5rem;
 }
 
+/* -------------------------------------
+   THE UNIFIED LOG MEAL BOX (Shadow + Thick Frame)
+   ------------------------------------- */
+.logMealSection {
+  background: var(--color-background, white);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* The shadow you liked! */
+  border: 8px solid var(--color-primary);  /* The thick violet frame! */
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto 30px auto;
+  box-sizing: border-box;
+}
 
 .topGrid {
   display: grid;
@@ -18,8 +33,9 @@
   margin-bottom: 2rem;
 }
 
+/* Base square frames for Recent Meals and Recipes */
 .section {
-  background: white;
+  background: var(--color-background, white);
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -29,9 +45,11 @@
 .sectionTitle {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 1.5rem;
-  color: #34495e;
+  color: var(--color-primary, #34495e);
+  font-size: 2rem;
 }
 
 /* Recipe Header Layout */
@@ -42,20 +60,25 @@
   margin-bottom: 1.5rem;
 }
 
+.recipeHeader .sectionTitle {
+  margin-bottom: 0;
+}
+
 .createBtn {
-  background-color: #2ecc71;
+  background-color: var(--color-primary, #2ecc71);
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .createBtn:hover {
-  background-color: #27ae60;
+  background-color: var(--color-secondary, #27ae60);
 }
-
 
 .recipesCollapsed {
   max-height: 800px;
@@ -70,19 +93,20 @@
 }
 
 .seeMoreBtn {
-  background: #3498db;
+  background: var(--color-primary, #3498db);
   color: white;
   border: none;
   padding: 12px 30px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .seeMoreBtn:hover {
-  background: #2980b9;
+  background: var(--color-secondary, #2980b9);
 }
-
 
 .scrollableHistory {
   max-height: 600px;
@@ -91,6 +115,6 @@
 
 @media (max-width: 900px) {
   .topGrid {
-    grid-template-columns: 1fr; /* Stack on mobile */
+    grid-template-columns: 1fr; 
   }
 }

@@ -31,7 +31,7 @@ const Recipe = {
   
         const recipe = result.rows[0];
   
-        // ✅ Enrich each ingredient with food_name
+
         if (Array.isArray(recipe.ingredients)) {
           const enrichedIngredients = await Promise.all(
             recipe.ingredients.map(async (ingredient) => {
