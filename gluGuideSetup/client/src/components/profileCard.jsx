@@ -30,6 +30,9 @@ const ProfileCard = () => {
   const [selectedDpFile, setSelectedDpFile] = useState(null);
   const [previewDp, setPreviewDp] = useState(null);
 
+  // NEW: State to trigger table refresh
+  const [alertRefreshTrigger, setAlertRefreshTrigger] = useState(0);
+
   useEffect(() => {
     if (!user) return;
 
@@ -155,7 +158,6 @@ const ProfileCard = () => {
       <div className={styles.profileHeaderBanner}></div>
       <div className={styles.profileGrid}>
         
- 
         <aside className={styles.profileSidebar}>
           <div className={styles.dpWrapper}>
             <img
@@ -191,10 +193,9 @@ const ProfileCard = () => {
               <FontAwesomeIcon icon={faBlog} className={styles.buttonIcon} /> My Blogs
             </button>
 
-
-
             <div style={{ marginTop: '30px', width: '100%' }}>
-              <AlertForm />
+              {/* UPDATED: Passing down the trigger function to AlertForm */}
+              <AlertForm fetchAlerts={() => setAlertRefreshTrigger(prev => prev + 1)} />
             </div>
           </nav>
 
@@ -204,7 +205,6 @@ const ProfileCard = () => {
             </button>
           </div>
         </aside>
-
 
         <main className={styles.profileContent}>
           <div className={styles.bioSectionHeader}>
@@ -241,7 +241,8 @@ const ProfileCard = () => {
           )}
 
           <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-             <AlertsTable />
+             {/* UPDATED: Passing down the trigger value to AlertsTable */}
+             <AlertsTable refreshTrigger={alertRefreshTrigger} />
           </div>
           
         </main>

@@ -92,21 +92,29 @@ const Alert = {
   },
 
 
-  async getAlertsDueForSending() {
+async getAlertsDueForSending() {
+    const currentBerlinTime = new Date().toLocaleTimeString('en-GB', { 
+        timeZone: 'Europe/Berlin', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+    }); 
+
+
     const query = `
       SELECT a.*, u.email 
       FROM alerts a 
       JOIN users u ON a.user_id = u.id 
-      WHERE a.reminder_time <= (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin')::time
+      WHERE a.reminder_time <= $1
       AND (
         a.last_sent_at IS NULL 
         OR (a.reminder_frequency = 'daily' AND a.last_sent_at::date < CURRENT_DATE)
         OR (a.reminder_frequency = 'weekly' AND a.last_sent_at < NOW() - INTERVAL '7 days')
-        -- If frequency is 'once' and last_sent_at is NOT NULL, it won't be picked up again!
       )
     `;
+    
     try {
-      const result = await pool.query(query);
+      const result = await pool.query(query, [currentBerlinTime]);
       return result.rows;
     } catch (error) {
       throw new Error('Error fetching due alerts: ' + error.message);

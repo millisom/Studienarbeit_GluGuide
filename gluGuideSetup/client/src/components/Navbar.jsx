@@ -49,7 +49,7 @@ const Navbar = () => {
         };
 
         checkNotifications();
-        const intervalId = setInterval(checkNotifications, 60000); 
+        const intervalId = setInterval(checkNotifications, 10000); 
 
         return () => clearInterval(intervalId);
     }, [user]);
