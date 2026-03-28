@@ -3,13 +3,13 @@ import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertsTable.module.css';
 
-// 1. ACCEPT THE TRIGGER AS A PROP
+
 const AlertsTable = ({ refreshTrigger }) => {
   const { user } = useAuth();
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState('');
 
-  // Editing states (updated to include new fields)
+
   const [editingAlertId, setEditingAlertId] = useState(null);
   const [editedFrequency, setEditedFrequency] = useState('');
   const [editedTime, setEditedTime] = useState('');
@@ -35,9 +35,18 @@ const AlertsTable = ({ refreshTrigger }) => {
     }
   };
 
-  // 2. LISTEN FOR THE TRIGGER! Whenever it changes, refetch the data.
+
   useEffect(() => {
+
     fetchAlerts();
+
+
+    const intervalId = setInterval(() => {
+      fetchAlerts();
+    }, 10000);
+
+
+    return () => clearInterval(intervalId);
   }, [user, refreshTrigger]); 
 
   const refreshAlerts = () => fetchAlerts();
@@ -142,7 +151,6 @@ const AlertsTable = ({ refreshTrigger }) => {
                       <>
                         <td style={{ textTransform: 'capitalize' }}>{alert.reminder_frequency}</td>
                         <td>{alert.notification_method === 'app' ? 'App' : 'Email'}</td>
-                        {/* Format the time so it looks clean (removes seconds if they exist) */}
                         <td>{alert.reminder_time ? alert.reminder_time.substring(0, 5) : ''}</td>
                         <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {alert.custom_message || <span style={{ color: '#888', fontStyle: 'italic' }}>Standard</span>}
