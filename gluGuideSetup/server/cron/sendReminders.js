@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const alertController = require('../controllers/alertController');
 
 
-cron.schedule('*/5 * * * *', () => {
+cron.schedule('* * * * *', () => {
     console.log('Running scheduled task: Sending reminder emails...');
     alertController.sendReminderEmails();
   });
