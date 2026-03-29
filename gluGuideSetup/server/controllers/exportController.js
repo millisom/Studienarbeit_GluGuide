@@ -2,7 +2,6 @@ const ExportModel = require('../models/exportModel');
 const puppeteer = require('puppeteer');
 
 const exportController = {
-  // getAvailableDates remains the same as before...
   async getAvailableDates(req, res, next) {
     try {
       const user_id = req.session.userId;
@@ -33,7 +32,8 @@ const exportController = {
       const reportData = {};
 
       selectedDates.forEach(date => {
-        reportData[date] = { fasting: null, meals: {} };
+        // Change: meals is now an Array [] to support multiple entries
+        reportData[date] = { fasting: null, meals: [] };
       });
 
       rawData.glucoseLogs.forEach(log => {
@@ -50,19 +50,18 @@ const exportController = {
           const glucose1h = postMealLogs.find(g => g.reading_type === '1h_post_meal');
           const glucose2h = postMealLogs.find(g => g.reading_type === '2h_post_meal');
 
-          reportData[dateStr].meals[meal.meal_type] = {
+          // Change: Use .push() so we don't overwrite multiple snacks
+          reportData[dateStr].meals.push({
+            type: meal.meal_type,
             time: new Date(meal.meal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             items: Array.isArray(meal.items) ? meal.items : [],
             glucose_1h: glucose1h ? glucose1h.glucose_level : '-',
             glucose_2h: glucose2h ? glucose2h.glucose_level : '-'
-          };
+          });
         }
       });
 
       const htmlContent = generateHtmlTemplate(reportData);
-
-      // --- DEBUG: Check if HTML is being generated ---
-      console.log("HTML length:", htmlContent.length);
 
       browser = await puppeteer.launch({ 
         headless: "new",
@@ -70,8 +69,6 @@ const exportController = {
       });
       
       const page = await browser.newPage();
-      
-      // Use 'domcontentloaded' for faster/more reliable rendering of raw HTML
       await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
       
       const pdfBuffer = await page.pdf({
@@ -80,11 +77,8 @@ const exportController = {
         margin: { top: '1cm', right: '1cm', bottom: '1cm', left: '1cm' }
       });
 
-      console.log("PDF generated successfully. Buffer size:", pdfBuffer.length);
-
       await browser.close();
 
-      // Ensure headers are set correctly for binary data
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Content-Disposition': 'attachment; filename=GluGuide_Report.pdf',
@@ -105,16 +99,19 @@ function generateHtmlTemplate(data) {
   let daysHtml = '';
 
   for (const [date, content] of Object.entries(data)) {
-    const mealTypes = ['breakfast', 'snack', 'lunch', 'dinner'];
-    
+    // Dynamically handle headers based on the meals logged for this specific day
+    const mealHeaders = content.meals.map(meal => `
+      <th>${meal.type.toUpperCase()}<br><small>${meal.time}</small></th>
+    `).join('');
+
     daysHtml += `
       <div class="day-section">
         <h2>Report for ${date}</h2>
         <table>
           <thead>
             <tr>
-              <th style="width: 15%;">Fasting</th>
-              ${mealTypes.map(type => `<th>${type.toUpperCase()} ${content.meals[type] ? `<br><small>${content.meals[type].time}</small>` : ''}</th>`).join('')}
+              <th style="width: 120px;">FASTING</th>
+              ${mealHeaders || '<th>No meals logged</th>'}
             </tr>
           </thead>
           <tbody>
@@ -122,21 +119,17 @@ function generateHtmlTemplate(data) {
               <td class="valign-top">
                 ${content.fasting ? `<strong>${parseFloat(content.fasting.glucose_level).toFixed(0)} mg/dL</strong>` : '-'}
               </td>
-              ${mealTypes.map(type => {
-                const meal = content.meals[type];
-                if (!meal) return '<td>-</td>';
-                return `
-                  <td class="valign-top">
-                    <ul class="food-list">
-                      ${meal.items.map(i => `<li>${i.name} (${i.quantity}g)</li>`).join('')}
-                    </ul>
-                    <div class="glucose-results">
-                      <p>1h: ${meal.glucose_1h !== '-' ? parseFloat(meal.glucose_1h).toFixed(0) : '-'}</p>
-                      <p>2h: ${meal.glucose_2h !== '-' ? parseFloat(meal.glucose_2h).toFixed(0) : '-'}</p>
-                    </div>
-                  </td>
-                `;
-              }).join('')}
+              ${content.meals.map(meal => `
+                <td class="valign-top">
+                  <ul class="food-list">
+                    ${meal.items.map(i => `<li>${i.name} (${i.quantity}g)</li>`).join('')}
+                  </ul>
+                  <div class="glucose-results">
+                    <p>1h: ${meal.glucose_1h !== '-' ? parseFloat(meal.glucose_1h).toFixed(0) : '-'}</p>
+                    <p>2h: ${meal.glucose_2h !== '-' ? parseFloat(meal.glucose_2h).toFixed(0) : '-'}</p>
+                  </div>
+                </td>
+              `).join('') || '<td>-</td>'}
             </tr>
           </tbody>
         </table>
@@ -149,17 +142,17 @@ function generateHtmlTemplate(data) {
     <html>
       <head>
         <style>
-          body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; padding: 20px; line-height: 1.4; }
-          h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
-          h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-top: 30px; font-size: 16px; }
-          .day-section { margin-bottom: 50px; page-break-inside: avoid; }
+          body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; padding: 10px; line-height: 1.2; }
+          h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 22px; }
+          h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 3px; margin-top: 25px; font-size: 14px; }
+          .day-section { margin-bottom: 30px; page-break-inside: avoid; }
           table { width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid #bdc3c7; }
-          th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; font-size: 11px; word-wrap: break-word; }
+          th, td { border: 1px solid #bdc3c7; padding: 6px; text-align: left; font-size: 9px; word-wrap: break-word; }
           th { background-color: #ecf0f1; color: #2c3e50; font-weight: bold; }
           .valign-top { vertical-align: top; }
-          .food-list { padding-left: 12px; margin: 0; list-style-type: square; }
-          .glucose-results { margin-top: 10px; padding-top: 5px; border-top: 1px dashed #bdc3c7; }
-          .glucose-results p { margin: 2px 0; font-weight: bold; color: #e67e22; }
+          .food-list { padding-left: 10px; margin: 0; list-style-type: square; }
+          .glucose-results { margin-top: 6px; padding-top: 4px; border-top: 1px dashed #bdc3c7; }
+          .glucose-results p { margin: 1px 0; font-weight: bold; color: #d35400; }
         </style>
       </head>
       <body>
