@@ -6,9 +6,11 @@ import { createMeal, recalculateMealNutrition, getAllMealsForUser } from '../api
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LogMealPage.module.css';
 
+// 1. Added axiosInstance for the backend request!
+import axiosInstance from '../api/axiosConfig';
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
 
 const getLocalDatetimeString = () => {
   const now = new Date();
@@ -21,10 +23,7 @@ const LogMealPage = ({ onMealLogged }) => {
   const userId = user?.id || user?.userId;
 
   const [mealType, setMealType] = useState('');
-  
-
   const [mealTime, setMealTime] = useState(getLocalDatetimeString());
-  
   const [snackCount, setSnackCount] = useState(1);
   const [requestReminder, setRequestReminder] = useState(false);
   const [notes, setNotes] = useState('');
@@ -92,16 +91,13 @@ const LogMealPage = ({ onMealLogged }) => {
          scheduleLocalReminder(meal.meal_id, mealTime, mealType);
       }
 
-
       setMealType('');
       setNotes('');
       setFoodItems([]);
       setSelectedRecipe(null);
       setRequestReminder(false);
       
-
       setMealTime(getLocalDatetimeString());
-
 
       if (onMealLogged) onMealLogged();
 
@@ -115,13 +111,25 @@ const LogMealPage = ({ onMealLogged }) => {
     }
   };
 
-  const scheduleLocalReminder = (mealId, timeString, type) => {
+  // 2. Replaced local timer with backend database alert!
+  const scheduleLocalReminder = async (mealId, timeString, type) => {
     const mealTimeMs = new Date(timeString).getTime();
-    const oneHourLater = mealTimeMs + (60 * 60 * 1000);
-    const delay = oneHourLater - Date.now();
-
-    if (delay > 0) {
-      setTimeout(() => alert(`Reminder: It has been 1 hour since your ${type === 'snack' ? 'Snack' : type}! Time to log your glucose.`), delay);
+    const oneHourLater = new Date(mealTimeMs + (60 * 60 * 1000));
+    
+    // Check if the reminder is actually in the future
+    if (oneHourLater.getTime() > Date.now()) {
+      try {
+        await axiosInstance.post('/alerts', {
+          userId: userId,
+          reminderFrequency: 'once', 
+          reminderTime: oneHourLater.toISOString(),
+          notificationMethod: 'app' // Tell the backend we want an in-app popup!
+        });
+        
+        console.log("1-hour reminder successfully saved to the database!");
+      } catch (error) {
+        console.error("Failed to set reminder in database:", error);
+      }
     } else {
        console.log("Meal time was too far in the past to set a 1-hour reminder.");
     }

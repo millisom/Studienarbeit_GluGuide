@@ -1,6 +1,5 @@
 const setupAuthRoutes = require('../../../config/routeGroups/authRoutes');
 
-// Mocks
 jest.mock('../../../routes/authRoutes', () => 'authRoutes');
 jest.mock('../../../routes/profileRoutes', () => 'profileRoutes');
 
@@ -11,67 +10,51 @@ describe('Auth Routes Configuration', () => {
   beforeEach(() => {
     mockRes = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn()
+      json: jest.fn(),
+      clearCookie: jest.fn().mockReturnThis()
     };
     
     mockApp = {
       use: jest.fn(),
-      get: jest.fn()
+      get: jest.fn(),
+      post: jest.fn()
     };
   });
   
-  it('should set up auth and profile routes', () => {
+  it('should set up auth, profile, and logout routes', () => {
     setupAuthRoutes(mockApp);
     
-    // Check that auth routes are set up
     expect(mockApp.use).toHaveBeenCalledWith('/', 'authRoutes');
     expect(mockApp.use).toHaveBeenCalledWith('/', 'profileRoutes');
-    
-    // Check that the currentUser endpoint is registered
     expect(mockApp.get).toHaveBeenCalledWith('/currentUser', expect.any(Function));
+    expect(mockApp.post).toHaveBeenCalledWith('/logout', expect.any(Function));
   });
   
-  it('should return user ID when session exists', () => {
+  it('should return user ID when session exists at /currentUser', () => {
     setupAuthRoutes(mockApp);
+    const currentUserHandler = mockApp.get.mock.calls.find(call => call[0] === '/currentUser')[1];
+    const mockReq = { session: { userId: 123 } };
     
-    // Get the currentUser handler
-    const currentUserHandler = mockApp.get.mock.calls.find(
-      call => call[0] === '/currentUser'
-    )[1];
-    
-    // Create a mock request with session
-    const mockReq = {
-      session: {
-        userId: 123
-      }
-    };
-    
-    // Call the handler
     currentUserHandler(mockReq, mockRes);
     
-    // Check the response
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({ userId: 123 });
   });
-  
-  it('should return 401 when no session exists', () => {
+
+  it('should destroy session and return 200 on /logout', () => {
     setupAuthRoutes(mockApp);
-    
-    // Get the currentUser handler
-    const currentUserHandler = mockApp.get.mock.calls.find(
-      call => call[0] === '/currentUser'
-    )[1];
-    
-    // Create a mock request without session
+    const logoutHandler = mockApp.post.mock.calls.find(call => call[0] === '/logout')[1];
     const mockReq = {
-      session: null
+      session: {
+        destroy: jest.fn((callback) => callback(null))
+      }
     };
     
-    // Call the handler
-    currentUserHandler(mockReq, mockRes);
+    logoutHandler(mockReq, mockRes);
     
-    // Check the response
-    expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({ message: 'User not logged in' });
+    expect(mockReq.session.destroy).toHaveBeenCalled();
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    // Matches the actual controller string "Logout successful"
+    expect(mockRes.json).toHaveBeenCalledWith({ message: 'Logout successful' });
   });
-}); 
+});

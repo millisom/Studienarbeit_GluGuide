@@ -2,9 +2,9 @@ const pool = require('../config/db');
 
 const Alert = {
 
-  async createAlert(userId, reminderFrequency, reminderTime) {
-    try {
 
+  async createAlert(userId, reminderFrequency, reminderTime, notificationMethod = 'app', customMessage = '') {
+    try {
       const emailQuery = 'SELECT email FROM users WHERE id = $1';
       const emailResult = await pool.query(emailQuery, [userId]);
 
@@ -16,11 +16,11 @@ const Alert = {
 
 
       const alertQuery = `
-        INSERT INTO alerts (user_id, reminder_frequency, reminder_time, created_at)
-        VALUES ($1, $2, $3, NOW())
+        INSERT INTO alerts (user_id, reminder_frequency, reminder_time, notification_method, custom_message, created_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
         RETURNING *
       `;
-      const alertValues = [userId, reminderFrequency, reminderTime];
+      const alertValues = [userId, reminderFrequency, reminderTime, notificationMethod, customMessage];
       const alertResult = await pool.query(alertQuery, alertValues);
 
       return { ...alertResult.rows[0], email }; 
@@ -28,7 +28,6 @@ const Alert = {
       throw new Error('Error creating alert: ' + error.message);
     }
   },
-
 
   async getUserIdByUsername(username) {
     const query = 'SELECT id FROM users WHERE username = $1';
@@ -45,8 +44,7 @@ const Alert = {
     }
   },
 
-
-async getAlertsByUserId(userId) {
+  async getAlertsByUserId(userId) {
     const query = 'SELECT * FROM alerts WHERE user_id = $1 ORDER BY created_at ASC';
     const values = [userId];
     try {
@@ -58,14 +56,19 @@ async getAlertsByUserId(userId) {
   },
 
 
-  async updateAlert(alertId, reminderFrequency, reminderTime) {
+  async updateAlert(alertId, reminderFrequency, reminderTime, notificationMethod, customMessage) {
     const query = `
       UPDATE alerts
-      SET reminder_frequency = $1, reminder_time = $2, updated_at = NOW()
-      WHERE alert_id = $3
+      SET 
+        reminder_frequency = $1, 
+        reminder_time = $2, 
+        notification_method = COALESCE($3, notification_method),
+        custom_message = COALESCE($4, custom_message),
+        updated_at = NOW()
+      WHERE alert_id = $5
       RETURNING *
     `;
-    const values = [reminderFrequency, reminderTime, alertId];
+    const values = [reminderFrequency, reminderTime, notificationMethod || null, customMessage || null, alertId];
     try {
       const result = await pool.query(query, values);
       if (result.rowCount === 0) {
@@ -75,9 +78,7 @@ async getAlertsByUserId(userId) {
     } catch (error) {
       throw new Error('Error updating alert: ' + error.message);
     }
-
   },
-
 
   async deleteAlert(alertId) {
     const query = 'DELETE FROM alerts WHERE alert_id = $1 RETURNING *';
@@ -91,18 +92,41 @@ async getAlertsByUserId(userId) {
   },
 
 
-  async getAlertsDueForSending() {
+async getAlertsDueForSending() {
+    const currentBerlinTime = new Date().toLocaleTimeString('en-GB', { 
+        timeZone: 'Europe/Berlin', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+    }); 
+
+
     const query = `
       SELECT a.*, u.email 
       FROM alerts a 
       JOIN users u ON a.user_id = u.id 
-      WHERE a.reminder_time <= CURRENT_TIME
+      WHERE a.reminder_time <= $1
+      AND (
+        a.last_sent_at IS NULL 
+        OR (a.reminder_frequency = 'daily' AND a.last_sent_at::date < CURRENT_DATE)
+        OR (a.reminder_frequency = 'weekly' AND a.last_sent_at < NOW() - INTERVAL '7 days')
+      )
     `;
+    
     try {
-      const result = await pool.query(query);
+      const result = await pool.query(query, [currentBerlinTime]);
       return result.rows;
     } catch (error) {
       throw new Error('Error fetching due alerts: ' + error.message);
+    }
+  },
+
+  async markAlertAsSent(alertId) {
+    const query = `UPDATE alerts SET last_sent_at = NOW() WHERE alert_id = $1`;
+    try {
+      await pool.query(query, [alertId]);
+    } catch (error) {
+      throw new Error('Error marking alert as sent: ' + error.message);
     }
   }
 };

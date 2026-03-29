@@ -1,14 +1,9 @@
 const Alert = require('../models/alertModel');
 const NotificationContext = require('../strategies/NotificationContext');
 const EmailNotificationStrategy = require('../strategies/EmailNotificationStrategy');
+const AppNotificationStrategy = require('../strategies/AppNotificationStrategy');
 
-const createAlertReminderMessage = () => ({
-  subject: 'Sugar Log Reminder',
-  message: 'Hi! Just a friendly reminder to log your sugar levels today.',
-});
-
-
-async function sendReminderEmailsInternal() {
+async function processDueAlerts() {
   try {
     const alerts = await Alert.getAlertsDueForSending();
     if (!alerts || alerts.length === 0) {
@@ -16,23 +11,42 @@ async function sendReminderEmailsInternal() {
       return;
     }
 
-    const notificationContext = new NotificationContext(new EmailNotificationStrategy());
+    const notificationContext = new NotificationContext();
 
     for (const alert of alerts) {
-      const notificationData = createAlertReminderMessage();
+
+      const notificationData = {
+        subject: 'Sugar Log Reminder',
+        message: alert.custom_message || 'Hi! Just a friendly reminder to log your sugar levels today.',
+        userId: alert.user_id 
+      };
+
+      if (alert.notification_method === 'app') {
+        notificationContext.setStrategy(new AppNotificationStrategy());
+      } else {
+        notificationContext.setStrategy(new EmailNotificationStrategy());
+      }
+
       await notificationContext.send(alert.email, notificationData);
-      console.log(`Reminder email sent to ${alert.email}`);
+      console.log(`Reminder (${alert.notification_method}) sent to User ${alert.user_id}`);
+
+      await Alert.markAlertAsSent(alert.alert_id);
+
+      if (alert.reminder_frequency === 'once') {
+        await Alert.deleteAlert(alert.alert_id);
+      }
     }
-    console.log('Reminder emails sent successfully');
+    console.log('All due alerts processed successfully');
   } catch (error) {
-    console.error('Error sending reminder emails:', error.message);
+    console.error('Error processing due alerts:', error.message);
     throw error; 
   }
 }
 
 const alertController = {
   async createAlert(req, res) {
-    const { reminderFrequency, reminderTime } = req.body;
+
+    const { reminderFrequency, reminderTime, notificationMethod, customMessage } = req.body;
     const username = req.session?.username;
 
     if (!username) {
@@ -51,7 +65,8 @@ const alertController = {
         });
       }
 
-      const alert = await Alert.createAlert(userId, reminderFrequency, reminderTime);
+
+      const alert = await Alert.createAlert(userId, reminderFrequency, reminderTime, notificationMethod, customMessage);
       res.status(201).json({
         success: true,
         message: 'Alert preferences saved!',
@@ -113,10 +128,10 @@ const alertController = {
 
   async updateAlert(req, res) {
     const { id: alertId } = req.params;
-    const { reminderFrequency, reminderTime } = req.body;
+    const { reminderFrequency, reminderTime, notificationMethod, customMessage } = req.body;
 
     try {
-      const updatedAlert = await Alert.updateAlert(alertId, reminderFrequency, reminderTime);
+      const updatedAlert = await Alert.updateAlert(alertId, reminderFrequency, reminderTime, notificationMethod, customMessage);
       if (!updatedAlert) {
         return res.status(404).json({
           success: false,
@@ -161,26 +176,26 @@ const alertController = {
     }
   },
 
-
   async sendReminderEmails(req, res) {
     if (res) {
       try {
-        await sendReminderEmailsInternal();
+        await processDueAlerts();
         res.status(200).json({
           success: true,
-          message: 'Reminder emails sent successfully',
+          message: 'Alerts processed successfully',
         });
       } catch (error) {
-        console.error('Error sending reminder emails:', error.message);
+        console.error('Error processing alerts:', error.message);
         res.status(500).json({
           success: false,
-          message: 'Failed to send reminder emails',
+          message: 'Failed to process alerts',
         });
       }
     } else {
       try {
-        await sendReminderEmailsInternal();
+        await processDueAlerts();
       } catch (error) {
+        console.error('Cron job error:', error.message);
       }
     }
   },
