@@ -30,7 +30,6 @@ const ProfileCard = () => {
   const [selectedDpFile, setSelectedDpFile] = useState(null);
   const [previewDp, setPreviewDp] = useState(null);
 
-  // NEW: State to trigger table refresh
   const [alertRefreshTrigger, setAlertRefreshTrigger] = useState(0);
 
   useEffect(() => {
@@ -194,7 +193,6 @@ const ProfileCard = () => {
             </button>
 
             <div style={{ marginTop: '30px', width: '100%' }}>
-              {/* UPDATED: Passing down the trigger function to AlertForm */}
               <AlertForm fetchAlerts={() => setAlertRefreshTrigger(prev => prev + 1)} />
             </div>
           </nav>
@@ -241,7 +239,6 @@ const ProfileCard = () => {
           )}
 
           <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-             {/* UPDATED: Passing down the trigger value to AlertsTable */}
              <AlertsTable refreshTrigger={alertRefreshTrigger} />
           </div>
           
