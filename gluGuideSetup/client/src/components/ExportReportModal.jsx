@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axiosConfig'; // Ensure you use your axiosInstance
 
 const ExportReportModal = ({ isOpen, onClose }) => {
+  // Always initialize with empty arrays []
   const [range, setRange] = useState('month');
   const [availableDates, setAvailableDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
- 
   useEffect(() => {
     if (isOpen) {
       fetchDates();
@@ -18,16 +18,19 @@ const ExportReportModal = ({ isOpen, onClose }) => {
   const fetchDates = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`/export/dates?range=${range}`);
-      setAvailableDates(response.data.dates);
-      setSelectedDates(response.data.dates);
+      const response = await axiosInstance.get(`/export/dates?range=${range}`);
+      
+      // FIX: Use || [] fallback in case the backend returns something unexpected
+      const dates = response.data?.dates || []; 
+      setAvailableDates(dates);
+      setSelectedDates(dates);
     } catch (err) {
       console.error("Error fetching dates:", err);
+      setAvailableDates([]); // Reset to empty array on error
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleToggleDate = (date) => {
     setSelectedDates(prev => 
@@ -36,24 +39,23 @@ const ExportReportModal = ({ isOpen, onClose }) => {
   };
 
   const handleSelectAll = () => {
-    if (selectedDates.length === availableDates.length) {
+    // FIX: Add optional chaining ?. just in case
+    if (selectedDates?.length === availableDates?.length) {
       setSelectedDates([]);
     } else {
       setSelectedDates([...availableDates]);
     }
   };
 
-
   const handleExport = async () => {
-    if (selectedDates.length === 0) return alert("Please select at least one date.");
+    if (!selectedDates || selectedDates.length === 0) return alert("Please select at least one date.");
     
     setExporting(true);
     try {
-      const response = await axios.post('/export/generate', 
+      const response = await axiosInstance.post('/export/generate', 
         { selectedDates }, 
-        { responseType: 'blob' } 
+        { responseType: 'blob' }
       );
-
 
       const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
       const link = document.createElement('a');
@@ -66,8 +68,8 @@ const ExportReportModal = ({ isOpen, onClose }) => {
       link.click();
       link.remove();
       
-      window.URL.revokeObjectURL(url); 
-      onClose(); 
+      window.URL.revokeObjectURL(url);
+      onClose();
     } catch (err) {
       console.error("Export failed:", err);
       alert("Failed to generate PDF. Please try again.");
@@ -81,7 +83,10 @@ const ExportReportModal = ({ isOpen, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="export-modal">
-        <h3>Export Health Report</h3>
+        <div className="modal-header">
+           <h3>Export Health Report</h3>
+           <button className="close-x" onClick={onClose}>&times;</button>
+        </div>
         
         <div className="range-selector">
           <label>Time Period:</label>
@@ -94,27 +99,27 @@ const ExportReportModal = ({ isOpen, onClose }) => {
 
         <div className="date-checklist">
           <div className="checklist-header">
-            <button onClick={handleSelectAll}>
-              {selectedDates.length === availableDates.length ? 'Unselect All' : 'Select All'}
+            <button className="select-all-btn" onClick={handleSelectAll}>
+              {selectedDates?.length === availableDates?.length ? 'Unselect All' : 'Select All'}
             </button>
-            <span>{selectedDates.length} days selected</span>
+            <span>{selectedDates?.length || 0} days selected</span>
           </div>
 
           {loading ? (
-            <p>Loading available dates...</p>
+            <p className="loading-text">Loading available dates...</p>
           ) : (
             <div className="date-list">
-              {availableDates.map(date => (
+              {availableDates?.map(date => (
                 <label key={date} className="date-item">
                   <input 
                     type="checkbox" 
                     checked={selectedDates.includes(date)} 
                     onChange={() => handleToggleDate(date)} 
                   />
-                  {new Date(date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                  <span>{new Date(date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
                 </label>
               ))}
-              {availableDates.length === 0 && <p>No data found for this period.</p>}
+              {availableDates?.length === 0 && <p className="no-data">No data found for this period.</p>}
             </div>
           )}
         </div>
@@ -124,7 +129,7 @@ const ExportReportModal = ({ isOpen, onClose }) => {
           <button 
             className="btn-primary" 
             onClick={handleExport} 
-            disabled={exporting || selectedDates.length === 0}
+            disabled={exporting || !selectedDates || selectedDates.length === 0}
           >
             {exporting ? 'Generating PDF...' : 'Download PDF'}
           </button>
@@ -132,18 +137,26 @@ const ExportReportModal = ({ isOpen, onClose }) => {
       </div>
 
       <style jsx>{`
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .export-modal { background: white; padding: 25px; border-radius: 12px; width: 400px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .export-modal { background: white; padding: 25px; border-radius: 15px; width: 420px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 15px 35px rgba(0,0,0,0.3); color: #333; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .close-x { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
         .range-selector { margin-bottom: 20px; }
-        .range-selector select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #ddd; }
-        .date-checklist { flex: 1; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 20px; }
-        .checklist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; }
-        .date-list { display: flex; flex-direction: column; gap: 8px; }
-        .date-item { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 0; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .btn-primary { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
-        .btn-primary:disabled { background: #bdc3c7; }
-        .btn-secondary { background: #eee; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        .range-selector label { font-weight: bold; font-size: 0.9em; display: block; margin-bottom: 5px; }
+        .range-selector select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
+        .date-checklist { flex: 1; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; padding: 12px; margin-bottom: 20px; background: #fdfdfd; min-height: 150px; }
+        .checklist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .select-all-btn { background: #f0f0f0; border: 1px solid #ddd; padding: 5px 12px; border-radius: 5px; font-size: 0.8em; cursor: pointer; }
+        .date-list { display: flex; flex-direction: column; gap: 10px; }
+        .date-item { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 8px; border-radius: 6px; transition: background 0.2s; }
+        .date-item:hover { background: #f5f5f5; }
+        .date-item input { width: 18px; height: 18px; cursor: pointer; }
+        .no-data { text-align: center; color: #999; padding-top: 20px; font-style: italic; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .btn-primary { background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        .btn-primary:hover:not(:disabled) { background: #219150; }
+        .btn-primary:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .btn-secondary { background: #f0f0f0; border: 1px solid #ddd; padding: 12px 24px; border-radius: 8px; cursor: pointer; color: #666; }
       `}</style>
     </div>
   );
