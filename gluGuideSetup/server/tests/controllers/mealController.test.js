@@ -16,7 +16,7 @@ describe('Meal Controller - Reminder Logic', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // 🔥 FIX: Use fake timers so the setTimeout doesn't keep Jest running forever
+
     jest.useFakeTimers();
     jest.spyOn(global, 'setTimeout');
     
@@ -57,7 +57,7 @@ describe('Meal Controller - Reminder Logic', () => {
   });
 
   afterEach(() => {
-    // Clean up timers after each test
+
     jest.useRealTimers();
   });
 
@@ -66,7 +66,7 @@ describe('Meal Controller - Reminder Logic', () => {
 
     expect(Meal.createMeal).toHaveBeenCalled();
     
-    // 🔥 FIX: Check that the controller successfully triggered setTimeout
+
     expect(setTimeout).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
   });
@@ -78,7 +78,7 @@ describe('Meal Controller - Reminder Logic', () => {
 
     expect(Meal.createMeal).toHaveBeenCalled();
     
-    // Verify setTimeout was completely skipped
+
     expect(setTimeout).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
   });

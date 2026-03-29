@@ -31,7 +31,7 @@ describe('GlucoseController Logic', () => {
 
         await glucoseController.logGlucose(req, res);
 
-        // Allow any values for the last two arguments to stop the crash
+
         expect(LogModel.createLog).toHaveBeenCalledWith(
             1, 
             '2020-01-01', 

@@ -3,7 +3,8 @@ import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faEdit, faTrashAlt, faSave, faTimes, faSignOutAlt, 
-  faBlog, faUtensils, faBookOpen, faPlusCircle, faFileAlt 
+  faBlog, faUtensils, faBookOpen, faPlusCircle, faFileAlt,
+  faFileDownload 
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
@@ -13,6 +14,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useAuth } from '../context/AuthContext';
 import AlertForm from './AlertForm';
 import AlertsTable from './AlertsTable';
+import ExportReportModal from './ExportReportModal';
 
 const ProfileCard = () => {
   const { user, logout } = useAuth();
@@ -30,8 +32,10 @@ const ProfileCard = () => {
   const [selectedDpFile, setSelectedDpFile] = useState(null);
   const [previewDp, setPreviewDp] = useState(null);
 
-  // NEW: State to trigger table refresh
   const [alertRefreshTrigger, setAlertRefreshTrigger] = useState(0);
+  
+
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -193,8 +197,12 @@ const ProfileCard = () => {
               <FontAwesomeIcon icon={faBlog} className={styles.buttonIcon} /> My Blogs
             </button>
 
+
+            <button className={styles.actionButton} onClick={() => setIsExportModalOpen(true)} style={{ backgroundColor: '#27ae60', color: 'white' }}>
+              <FontAwesomeIcon icon={faFileDownload} className={styles.buttonIcon} /> Export Health PDF
+            </button>
+
             <div style={{ marginTop: '30px', width: '100%' }}>
-              {/* UPDATED: Passing down the trigger function to AlertForm */}
               <AlertForm fetchAlerts={() => setAlertRefreshTrigger(prev => prev + 1)} />
             </div>
           </nav>
@@ -241,12 +249,17 @@ const ProfileCard = () => {
           )}
 
           <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-             {/* UPDATED: Passing down the trigger value to AlertsTable */}
              <AlertsTable refreshTrigger={alertRefreshTrigger} />
           </div>
           
         </main>
       </div>
+
+
+      <ExportReportModal 
+        isOpen={isExportModalOpen} 
+        onClose={() => setIsExportModalOpen(false)} 
+      />
     </div>
   );
 };
