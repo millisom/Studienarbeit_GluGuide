@@ -32,14 +32,17 @@ const exportController = {
       const reportData = {};
 
       selectedDates.forEach(date => {
-        // Change: meals is now an Array [] to support multiple entries
         reportData[date] = { fasting: null, meals: [] };
       });
 
       rawData.glucoseLogs.forEach(log => {
         const dateStr = new Date(log.date).toISOString().split('T')[0];
         if (reportData[dateStr] && log.reading_type === 'fasting') {
-          reportData[dateStr].fasting = log;
+          // Store level and formatted time for Fasting
+          reportData[dateStr].fasting = {
+            level: parseFloat(log.glucose_level).toFixed(0),
+            time: log.time.slice(0, 5) // HH:mm
+          };
         }
       });
 
@@ -47,16 +50,16 @@ const exportController = {
         const dateStr = new Date(meal.date).toISOString().split('T')[0];
         if (reportData[dateStr]) {
           const postMealLogs = rawData.glucoseLogs.filter(g => g.meal_id === meal.meal_id);
-          const glucose1h = postMealLogs.find(g => g.reading_type === '1h_post_meal');
-          const glucose2h = postMealLogs.find(g => g.reading_type === '2h_post_meal');
+          const g1h = postMealLogs.find(g => g.reading_type === '1h_post_meal');
+          const g2h = postMealLogs.find(g => g.reading_type === '2h_post_meal');
 
-          // Change: Use .push() so we don't overwrite multiple snacks
           reportData[dateStr].meals.push({
             type: meal.meal_type,
             time: new Date(meal.meal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             items: Array.isArray(meal.items) ? meal.items : [],
-            glucose_1h: glucose1h ? glucose1h.glucose_level : '-',
-            glucose_2h: glucose2h ? glucose2h.glucose_level : '-'
+            // Store as objects containing value and time
+            glucose_1h: g1h ? { level: parseFloat(g1h.glucose_level).toFixed(0), time: g1h.time.slice(0, 5) } : null,
+            glucose_2h: g2h ? { level: parseFloat(g2h.glucose_level).toFixed(0), time: g2h.time.slice(0, 5) } : null
           });
         }
       });
@@ -99,9 +102,8 @@ function generateHtmlTemplate(data) {
   let daysHtml = '';
 
   for (const [date, content] of Object.entries(data)) {
-    // Dynamically handle headers based on the meals logged for this specific day
     const mealHeaders = content.meals.map(meal => `
-      <th>${meal.type.toUpperCase()}<br><small>${meal.time}</small></th>
+      <th>${meal.type.toUpperCase()}<br><small class="header-time">${meal.time}</small></th>
     `).join('');
 
     daysHtml += `
@@ -110,23 +112,37 @@ function generateHtmlTemplate(data) {
         <table>
           <thead>
             <tr>
-              <th style="width: 120px;">FASTING</th>
+              <th style="width: 100px;">FASTING</th>
               ${mealHeaders || '<th>No meals logged</th>'}
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="valign-top">
-                ${content.fasting ? `<strong>${parseFloat(content.fasting.glucose_level).toFixed(0)} mg/dL</strong>` : '-'}
+                <div class="cell-wrapper">
+                  <div class="glucose-results no-border">
+                    ${content.fasting ? `
+                      <p>Level: ${content.fasting.level} <small>mg/dL</small></p>
+                      <p class="log-time">Time: ${content.fasting.time}</p>
+                    ` : '<p>-</p>'}
+                  </div>
+                </div>
               </td>
               ${content.meals.map(meal => `
                 <td class="valign-top">
-                  <ul class="food-list">
-                    ${meal.items.map(i => `<li>${i.name} (${i.quantity}g)</li>`).join('')}
-                  </ul>
-                  <div class="glucose-results">
-                    <p>1h: ${meal.glucose_1h !== '-' ? parseFloat(meal.glucose_1h).toFixed(0) : '-'}</p>
-                    <p>2h: ${meal.glucose_2h !== '-' ? parseFloat(meal.glucose_2h).toFixed(0) : '-'}</p>
+                  <div class="cell-wrapper">
+                    <ul class="food-list">
+                      ${meal.items.map(i => `<li>${i.name} (${i.quantity}g)</li>`).join('')}
+                    </ul>
+                    <div class="glucose-results">
+                      ${meal.glucose_1h ? `
+                        <p>1h: ${meal.glucose_1h.level} <small>mg/dL</small> <span class="log-time">(${meal.glucose_1h.time})</span></p>
+                      ` : '<p>1h: -</p>'}
+                      
+                      ${meal.glucose_2h ? `
+                        <p>2h: ${meal.glucose_2h.level} <small>mg/dL</small> <span class="log-time">(${meal.glucose_2h.time})</span></p>
+                      ` : ''}
+                    </div>
                   </div>
                 </td>
               `).join('') || '<td>-</td>'}
@@ -146,13 +162,42 @@ function generateHtmlTemplate(data) {
           h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 22px; }
           h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 3px; margin-top: 25px; font-size: 14px; }
           .day-section { margin-bottom: 30px; page-break-inside: avoid; }
+          
           table { width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid #bdc3c7; }
-          th, td { border: 1px solid #bdc3c7; padding: 6px; text-align: left; font-size: 9px; word-wrap: break-word; }
-          th { background-color: #ecf0f1; color: #2c3e50; font-weight: bold; }
-          .valign-top { vertical-align: top; }
-          .food-list { padding-left: 10px; margin: 0; list-style-type: square; }
-          .glucose-results { margin-top: 6px; padding-top: 4px; border-top: 1px dashed #bdc3c7; }
-          .glucose-results p { margin: 1px 0; font-weight: bold; color: #d35400; }
+          th, td { border: 1px solid #bdc3c7; padding: 0; text-align: left; word-wrap: break-word; vertical-align: top; }
+          th { background-color: #f8f9fa; color: #2c3e50; font-weight: bold; padding: 8px; font-size: 10px; }
+          
+          .header-time { color: #7f8c8d; font-weight: normal; font-size: 9px; }
+          
+          /* Flexbox to push glucose results to the bottom */
+          .cell-wrapper { 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 140px; /* Ensures minimum row height */
+            height: 100%; 
+            padding: 8px;
+          }
+          
+          .food-list { 
+            padding-left: 12px; 
+            margin: 0; 
+            list-style-type: square; 
+            font-size: 9px;
+            flex-grow: 1; /* Pushes everything else down */
+          }
+          
+          .glucose-results { 
+            margin-top: auto; /* Aligns logs to bottom */
+            padding-top: 6px; 
+            border-top: 1px dashed #dcdde1; 
+          }
+          
+          .no-border { border-top: none; margin-top: 0; }
+          
+          .glucose-results p { margin: 2px 0; font-weight: bold; font-size: 9px; color: #2c3e50; }
+          .log-time { font-weight: normal !important; color: #e67e22; font-size: 8.5px; }
+          
+          small { font-weight: normal; font-size: 8px; color: #7f8c8d; }
         </style>
       </head>
       <body>
