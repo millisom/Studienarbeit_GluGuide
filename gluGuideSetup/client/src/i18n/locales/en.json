@@ -433,5 +433,12 @@
     "errorMismatch": "Passwords do not match",
     "errorLength": "Password must be at least 8 characters long",
     "errorFallback": "Something went wrong. Please try again."
+  },
+  "searchFoodItem": {
+    "placeholder": "Search food item...",
+    "loginPlaceholder": "Log in to search food...",
+    "noResults": "No food items found matching your query.",
+    "errorLoad": "Could not load suggestions. Please try again.",
+    "ariaClose": "Close food details"
   }
 }
