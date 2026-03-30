@@ -3,15 +3,16 @@ import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/LoginForm.module.css';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';  
+import { useTranslation } from 'react-i18next';
 
 const ForgotPasswordForm = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
-
 
   useEffect(() => {
     if (user) {
@@ -32,7 +33,7 @@ const ForgotPasswordForm = () => {
       }
     } catch (error) {
       setNotification({
-        message: error.response?.data?.message || 'Something went wrong. Please try again.',
+        message: error.response?.data?.message || t('forgotPassword.errorFallback'),
         type: 'error',
       });
     } finally {
@@ -43,10 +44,10 @@ const ForgotPasswordForm = () => {
   return (
     <div className={styles.loginContainer}>
       <p className={styles.pageDescription}>
-        Enter your registered email address below, and we'll send you a password reset link.
+        {t('forgotPassword.description')}
       </p>
       <form onSubmit={handleSubmit} className={styles.formLogIn}>
-      <h1 className={styles.pageTitle}>Forgot Password</h1>
+      <h1 className={styles.pageTitle}>{t('forgotPassword.title')}</h1>
         <input
           type="email"
           id="email"
@@ -54,12 +55,12 @@ const ForgotPasswordForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder="Email"
+          placeholder={t('forgotPassword.placeholder')}
           className={`${styles.input} ${styles.mt}`}
         />
         <div className={styles.buttonGroup}>
           <button type="submit" disabled={isLoading} className={`${styles.button} ${styles.mt}`}>
-            {isLoading ? 'Sending...' : 'Send Reset Link'}
+            {isLoading ? t('forgotPassword.btnSending') : t('forgotPassword.btnSend')}
           </button>
         </div>
       </form>

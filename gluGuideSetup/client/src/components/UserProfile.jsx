@@ -4,11 +4,13 @@ import axiosInstance from '../api/axiosConfig';
 import parse from 'html-react-parser';
 import styles from '../styles/UserProfile.module.css';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const UserProfile = () => {
   const { username } = useParams(); 
   const { user: currentUser } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const [authorData, setAuthorData] = useState(null);
   const [error, setError] = useState('');
@@ -22,7 +24,7 @@ const UserProfile = () => {
         const response = await axiosInstance.get(`/profile/${username}`);
         setAuthorData(response.data);
       } catch (error) {
-        setError('Failed to load user profile');
+        setError(t('userProfile.errorLoad'));
         console.error('Error loading profile:', error);
       } finally {
         setLoading(false);
@@ -30,17 +32,16 @@ const UserProfile = () => {
     };
 
     fetchUserData();
-  }, [username]);
+  }, [username, t]);
 
   const handlePostClick = (postId) => {
     navigate(`/blogs/view/${postId}`);
   };
 
-
   const isOwnProfile = currentUser && currentUser.username === username;
 
-  if (loading) return <p className={styles.loadingMessage}>Loading profile...</p>;
-  if (error || !authorData) return <p className={styles.errorMessage}>{error || 'User not found'}</p>;
+  if (loading) return <p className={styles.loadingMessage}>{t('userProfile.loading')}</p>;
+  if (error || !authorData) return <p className={styles.errorMessage}>{error || t('userProfile.userNotFound')}</p>;
 
   return (
     <div className={styles.profileContainer}>
@@ -49,11 +50,11 @@ const UserProfile = () => {
           {authorData.user.profile_picture ? (
             <img
               src={authorData.user.profile_picture} 
-              alt={`${authorData.user.username}'s profile`}
+              alt={t('userProfile.ariaProfile', { username: authorData.user.username })}
               className={styles.profilePicture}
             />
           ) : (
-            <div className={styles.profilePicturePlaceholder}>No Image</div>
+            <div className={styles.profilePicturePlaceholder}>{t('userProfile.noImage')}</div>
           )}
           <h2 className={styles.profileUsername}>{authorData.user.username}</h2>
           
@@ -62,18 +63,18 @@ const UserProfile = () => {
               className={styles.editProfileButton} 
               onClick={() => navigate('/account')}
             >
-              Edit My Profile
+              {t('userProfile.btnEdit')}
             </button>
           )}
         </div>
         <div className={styles.profileBio}>
           {authorData.user.profile_bio
             ? parse(authorData.user.profile_bio)
-            : 'No bio available'}
+            : t('userProfile.noBio')}
         </div>
       </div>
       <div className={styles.postsSection}>
-        <h3>Posts by {authorData.user.username}</h3>
+        <h3>{t('userProfile.postsBy', { username: authorData.user.username })}</h3>
         {authorData.posts.length > 0 ? (
           <ul className={styles.postsList}>
             {authorData.posts.map((post) => (
@@ -84,13 +85,13 @@ const UserProfile = () => {
               >
                 <h4 className={styles.postTitle}>{post.title}</h4>
                 <p className={styles.postDate}>
-                  Created on {new Date(post.created_at).toLocaleDateString()}
+                  {t('userProfile.createdOn')} {new Date(post.created_at).toLocaleDateString(i18n.language)}
                 </p>
               </li>
             ))}
           </ul>
         ) : (
-          <p className={styles.noPosts}>No posts available</p>
+          <p className={styles.noPosts}>{t('userProfile.noPosts')}</p>
         )}
       </div>
     </div>

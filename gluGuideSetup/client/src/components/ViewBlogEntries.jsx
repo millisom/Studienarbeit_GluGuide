@@ -5,9 +5,11 @@ import PostCard from './PostCard';
 import styles from '../styles/ViewBlogEntries.module.css';
 import { useBlogPosts } from '../hooks/useBlogPosts'; 
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const ViewBlogEntries = () => {
   const { isAdmin } = useAuth();
+  const { t } = useTranslation();
   
   const { 
     posts, 
@@ -26,7 +28,7 @@ const ViewBlogEntries = () => {
   const handleViewClick = (id) => navigate(`/blogs/view/${id}`);
 
   const handleAdminDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this post?")) {
+    if (window.confirm(t('viewBlogEntries.confirmDelete'))) {
       try {
         await axiosInstance.delete(`/deletePost/${id}`, { withCredentials: true });
         
@@ -35,21 +37,21 @@ const ViewBlogEntries = () => {
         }
       } catch (error) {
         console.error('Deletion failed:', error);
-        alert('Failed to delete the post. Please try again.');
+        alert(t('viewBlogEntries.deleteError'));
       }
     }
   };
 
-  if (loading) return <p className={styles.loadingMessage}>Loading blog entries...</p>;
+  if (loading) return <p className={styles.loadingMessage}>{t('viewBlogEntries.loading')}</p>;
 
   return (
     <div className={styles.viewBlogEntries}>
-      <h2 className={styles.title}>Explore Blog Entries</h2>
+      <h2 className={styles.title}>{t('viewBlogEntries.title')}</h2>
 
       <div className={styles.filterContainer}>
         <input 
           type="text"
-          placeholder="Search by title or author..."
+          placeholder={t('viewBlogEntries.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
@@ -68,7 +70,7 @@ const ViewBlogEntries = () => {
       {error && <p className={styles.error}>{error}</p>} 
 
       {posts.length === 0 && !error ? (
-        <p className={styles.noPostsFound}>No posts match your search or filters.</p>
+        <p className={styles.noPostsFound}>{t('viewBlogEntries.noPosts')}</p>
       ) : (
         <div className={styles.postContainer}>
           {posts.map((post) => (

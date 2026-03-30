@@ -1,7 +1,9 @@
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Suspense } from 'react'; 
 import AppLayout from './components/layout/AppLayout';
 import AppRoutes from './routes';
 import { AuthProvider } from './context/AuthContext';
+import './i18n/config'; 
 
 function App() {
 
@@ -12,9 +14,11 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <AppLayout>
-          <AppRoutes />
-        </AppLayout>
+        <Suspense fallback={<div>Loading translations...</div>}>
+          <AppLayout>
+            <AppRoutes />
+          </AppLayout>
+        </Suspense>
       </Router>
     </AuthProvider>
   );

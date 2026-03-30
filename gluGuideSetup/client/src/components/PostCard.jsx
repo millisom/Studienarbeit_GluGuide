@@ -5,6 +5,7 @@ import { faHeart, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import PostTags from './PostTags';
 import styles from '../styles/ViewBlogEntries.module.css';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation } from 'react-i18next';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -16,9 +17,8 @@ const PostCard = ({
   setSelectedTags 
 }) => {
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
   const { user, isAdmin } = useAuth(); 
-
 
   const isAuthor = user && post.username === user.username;
   const canEditOrDelete = isAdmin || isAuthor;
@@ -41,10 +41,10 @@ const PostCard = ({
 
         <h4 className={styles.postTitle}>{post.title}</h4>
         <div className={styles.postDetails}>
-          <p className={styles.postInfo}>Author: {post.username}</p>
+          <p className={styles.postInfo}>{t('postCard.author')} {post.username}</p>
           <p className={styles.postInfo}>
-            Created on:{' '}
-            {new Date(post.created_at).toLocaleDateString('en-US')}
+            {t('postCard.createdOn')}{' '}
+            {new Date(post.created_at).toLocaleDateString(i18n.language)}
           </p>
           <div className={styles.postLikes}>
             <span className={styles.likeIcon}>
@@ -76,7 +76,7 @@ const PostCard = ({
               navigate(editPath);
             }}
           >
-            <span><FontAwesomeIcon icon={faEdit} /> Edit</span>
+            <span><FontAwesomeIcon icon={faEdit} /> {t('postCard.btnEdit')}</span>
           </button>
           <button
             className={styles.deleteButton}
@@ -85,7 +85,7 @@ const PostCard = ({
               handleAdminDelete(post.id);
             }}
           >
-            <span><FontAwesomeIcon icon={faTrash} /> Delete</span>
+            <span><FontAwesomeIcon icon={faTrash} /> {t('postCard.btnDelete')}</span>
           </button>
         </div>
       )}

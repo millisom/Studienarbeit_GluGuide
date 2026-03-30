@@ -4,9 +4,11 @@ import { getAllMealsForUser } from '../api/mealApi';
 import GlucoseChart from './GlucoseChart';
 import styles from '../styles/GlucoseLog.module.css';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const GlucoseLog = () => {
   const { user, loading: authLoading } = useAuth();
+  const { t, i18n } = useTranslation();
   const userId = user?.id || user?.userId || null;
 
   const { 
@@ -66,14 +68,15 @@ const GlucoseLog = () => {
 
     let snackCount = 1;
     const formattedMeals = mealsForSelectedDate.map(meal => {
-      let displayName = meal.meal_type.charAt(0).toUpperCase() + meal.meal_type.slice(1).toLowerCase();
+      let typeKey = meal.meal_type.toLowerCase();
+      let displayName = t(`glucoseLog.types.${typeKey}`, { defaultValue: meal.meal_type });
       
-      if (displayName === 'Snack') {
-        displayName = `Snack ${snackCount}`;
+      if (typeKey === 'snack') {
+        displayName = `${t('glucoseLog.types.snack')} ${snackCount}`;
         snackCount++;
       }
 
-      const timeStr = new Date(meal.meal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const timeStr = new Date(meal.meal_time).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' });
       
       return {
         ...meal,
@@ -84,7 +87,7 @@ const GlucoseLog = () => {
     setDropdownMeals(formattedMeals);
     setFormData(prev => ({...prev, meal_id: ''}));
 
-  }, [formData.date, allUserMeals]);
+  }, [formData.date, allUserMeals, t, i18n.language]);
 
   useEffect(() => {
     if (successMessage) {
@@ -97,9 +100,9 @@ const GlucoseLog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) return alert("Please log in.");
+    if (!userId) return alert(t('glucoseLog.alerts.login'));
     if (parseFloat(formData.level) <= 0) {
-      alert("Please enter a valid glucose level.");
+      alert(t('glucoseLog.alerts.validLevel'));
       return;
     }
 
@@ -109,21 +112,20 @@ const GlucoseLog = () => {
       if (selectedMeal && selectedMeal.meal_time) {
         const glucoseTime = new Date(`${formData.date}T${formData.time}`);
         const mealTime = new Date(selectedMeal.meal_time);
-        
         const diffInMinutes = (glucoseTime - mealTime) / (1000 * 60);
 
         if (diffInMinutes < 0) {
-          alert("The time entered is before the meal even happened! Please check your time.");
+          alert(t('glucoseLog.alerts.timeBeforeMeal'));
           return;
         }
 
         if (formData.reading_type === '1h_post_meal' && diffInMinutes < 50) {
-          alert("To get a good accuracy, logging must be at least 60 minutes after a meal. Please wait a bit longer!");
+          alert(t('glucoseLog.alerts.wait1h'));
           return;
         }
 
         if (formData.reading_type === '2h_post_meal' && diffInMinutes < 110) {
-          alert("For accurate 2-hour tracking, please wait until it has been at least 2 hours since your meal.");
+          alert(t('glucoseLog.alerts.wait2h'));
           return;
         }
       }
@@ -155,85 +157,76 @@ const GlucoseLog = () => {
   };
 
   const handleDeleteLog = async (logId) => {
-    if (window.confirm('Are you sure you want to delete this glucose log?')) {
+    if (window.confirm(t('glucoseLog.alerts.deleteConfirm'))) {
       await deleteLog(logId);
     }
   };
 
-  if (authLoading) return <div className={styles.container}><p>Checking authentication...</p></div>;
-  if (!user) return <div className={styles.container}><p>Please log in to view logs.</p></div>;
+  if (authLoading) return <div className={styles.container}><p>{t('glucoseLog.checkingAuth')}</p></div>;
+  if (!user) return <div className={styles.container}><p>{t('glucoseLog.loginPrompt')}</p></div>;
 
   const displayedLogs = isExpanded ? logs : logs.slice(-3);
 
   const formatReadingType = (type) => {
-    switch(type) {
-      case 'fasting': return 'Fasting';
-      case '1h_post_meal': return '1-Hour Post-Meal';
-      case '2h_post_meal': return '2-Hours Post-Meal';
-      case 'random': return 'Random/Other';
-      default: return type || 'N/A';
-    }
+    return t(`glucoseLog.types.${type}`, { defaultValue: type });
   };
 
   const getAssociatedMealName = (mealId) => {
     if (!mealId) return null;
     const meal = allUserMeals.find(m => m.meal_id === parseInt(mealId, 10));
-    if (!meal) return "Unknown Meal";
+    if (!meal) return t('glucoseLog.unknownMeal');
     
-    const typeStr = meal.meal_type.charAt(0).toUpperCase() + meal.meal_type.slice(1).toLowerCase();
-    const timeStr = new Date(meal.meal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let typeKey = meal.meal_type.toLowerCase();
+    const typeStr = t(`glucoseLog.types.${typeKey}`, { defaultValue: meal.meal_type });
+    const timeStr = new Date(meal.meal_time).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' });
     return `${typeStr} (${timeStr})`;
   };
 
   return (
     <div className={styles.container}>
-      
-      <h1 className={styles.pageTitle}>Glucose Readings</h1>
+      <h1 className={styles.pageTitle}>{t('glucoseLog.pageTitle')}</h1>
 
-      {/* 1. TOP SECTION: LOGGING FORM (Matches CreatePost Component exactly) */}
       <div className={styles.formOuterContainer}>
         <div className={styles.formInnerRectangle}>
-          <h2 className={styles.sectionTitle}>Log Your Glucose Level</h2>
+          <h2 className={styles.sectionTitle}>{t('glucoseLog.sectionTitle')}</h2>
           
           <form onSubmit={handleSubmit} className={styles.formWrapper}>
-            
             <div className={styles.inputRow}>
               <div className={styles.inputField}>
-                <label>Date:</label>
+                <label>{t('glucoseLog.labelDate')}</label>
                 <input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} required className={styles.input} />
               </div>
-              
               <div className={styles.inputField}>
-                <label>Time:</label>
+                <label>{t('glucoseLog.labelTime')}</label>
                 <input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} required className={styles.input} />
               </div>
             </div>
             
             <div className={styles.inputField}>
-              <label>Reading Type:</label>
+              <label>{t('glucoseLog.labelType')}</label>
               <select 
                 value={formData.reading_type} 
                 onChange={(e) => setFormData({...formData, reading_type: e.target.value})}
                 required
                 className={styles.input}
               >
-                <option value="fasting">Fasting (Morning)</option>
-                <option value="1h_post_meal">1 Hour Post-Meal</option>
-                <option value="2h_post_meal">2 Hours Post-Meal</option>
-                <option value="random">Random / Other</option>
+                <option value="fasting">{t('glucoseLog.types.fasting')}</option>
+                <option value="1h_post_meal">{t('glucoseLog.types.1h_post_meal')}</option>
+                <option value="2h_post_meal">{t('glucoseLog.types.2h_post_meal')}</option>
+                <option value="random">{t('glucoseLog.types.random')}</option>
               </select>
             </div>
 
             {(formData.reading_type === '1h_post_meal' || formData.reading_type === '2h_post_meal') && (
               <div className={styles.inputField}>
-                <label>Select Meal:</label>
+                <label>{t('glucoseLog.labelSelectMeal')}</label>
                 <select 
                   value={formData.meal_id} 
                   onChange={(e) => setFormData({...formData, meal_id: e.target.value})}
                   required 
                   className={styles.input}
                 >
-                  <option value="">-- Choose a Meal --</option>
+                  <option value="">{t('glucoseLog.chooseMeal')}</option>
                   {dropdownMeals.length > 0 ? (
                     dropdownMeals.map(meal => (
                       <option key={meal.meal_id} value={meal.meal_id}>
@@ -241,18 +234,18 @@ const GlucoseLog = () => {
                       </option>
                     ))
                   ) : (
-                    <option value="" disabled>No meals logged on this date.</option>
+                    <option value="" disabled>{t('glucoseLog.noMeals')}</option>
                   )}
                 </select>
               </div>
             )}
 
             <div className={styles.inputField}>
-              <label>Level (mg/dL):</label>
+              <label>{t('glucoseLog.labelLevel')}</label>
               <input type="number" step="0.01" value={formData.level} onChange={(e) => setFormData({...formData, level: e.target.value})} required className={styles.input} />
             </div>
             
-            <button type="submit" className={styles.submitButton}>Log Glucose</button>
+            <button type="submit" className={styles.submitButton}>{t('glucoseLog.btnSubmit')}</button>
           </form>
           
           {error && <p className={styles.errorMessage}>{error}</p>}
@@ -260,17 +253,15 @@ const GlucoseLog = () => {
         </div>
       </div>
 
-      {/* 2. BOTTOM SECTION: FILTER, CHART, AND HISTORY TABLE */}
       <div className={styles.historySection}>
-        
         <div className={styles.filterHeader}>
-          <h3 className={styles.filterTitle}>History & Analysis</h3>
+          <h3 className={styles.filterTitle}>{t('glucoseLog.historyTitle')}</h3>
           <div className={styles.filterControls}>
-            <span className={styles.filterLabel}>Filter:</span>
+            <span className={styles.filterLabel}>{t('glucoseLog.filterLabel')}</span>
             <select onChange={(e) => setFilter(e.target.value)} value={filter} className={styles.input} style={{ width: 'auto', padding: '6px 12px' }}>
-              <option value="24hours">Last 24 Hours</option>
-              <option value="1week">Last Week</option>
-              <option value="all">All Time</option>
+              <option value="24hours">{t('glucoseLog.filters.24hours')}</option>
+              <option value="1week">{t('glucoseLog.filters.1week')}</option>
+              <option value="all">{t('glucoseLog.filters.all')}</option>
             </select>
           </div>
         </div>
@@ -283,25 +274,23 @@ const GlucoseLog = () => {
           <table className={styles.glucoseLogsTable}>
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Type</th>
-                <th>Associated Meal</th>
-                <th>Level</th>
-                <th className={styles.textCenter}>Actions</th>
+                <th>{t('glucoseLog.table.date')}</th>
+                <th>{t('glucoseLog.table.time')}</th>
+                <th>{t('glucoseLog.table.type')}</th>
+                <th>{t('glucoseLog.table.meal')}</th>
+                <th>{t('glucoseLog.table.level')}</th>
+                <th className={styles.textCenter}>{t('glucoseLog.table.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {displayedLogs.map((log) => (
                 <tr key={log.id}>
-                  <td>{new Date(log.date).toLocaleDateString()}</td>
+                  <td>{new Date(log.date).toLocaleDateString(i18n.language)}</td>
                   <td>{log.time.slice(0, 5)}</td>
                   <td>{formatReadingType(log.reading_type)}</td>
-                  
                   <td className={styles.associatedMeal}>
                     {getAssociatedMealName(log.meal_id) || '-'}
                   </td>
-                  
                   <td className={styles.levelBold}>
                     {editingLogId === log.id ? (
                       <input type="number" value={editedLevel} onChange={(e) => setEditedLevel(e.target.value)} className={styles.editInput} />
@@ -309,18 +298,17 @@ const GlucoseLog = () => {
                       `${Number(log.glucose_level)} mg/dL`
                     )}
                   </td>
-
                   <td className={styles.textCenter}>
                     <div className={styles.actionButtonsWrapper}>
                       {editingLogId === log.id ? (
                         <>
-                          <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton}>Save</button>
-                          <button onClick={() => setEditingLogId(null)} className={styles.cancelButton}>Cancel</button>
+                          <button onClick={() => handleSaveEdit(log.id)} className={styles.saveButton}>{t('glucoseLog.actions.save')}</button>
+                          <button onClick={() => setEditingLogId(null)} className={styles.cancelButton}>{t('glucoseLog.actions.cancel')}</button>
                         </>
                       ) : (
                         <>
-                          <button onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} className={styles.editButton}>Edit</button>
-                          <button onClick={() => handleDeleteLog(log.id)} className={styles.deleteButton}>Delete</button>
+                          <button onClick={() => { setEditingLogId(log.id); setEditedLevel(log.glucose_level); }} className={styles.editButton}>{t('glucoseLog.actions.edit')}</button>
+                          <button onClick={() => handleDeleteLog(log.id)} className={styles.deleteButton}>{t('glucoseLog.actions.delete')}</button>
                         </>
                       )}
                     </div>
@@ -333,12 +321,11 @@ const GlucoseLog = () => {
           {logs.length > 3 && (
             <div className={styles.toggleButtonContainer}>
               <button onClick={() => setIsExpanded(!isExpanded)} className={styles.toggleButton}>
-                {isExpanded ? 'Show Less' : 'See Full History'}
+                {isExpanded ? t('glucoseLog.btnShowLess') : t('glucoseLog.btnFullHistory')}
               </button>
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

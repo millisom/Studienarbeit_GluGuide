@@ -2,17 +2,19 @@ import PropTypes from 'prop-types';
 import styles from '../styles/MealPreview.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 const MealPreview = ({ items, selectedRecipe, onRemove, onRemoveRecipe }) => {
+  const { t } = useTranslation();
   const hasContent = items.length > 0 || selectedRecipe;
 
   return (
     <div className={styles.previewSection}>
-      <h2 className={styles.previewTitle}>Current Meal Items</h2>
+      <h2 className={styles.previewTitle}>{t('mealPreview.title')}</h2>
       {!hasContent ? (
         <div className={styles.emptyPreview}>
-          <p>Your meal is looking a bit empty!</p>
-          <p>Add food items or select a recipe above.</p>
+          <p>{t('mealPreview.emptyTitle')}</p>
+          <p>{t('mealPreview.emptySubtext')}</p>
         </div>
       ) : (
         <ul className={styles.list}>
@@ -20,13 +22,13 @@ const MealPreview = ({ items, selectedRecipe, onRemove, onRemoveRecipe }) => {
             <li key={`food-${index}`} className={styles.item}>
               <div className={styles.itemText}>
                 <span className={styles.itemName}>{item.name}</span>
-                <span className={styles.itemDetails}> – {item.quantity_in_grams || 'N/A'}g</span>
+                <span className={styles.itemDetails}> – {item.quantity_in_grams || t('mealPreview.na')}g</span>
               </div>
               <div className={styles.actionButtons}>
                 <button 
                   className={styles.removeBtn} 
                   onClick={() => onRemove(index)} 
-                  aria-label={`Remove ${item.name}`}
+                  aria-label={t('mealPreview.ariaRemoveItem', { name: item.name })}
                 >
                   <FontAwesomeIcon icon={faTrashAlt} />
                 </button>
@@ -38,13 +40,13 @@ const MealPreview = ({ items, selectedRecipe, onRemove, onRemoveRecipe }) => {
             <li className={`${styles.item} ${styles.recipeItemPreview}`}>
               <div className={styles.itemText}>
                 <span className={styles.itemName}>{selectedRecipe.name}</span>
-                <span className={styles.itemDetails}> (Recipe)</span>
+                <span className={styles.itemDetails}> {t('mealPreview.recipeLabel')}</span>
               </div>
               <div className={styles.actionButtons}>
                 <button 
                   className={styles.removeBtn} 
                   onClick={onRemoveRecipe} 
-                  aria-label={`Remove recipe ${selectedRecipe.name}`}
+                  aria-label={t('mealPreview.ariaRemoveRecipe', { name: selectedRecipe.name })}
                 >
                   <FontAwesomeIcon icon={faTrashAlt} />
                 </button>
@@ -68,14 +70,10 @@ MealPreview.propTypes = {
   }),
   onRemove: PropTypes.func.isRequired,
   onRemoveRecipe: PropTypes.func.isRequired,
-  // onEdit: PropTypes.func, // Commented out as not currently used
-  // onEditRecipe: PropTypes.func, // Commented out as not currently used
 };
 
 MealPreview.defaultProps = {
   selectedRecipe: null,
-  // onEdit: () => {}, // Commented out as not currently used
-  // onEditRecipe: () => {}, // Commented out as not currently used
 };
 
 export default MealPreview;

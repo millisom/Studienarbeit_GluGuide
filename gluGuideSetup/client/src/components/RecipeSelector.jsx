@@ -6,15 +6,16 @@ import RecipeItem from './RecipeItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const RecipeSelector = ({ onSelect }) => {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [skipSuggestions, setSkipSuggestions] = useState(false);
   const [error, setError] = useState('');
-  
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -37,16 +38,16 @@ const RecipeSelector = ({ onSelect }) => {
         setSuggestions(sorted);
       } catch (err) {
         console.error('Failed to load recipe suggestions', err);
-        if (user) setError('Could not load suggestions');
+        if (user) setError(t('recipeSelector.errorLoadSuggestions'));
       }
     };
     const debounce = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounce);
-  }, [query, skipSuggestions, authLoading, user]);
+  }, [query, skipSuggestions, authLoading, user, t]);
 
   const handleSelect = async (recipe) => {
     if (!user) {
-        setError('Please log in to view recipe details.');
+        setError(t('recipeSelector.errorAuth'));
         setSuggestions([]);
         return;
     }
@@ -60,15 +61,12 @@ const RecipeSelector = ({ onSelect }) => {
     } catch (err) {
       console.error('Failed to load recipe details', err);
       setSelectedRecipe(null);
-      setError('Failed to load recipe details.');
+      setError(t('recipeSelector.errorLoadDetails'));
     }
   };
 
   const handleAddWithQuantity = (recipe) => {
-    // BUG CATCHER: Force it to be a pure number before sending to LogMealPage
     const finalQ = Number(quantity) || 1;
-    console.log("🛒 [1] RecipeSelector is passing quantity:", finalQ);
-    
     onSelect({ ...recipe, quantity: finalQ });
     setSelectedRecipe(null);
     setQuery('');
@@ -79,7 +77,7 @@ const RecipeSelector = ({ onSelect }) => {
       <div className={styles.searchSection}>
         <input
           type="text"
-          placeholder={user ? "Search recipe..." : "Log in to search recipes"}
+          placeholder={user ? t('recipeSelector.searchPlaceholder') : t('recipeSelector.loginPlaceholder')}
           value={query}
           disabled={!user && !authLoading}
           onChange={(e) => {
@@ -117,13 +115,13 @@ const RecipeSelector = ({ onSelect }) => {
             </button>
 
             <div style={{ backgroundColor: '#f8fbff', padding: '15px', borderRadius: '8px', marginBottom: '15px', border: '1px solid #d0e3ff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-              <label style={{ fontWeight: 'bold', color: '#0056b3' }}>Portion Size:</label>
+              <label style={{ fontWeight: 'bold', color: '#0056b3' }}>{t('recipeSelector.portionSize')}</label>
               <input 
                 type="number" 
                 step="0.1" 
                 min="0.1"
                 value={quantity} 
-                onChange={(e) => setQuantity(e.target.value)} // Just store what they type
+                onChange={(e) => setQuantity(e.target.value)}
                 style={{ width: '80px', padding: '5px', textAlign: 'center', border: '2px solid #007bff', borderRadius: '5px', fontSize: '1.1rem' }}
               />
             </div>

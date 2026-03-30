@@ -1,7 +1,9 @@
 import { useState } from "react";
 import styles from "../styles/ContactUs.module.css";
+import { useTranslation } from "react-i18next";
 
 const ContactUs = () => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -19,7 +21,7 @@ const ContactUs = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setSuccessMessage("Thanks for contacting us, we'll get back to you soon!");
+        setSuccessMessage(t('contactUs.success'));
         setFormData({
             name: "",
             email: "",
@@ -29,13 +31,13 @@ const ContactUs = () => {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>Contact Us</h1>
+            <h1 className={styles.title}>{t('contactUs.title')}</h1>
             <p className={styles.subtitle}>
-                For any queries, please contact us using the form below or reach out directly via email or phone.
+                {t('contactUs.subtitle')}
             </p>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="name" className={styles.label}>Name:</label>
+                    <label htmlFor="name" className={styles.label}>{t('contactUs.labelName')}</label>
                     <input
                         type="text"
                         id="name"
@@ -47,7 +49,7 @@ const ContactUs = () => {
                     />
                 </div>
                 <div className={styles.formGroup}>
-                    <label htmlFor="email" className={styles.label}>Email:</label>
+                    <label htmlFor="email" className={styles.label}>{t('contactUs.labelEmail')}</label>
                     <input
                         type="email"
                         id="email"
@@ -59,7 +61,7 @@ const ContactUs = () => {
                     />
                 </div>
                 <div className={styles.formGroup}>
-                    <label htmlFor="message" className={styles.label}>Message:</label>
+                    <label htmlFor="message" className={styles.label}>{t('contactUs.labelMessage')}</label>
                     <textarea
                         id="message"
                         name="message"
@@ -69,12 +71,12 @@ const ContactUs = () => {
                         required
                     ></textarea>
                 </div>
-                <button type="submit" className={styles.submitButton}>Submit</button>
+                <button type="submit" className={styles.submitButton}>{t('contactUs.btnSubmit')}</button>
                 {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
             </form>
             <div className={styles.contactInfo}>
-                <p>Email: <a href="mailto:gluguide01@gmail.com" className={styles.link}>gluguide01@gmail.com</a></p>
-                <p>Phone: 123-456-7890</p>
+                <p>{t('contactUs.directEmail')} <a href="mailto:gluguide01@gmail.com" className={styles.link}>gluguide01@gmail.com</a></p>
+                <p>{t('contactUs.directPhone')} 123-456-7890</p>
             </div>
         </div>
     );

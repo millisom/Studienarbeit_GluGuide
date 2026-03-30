@@ -6,30 +6,31 @@ import { faTrash, faEdit, faHeart } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from '../api/axiosConfig';
 import PropTypes from 'prop-types';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation } from 'react-i18next';
 
 const BlogCard = ({ blog }) => {
     const navigate = useNavigate();
     const { user, isAdmin } = useAuth(); 
+    const { t } = useTranslation();
 
     const handleViewClick = () => {
         navigate(`/blogs/view/${blog.id}`);
     };
 
     const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
+        if (window.confirm(t('blogCard.deleteConfirm'))) {
             try {
                 await axiosInstance.delete(`/deletePost/${blog.id}`, {
                     withCredentials: true,
                 });
-                alert('Post deleted successfully.');
+                alert(t('blogCard.deleteSuccess'));
                 window.location.reload(); 
             } catch (error) {
                 console.error('Error deleting post:', error);
-                alert('Failed to delete post.');
+                alert(t('blogCard.deleteError'));
             }
         }
     };
-
 
     const isAuthor = user && blog.username === user.username;
     const canEditOrDelete = isAdmin || isAuthor;
@@ -67,7 +68,7 @@ const BlogCard = ({ blog }) => {
                         {(() => {
                             const likesCount = blog.likes_count ? blog.likes_count : (blog.likes ? blog.likes.length : 0);
                             return (
-                                <>{likesCount} {likesCount === 1 ? 'Like' : 'Likes'}</>
+                                <>{likesCount} {likesCount === 1 ? t('blogCard.like') : t('blogCard.likes')}</>
                             );
                         })()}
                     </p>
@@ -77,14 +78,14 @@ const BlogCard = ({ blog }) => {
                             <button
                                 className={styles.iconButton}
                                 onClick={() => navigate(`/blogs/edit/${blog.id}`)}
-                                aria-label={`Edit post titled ${blog.title}`}
+                                aria-label={t('blogCard.ariaEdit', { title: blog.title })}
                             >
                                 <FontAwesomeIcon icon={faEdit} />
                             </button>
                             <button
                                 className={styles.iconButton}
                                 onClick={handleDelete}
-                                aria-label={`Delete post titled ${blog.title}`}
+                                aria-label={t('blogCard.ariaDelete', { title: blog.title })}
                             >
                                 <FontAwesomeIcon icon={faTrash} />
                             </button>

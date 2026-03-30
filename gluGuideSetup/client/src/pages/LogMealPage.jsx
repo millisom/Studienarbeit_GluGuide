@@ -5,12 +5,10 @@ import MealPreview from '../components/MealPreview';
 import { createMeal, recalculateMealNutrition, getAllMealsForUser } from '../api/mealApi';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LogMealPage.module.css';
-
-// 1. Added axiosInstance for the backend request!
 import axiosInstance from '../api/axiosConfig';
-
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useTranslation } from 'react-i18next';
 
 const getLocalDatetimeString = () => {
   const now = new Date();
@@ -20,6 +18,7 @@ const getLocalDatetimeString = () => {
 
 const LogMealPage = ({ onMealLogged }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const userId = user?.id || user?.userId;
 
   const [mealType, setMealType] = useState('');
@@ -52,7 +51,7 @@ const LogMealPage = ({ onMealLogged }) => {
         
         setSnackCount(count);
       } catch (err) {
-        console.error("Failed to fetch past meals to calculate snack number:", err);
+        console.error(err);
       }
     };
 
@@ -65,8 +64,8 @@ const LogMealPage = ({ onMealLogged }) => {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
-    if (!mealType) return setStatus('Please select a meal type');
-    if (foodItems.length === 0 && !selectedRecipe) return setStatus('Please add food or a recipe');
+    if (!mealType) return setStatus(t('logMeal.errorNoType'));
+    if (foodItems.length === 0 && !selectedRecipe) return setStatus(t('logMeal.errorNoFood'));
 
     setIsSaving(true);
     setStatus('');
@@ -85,7 +84,7 @@ const LogMealPage = ({ onMealLogged }) => {
       const meal = await createMeal(payload);
       await recalculateMealNutrition(meal.meal_id); 
 
-      setStatus('Meal saved successfully!');
+      setStatus(t('logMeal.success'));
       
       if (requestReminder) {
          scheduleLocalReminder(meal.meal_id, mealTime, mealType);
@@ -96,7 +95,6 @@ const LogMealPage = ({ onMealLogged }) => {
       setFoodItems([]);
       setSelectedRecipe(null);
       setRequestReminder(false);
-      
       setMealTime(getLocalDatetimeString());
 
       if (onMealLogged) onMealLogged();
@@ -104,34 +102,28 @@ const LogMealPage = ({ onMealLogged }) => {
       setTimeout(() => setStatus(''), 3000);
       
     } catch (err) {
-      console.error('Save error:', err.response?.data || err.message);
-      setStatus('Error saving meal');
+      console.error(err);
+      setStatus(t('logMeal.errorSave'));
     } finally {
       setIsSaving(false);
     }
   };
 
-  // 2. Replaced local timer with backend database alert!
   const scheduleLocalReminder = async (mealId, timeString, type) => {
     const mealTimeMs = new Date(timeString).getTime();
     const oneHourLater = new Date(mealTimeMs + (60 * 60 * 1000));
     
-    // Check if the reminder is actually in the future
     if (oneHourLater.getTime() > Date.now()) {
       try {
         await axiosInstance.post('/alerts', {
           userId: userId,
           reminderFrequency: 'once', 
           reminderTime: oneHourLater.toISOString(),
-          notificationMethod: 'app' // Tell the backend we want an in-app popup!
+          notificationMethod: 'app' 
         });
-        
-        console.log("1-hour reminder successfully saved to the database!");
       } catch (error) {
-        console.error("Failed to set reminder in database:", error);
+        console.error(error);
       }
-    } else {
-       console.log("Meal time was too far in the past to set a 1-hour reminder.");
     }
   };
 
@@ -141,31 +133,35 @@ const LogMealPage = ({ onMealLogged }) => {
         
         <div className={styles.formRow}>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Meal Type</label>
+            <label className={styles.label}>{t('logMeal.labelMealType')}</label>
             <select value={mealType} onChange={(e) => setMealType(e.target.value)} className={styles.input} required>
-              <option value="" disabled>Select Meal Type</option>
-              <option value="breakfast">Breakfast</option>
-              <option value="lunch">Lunch</option>
-              <option value="dinner">Dinner</option>
-              <option value="snack">{mealType === 'snack' ? `Snack ${snackCount}` : 'Snack'}</option>
+              <option value="" disabled>{t('logMeal.placeholderSelect')}</option>
+              <option value="breakfast">{t('logMeal.breakfast')}</option>
+              <option value="lunch">{t('logMeal.lunch')}</option>
+              <option value="dinner">{t('logMeal.dinner')}</option>
+              <option value="snack">
+                {mealType === 'snack' 
+                  ? t('logMeal.snackNumbered', { count: snackCount }) 
+                  : t('logMeal.snack')}
+              </option>
             </select>
           </div>
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Time Eaten</label>
+            <label className={styles.label}>{t('logMeal.labelTimeEaten')}</label>
             <input type="datetime-local" value={mealTime} onChange={(e) => setMealTime(e.target.value)} className={styles.input} required />
           </div>
         </div>
 
         <div className={styles.checkboxGroup}>
           <input type="checkbox" id="reminderCheck" checked={requestReminder} onChange={(e) => setRequestReminder(e.target.checked)} className={styles.checkbox} />
-          <label htmlFor="reminderCheck" className={styles.checkboxLabel}>Remind me to test my glucose in 1 hour</label>
+          <label htmlFor="reminderCheck" className={styles.checkboxLabel}>{t('logMeal.labelReminder')}</label>
         </div>
 
         <div className={styles.inputGroup}>
-          <label className={styles.label}>Notes</label>
+          <label className={styles.label}>{t('logMeal.labelNotes')}</label>
           <div className={styles.quillWrapper}>
-            <ReactQuill theme="snow" value={notes} onChange={setNotes} placeholder="How are you feeling? Any symptoms?" />
+            <ReactQuill theme="snow" value={notes} onChange={setNotes} placeholder={t('logMeal.placeholderNotes')} />
           </div>
         </div>
 
@@ -184,12 +180,12 @@ const LogMealPage = ({ onMealLogged }) => {
         )}
 
         <button type="submit" className={styles.submitButton} disabled={isSaving}>
-          {isSaving ? 'Saving...' : 'Save Meal'}
+          {isSaving ? t('logMeal.btnSaving') : t('logMeal.btnSave')}
         </button>
       </form>
 
       {status && (
-        <p className={status.includes('Error') ? styles.errorMessage : styles.status} style={{ marginTop: '15px' }}>
+        <p className={status.includes(t('logMeal.errorSave')) ? styles.errorMessage : styles.status} style={{ marginTop: '15px' }}>
           {status}
         </p>
       )}

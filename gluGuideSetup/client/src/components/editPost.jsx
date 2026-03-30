@@ -7,14 +7,15 @@ import styles from '../styles/EditPost.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faXmark, faSave } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
-// Define your backend base URL here
 const BACKEND_URL = 'http://localhost:8080'; 
 
 const EditPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -37,21 +38,20 @@ const EditPost = () => {
         setContent(response.data.content);
         setTagsInput(Array.isArray(response.data.tags) ? response.data.tags.join(', ') : '');
         
-        // FIX: Ensure the URL points to the backend server
         if (response.data.post_picture) {
           setImageUrl(`${BACKEND_URL}/uploads/${response.data.post_picture}`);
         } else {
           setImageUrl('');
         }
       } catch (error) {
-        setError('Failed to load post data. Please try again.');
+        setError(t('editPost.errorLoad'));
         console.error('Error loading post:', error.response ? error.response.data : error.message);
       } finally {
         setIsLoading(false);
       }
     };
     fetchPost();
-  }, [id, user, navigate]);
+  }, [id, user, navigate, t]);
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -65,7 +65,7 @@ const EditPost = () => {
       );
       navigate(`/blogs/view/${id}`);
     } catch (error) {
-      setError('Failed to save changes. Please check your input.');
+      setError(t('editPost.errorSave'));
       console.error('Error saving post:', error.response ? error.response.data : error.message);
     } finally {
       setIsLoading(false);
@@ -74,7 +74,7 @@ const EditPost = () => {
 
   const handleUploadImage = async () => {
     if (!image) {
-      alert("Please select an image first!");
+      alert(t('editPost.errorNoImageSelected'));
       return;
     }
 
@@ -86,17 +86,16 @@ const EditPost = () => {
         withCredentials: true,
       });
       
-      // FIX: Prepend the backend URL to the returned path
       setImageUrl(`${BACKEND_URL}${response.data.imageUrl}`);
-      alert("Image uploaded successfully!");
+      alert(t('editPost.successUpload'));
     } catch (error) {
       console.error('Error uploading image:', error);
-      setError("Failed to upload image.");
+      setError(t('editPost.errorUpload'));
     }
   };
 
   const handleDeleteImage = async () => {
-    if (!window.confirm("Delete current image?")) return;
+    if (!window.confirm(t('editPost.confirmDeleteImage'))) return;
     try {
       await axiosInstance.delete(`/deletePostImage/${id}`, {
         withCredentials: true,
@@ -104,49 +103,49 @@ const EditPost = () => {
       setImageUrl('');
     } catch (error) {
       console.error('Error deleting image:', error);
-      setError("Failed to delete image.");
+      setError(t('editPost.errorDeleteImage'));
     }
   };
 
   if (!user && !isLoading) {
-    return <p className={styles.errorMessage}>Please log in to edit posts.</p>;
+    return <p className={styles.errorMessage}>{t('editPost.errorAuth')}</p>;
   }
 
   return (
     <div className={styles.editPostContainer}>
-      <h2 className={styles.title}>Edit Your Post</h2>
+      <h2 className={styles.title}>{t('editPost.title')}</h2>
       {error && <p className={styles.errorMessage}>{error}</p>}
-      {isLoading && <p>Loading post data...</p>}
+      {isLoading && <p>{t('editPost.loading')}</p>}
 
       {!isLoading && (
         <div className={styles.form}>
-          <label className={styles.label}>Post Title:</label>
+          <label className={styles.label}>{t('editPost.labelPostTitle')}</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Post title"
+            placeholder={t('editPost.placeholderTitle')}
             className={styles.input}
           />
 
-          <label className={styles.label}>Content:</label>
+          <label className={styles.label}>{t('editPost.labelContent')}</label>
           <ReactQuill
             value={content}
             onChange={setContent}
             className={styles.quillEditor}
           />
 
-          <label className={styles.label}>Tags (comma-separated):</label>
+          <label className={styles.label}>{t('editPost.labelTags')}</label>
           <input
             type="text"
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
-            placeholder="e.g., health, diet, tips"
+            placeholder={t('editPost.placeholderTags')}
             className={styles.input}
           />
 
           <div className={styles.imageSection}>
-            <label className={styles.label}>Current Post Image:</label>
+            <label className={styles.label}>{t('editPost.labelCurrentImage')}</label>
             {imageUrl ? (
               <>
                 <div className={styles.imagePreview}>
@@ -155,8 +154,7 @@ const EditPost = () => {
                     alt="Post Preview"
                     className={styles.previewImage}
                     onError={(e) => {
-                        // Helpful fallback if the image fails to load
-                        e.target.src = 'https://via.placeholder.com/150?text=Image+Not+Found';
+                        e.target.src = `https://via.placeholder.com/150?text=${t('editPost.imageNotFound')}`;
                     }}
                   />
                 </div>
@@ -167,24 +165,23 @@ const EditPost = () => {
                     onClick={handleDeleteImage}
                   >
                     <FontAwesomeIcon icon={faTrash} className={styles.iconSpacing} />
-                    Remove Image
+                    {t('editPost.btnRemoveImage')}
                   </button>
                 </div>
               </>
             ) : (
-              <p className={styles.noImageText}>No image set.</p>
+              <p className={styles.noImageText}>{t('editPost.noImage')}</p>
             )}
 
-            <label className={styles.label} style={{ marginTop: '20px' }}>Upload New Image:</label>
+            <label className={styles.label} style={{ marginTop: '20px' }}>{t('editPost.labelUploadImage')}</label>
             <input
               type="file"
-              // Adding accept for security
               accept="image/png, image/jpeg, image/webp"
               onChange={(e) => setImage(e.target.files[0])}
               className={styles.fileInput}
             />
             <button onClick={handleUploadImage} className={styles.uploadButton} disabled={!image}>
-              Upload Image
+              {t('editPost.btnUpload')}
             </button>
           </div>
 
@@ -195,14 +192,14 @@ const EditPost = () => {
               className={styles.saveButton}
             >
               <FontAwesomeIcon icon={faSave} className={styles.iconSpacing} />
-              {isLoading ? "Saving..." : "Save Changes"}
+              {isLoading ? t('editPost.btnSaving') : t('editPost.btnSave')}
             </button>
             <button
               onClick={() => navigate(`/blogs/view/${id}`)}
               className={styles.cancelButton}
             >
               <FontAwesomeIcon icon={faXmark} className={styles.iconSpacing} />
-              Cancel
+              {t('editPost.btnCancel')}
             </button>
           </div>
         </div>

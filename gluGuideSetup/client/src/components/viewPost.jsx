@@ -7,12 +7,14 @@ import styles from '../styles/SingleBlog.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const ViewPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const { user, isAdmin, loading: authLoading } = useAuth();
   const isLoggedIn = !!user;
@@ -31,7 +33,7 @@ const ViewPost = () => {
         });
         setPost(postResponse.data || {});
       } catch (err) {
-        setError('Failed to load post');
+        setError(t('viewPost.errorLoad'));
         console.error('Error loading post:', err.response ? err.response.data : err.message);
       } finally {
         setLoading(false);
@@ -39,7 +41,7 @@ const ViewPost = () => {
     };
 
     fetchPost();
-  }, [id]);
+  }, [id, t]);
 
   const handleLike = async () => {
     if (!isLoggedIn) {
@@ -54,18 +56,18 @@ const ViewPost = () => {
       }));
       setInfoMessage('');
     } catch (err) {
-      setInfoMessage(err.response?.data.message || 'An error occurred while liking the post.');
+      setInfoMessage(err.response?.data.message || t('viewPost.likeError'));
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this post?")) {
+    if (window.confirm(t('viewPost.deleteConfirm'))) {
       try {
         await axiosInstance.delete(`/deletePost/${id}`, { withCredentials: true });
-        alert('Post deleted successfully.');
+        alert(t('viewPost.deleteSuccess'));
         navigate('/blogs');
       } catch (err) {
-        alert('Failed to delete post.');
+        alert(t('viewPost.deleteError'));
       }
     }
   };
@@ -74,9 +76,9 @@ const ViewPost = () => {
     navigate(`/profile/${authorUsername}`);
   };
 
-  if (loading || authLoading) return <p className={styles.loadingMessage}>Loading post...</p>;
+  if (loading || authLoading) return <p className={styles.loadingMessage}>{t('viewPost.loading')}</p>;
   if (error) return <p className={styles.errorMessage}>{error}</p>;
-  if (!post) return <p className={styles.errorMessage}>Post not found.</p>;
+  if (!post) return <p className={styles.errorMessage}>{t('viewPost.notFound')}</p>;
 
   const isAuthor = user && post.username === user.username;
   const canEditOrDelete = isAdmin || isAuthor;
@@ -84,11 +86,11 @@ const ViewPost = () => {
   const currentLikes = post.likesCount ?? (post.likes ? post.likes.length : 0);
 
   const likeButtonContent = !isLoggedIn ? (
-    "Login to like this post!"
+    t('viewPost.loginToLike')
   ) : (
     <>
       <FontAwesomeIcon icon={faHeart} className={styles.heart} /> {' '}
-      {currentLikes} Like{currentLikes !== 1 && 's'}
+      {t('viewPost.likeCount', { count: currentLikes })}
     </>
   );
 
@@ -102,10 +104,10 @@ const ViewPost = () => {
               className={styles.editBtn}
               onClick={() => navigate(isAdmin ? `/admin/editPost/${id}` : `/blogs/edit/${id}`)}
             >
-              <FontAwesomeIcon icon={faEdit} /> Edit
+              <FontAwesomeIcon icon={faEdit} /> {t('viewPost.edit')}
             </button>
             <button className={styles.deleteBtn} onClick={handleDelete}>
-              <FontAwesomeIcon icon={faTrash} /> Delete
+              <FontAwesomeIcon icon={faTrash} /> {t('viewPost.delete')}
             </button>
           </div>
         )}
@@ -113,11 +115,11 @@ const ViewPost = () => {
         <h2 className={styles.postTitle}>{post.title}</h2>
         
         <button onClick={() => handleAuthorClick(post.username)} className={styles.authorButton}>
-          Author: {post.username}
+          {t('viewPost.author')} {post.username}
         </button>
 
         <p className={styles.postDate}>
-          Created on: {new Date(post.created_at).toLocaleDateString()}
+          {t('viewPost.createdOn')} {new Date(post.created_at).toLocaleDateString(i18n.language)}
         </p>
 
         {post.tags && post.tags.length > 0 && (

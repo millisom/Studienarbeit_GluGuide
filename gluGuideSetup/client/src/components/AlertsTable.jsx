@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertsTable.module.css';
-
+import { useTranslation } from 'react-i18next';
 
 const AlertsTable = ({ refreshTrigger }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState('');
-
 
   const [editingAlertId, setEditingAlertId] = useState(null);
   const [editedFrequency, setEditedFrequency] = useState('');
@@ -31,21 +31,15 @@ const AlertsTable = ({ refreshTrigger }) => {
       setAlerts(sortedByCreation);
     } catch (err) {
       console.error('Error fetching alerts:', err);
-      setError('Failed to fetch alerts.');
+      setError(t('alertsTable.fetchError'));
     }
   };
 
-
   useEffect(() => {
-
     fetchAlerts();
-
-
     const intervalId = setInterval(() => {
       fetchAlerts();
     }, 10000);
-
-
     return () => clearInterval(intervalId);
   }, [user, refreshTrigger]); 
 
@@ -79,24 +73,24 @@ const AlertsTable = ({ refreshTrigger }) => {
       refreshAlerts();
     } catch (error) {
       console.error('Error updating alert:', error);
-      setError('Failed to update alert.');
+      setError(t('alertsTable.updateError'));
     }
   };
 
   const handleDeleteAlert = async (alertId) => {
-    if (!window.confirm('Are you sure you want to delete this alert?')) return;
+    if (!window.confirm(t('alertsTable.deleteConfirm'))) return;
     try {
       await axiosInstance.delete(`/alerts/${alertId}`, { withCredentials: true });
       refreshAlerts();
     } catch (error) {
       console.error('Error deleting alert:', error.message);
-      setError('Failed to delete alert.');
+      setError(t('alertsTable.deleteError'));
     }
   };
 
   return (
     <div className={styles.alertsTableContainer}>
-      <h2 className={styles.tableHeader}>Your Alerts</h2>
+      <h2 className={styles.tableHeader}>{t('alertsTable.header')}</h2>
       {error ? (
         <p className={styles.errorMessage}>{error}</p>
       ) : (
@@ -104,11 +98,11 @@ const AlertsTable = ({ refreshTrigger }) => {
           <table className={styles.alertsTable}>
             <thead>
               <tr>
-                <th>Frequency</th>
-                <th>Method</th>
-                <th>Time</th>
-                <th>Message</th>
-                <th>Actions</th>
+                <th>{t('alertsTable.colFreq')}</th>
+                <th>{t('alertsTable.colMethod')}</th>
+                <th>{t('alertsTable.colTime')}</th>
+                <th>{t('alertsTable.colMsg')}</th>
+                <th>{t('alertsTable.colActions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -119,15 +113,15 @@ const AlertsTable = ({ refreshTrigger }) => {
                       <>
                         <td>
                           <select value={editedFrequency} onChange={(e) => setEditedFrequency(e.target.value)}>
-                            <option value="once">Once</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
+                            <option value="once">{t('alertForm.freqOnce')}</option>
+                            <option value="daily">{t('alertForm.freqDaily')}</option>
+                            <option value="weekly">{t('alertForm.freqWeekly')}</option>
                           </select>
                         </td>
                         <td>
                           <select value={editedMethod} onChange={(e) => setEditedMethod(e.target.value)}>
-                            <option value="app">App Popup</option>
-                            <option value="email">Email</option>
+                            <option value="app">{t('alertsTable.methodApp')}</option>
+                            <option value="email">{t('alertsTable.methodEmail')}</option>
                           </select>
                         </td>
                         <td>
@@ -137,27 +131,29 @@ const AlertsTable = ({ refreshTrigger }) => {
                           <input 
                             type="text" 
                             value={editedMessage} 
-                            placeholder="Standard message"
+                            placeholder={t('alertsTable.placeholderStandard')}
                             onChange={(e) => setEditedMessage(e.target.value)} 
                             style={{ width: '100%' }}
                           />
                         </td>
                         <td style={{ minWidth: '130px' }}>
-                          <button onClick={() => handleSaveEdit(alert)} className={styles.saveButton}>Save</button>
-                          <button onClick={handleCancelEdit} className={styles.cancelButton} style={{ marginLeft: '4px' }}>Cancel</button>
+                          <button onClick={() => handleSaveEdit(alert)} className={styles.saveButton}>{t('alertsTable.btnSave')}</button>
+                          <button onClick={handleCancelEdit} className={styles.cancelButton} style={{ marginLeft: '4px' }}>{t('alertsTable.btnCancel')}</button>
                         </td>
                       </>
                     ) : (
                       <>
-                        <td style={{ textTransform: 'capitalize' }}>{alert.reminder_frequency}</td>
-                        <td>{alert.notification_method === 'app' ? 'App' : 'Email'}</td>
+                        <td style={{ textTransform: 'capitalize' }}>
+                          {t(`alertForm.freq${alert.reminder_frequency.charAt(0).toUpperCase() + alert.reminder_frequency.slice(1)}`)}
+                        </td>
+                        <td>{alert.notification_method === 'app' ? t('alertsTable.methodApp') : t('alertsTable.methodEmail')}</td>
                         <td>{alert.reminder_time ? alert.reminder_time.substring(0, 5) : ''}</td>
                         <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {alert.custom_message || <span style={{ color: '#888', fontStyle: 'italic' }}>Standard</span>}
+                          {alert.custom_message || <span style={{ color: '#888', fontStyle: 'italic' }}>{t('alertsTable.statusStandard')}</span>}
                         </td>
                         <td style={{ minWidth: '130px' }}>
-                          <button onClick={() => handleEditClick(alert)} className={styles.editButton}>Edit</button>
-                          <button onClick={() => handleDeleteAlert(alert.alert_id)} className={styles.deleteButton} style={{ marginLeft: '4px' }}>Delete</button>
+                          <button onClick={() => handleEditClick(alert)} className={styles.editButton}>{t('alertsTable.btnEdit')}</button>
+                          <button onClick={() => handleDeleteAlert(alert.alert_id)} className={styles.deleteButton} style={{ marginLeft: '4px' }}>{t('alertsTable.btnDelete')}</button>
                         </td>
                       </>
                     )}
@@ -165,7 +161,7 @@ const AlertsTable = ({ refreshTrigger }) => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>No alerts found</td>
+                  <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>{t('alertsTable.noAlerts')}</td>
                 </tr>
               )}
             </tbody>

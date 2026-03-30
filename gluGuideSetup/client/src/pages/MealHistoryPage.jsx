@@ -3,9 +3,11 @@ import { getAllMealsForUser } from '../api/mealApi';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/MealHistoryPage.module.css'; 
+import { useTranslation } from 'react-i18next';
 
 const MealHistoryPage = () => {
   const { user, loading: authLoading } = useAuth();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const userId = user?.id || user?.userId || null;
 
@@ -24,14 +26,14 @@ const MealHistoryPage = () => {
         setAllMeals(data);
       } catch (err) {
         console.error("Failed to fetch meals:", err);
-        setError("Could not load meal history.");
+        setError(t('mealHistory.errorLoad'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchMeals();
-  }, [userId]);
+  }, [userId, t]);
 
   useEffect(() => {
     if (allMeals.length === 0) {
@@ -71,7 +73,8 @@ const MealHistoryPage = () => {
     let currentGroup = null;
 
     filtered.forEach(meal => {
-        const dateStr = new Date(meal.meal_time).toLocaleDateString('en-US', {
+        // Dynamic formatting based on the active language
+        const dateStr = new Date(meal.meal_time).toLocaleDateString(i18n.language, {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
         
@@ -92,40 +95,38 @@ const MealHistoryPage = () => {
     });
 
     setGroupedMeals(groups);
-  }, [allMeals, filter]);
+  }, [allMeals, filter, i18n.language]);
 
-  if (authLoading || loading) return <div className={styles.container} style={{ textAlign: 'center' }}>Loading history...</div>;
-  if (!user) return <div className={styles.container} style={{ textAlign: 'center' }}>Please log in to view history.</div>;
+  if (authLoading || loading) return <div className={styles.container} style={{ textAlign: 'center' }}>{t('mealHistory.loading')}</div>;
+  if (!user) return <div className={styles.container} style={{ textAlign: 'center' }}>{t('mealHistory.loginRequired')}</div>;
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>Meal History</h1>
+      <h1 className={styles.pageTitle}>{t('mealHistory.title')}</h1>
 
-      {/* FILTER BUTTONS */}
       <div className={styles.filterGroup}>
         <button 
           onClick={() => setFilter('7days')}
           className={`${styles.filterButton} ${filter === '7days' ? styles.filterButtonActive : ''}`}
         >
-          Last 7 Days
+          {t('mealHistory.filter7Days')}
         </button>
         <button 
           onClick={() => setFilter('30days')}
           className={`${styles.filterButton} ${filter === '30days' ? styles.filterButtonActive : ''}`}
         >
-          Last 30 Days
+          {t('mealHistory.filter30Days')}
         </button>
         <button 
           onClick={() => setFilter('all')}
           className={`${styles.filterButton} ${filter === 'all' ? styles.filterButtonActive : ''}`}
         >
-          All Time
+          {t('mealHistory.filterAll')}
         </button>
       </div>
 
       {error && <p className={styles.errorMessage}>{error}</p>}
 
-      {/* TIMELINE VIEW (Grouped by Day) */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {groupedMeals.length > 0 ? (
           groupedMeals.map((group, index) => (
@@ -133,50 +134,48 @@ const MealHistoryPage = () => {
             <div key={index} className={styles.dayFrame}>
               <h2 className={styles.dayTitle}>{group.date}</h2>
               
-              {/* MEALS ROW: Nur noch die Mahlzeiten sind hier drin */}
               <div className={styles.mealsRow}>
                 {group.meals.map(meal => (
                   <div 
                     key={meal.meal_id} 
                     className={styles.miniMealCard}
                     onClick={() => navigate(`/meals/${meal.meal_id}`)}
-                    title="Click to view details"
+                    title={t('mealHistory.clickTooltip')}
                   >
                     <p className={styles.mealType}>
-                      {meal.meal_type || 'Meal'}
+                      {meal.meal_type ? t(`mealHistory.types.${meal.meal_type.toLowerCase()}`) : t('mealHistory.mealFallback')}
                     </p>
                     <p className={styles.mealTime}>
-                      {new Date(meal.meal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {new Date(meal.meal_time).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
                 ))}
               </div>
 
-              {/* SUMMARY ROW: Aus der mealsRow herausgenommen! Sitzt jetzt immer in einer neuen Zeile ganz unten. */}
               <div 
                 className={styles.summaryCard} 
                 style={{ 
-                  alignSelf: 'center',  /* Schiebt die Box nach rechts */
-                  marginTop: '16px',       /* Ein kleiner Abstand nach oben zu den Mahlzeiten */
-                  width: 'fit-content'    /* Verhindert, dass die Box über die volle Breite gezogen wird */
+                  alignSelf: 'center',
+                  marginTop: '16px',
+                  width: 'fit-content'
                 }}
               >
-                <p className={styles.summaryTitle}>Daily Total</p>
+                <p className={styles.summaryTitle}>{t('mealHistory.dailyTotal')}</p>
                 <div className={styles.summaryGrid}>
                   <div className={styles.summaryItem}>
-                    <span style={{ marginRight: '15px' }}>Calories:</span> 
+                    <span style={{ marginRight: '15px' }}>{t('mealHistory.calories')}</span> 
                     <span>{group.totals.calories.toFixed(0)} kcal</span>
                   </div>
                   <div className={styles.summaryItem}>
-                    <span style={{ marginRight: '15px' }}>Proteins:</span> 
+                    <span style={{ marginRight: '15px' }}>{t('mealHistory.proteins')}</span> 
                     <span>{group.totals.proteins.toFixed(1)} g</span>
                   </div>
                   <div className={styles.summaryItem}>
-                    <span style={{ marginRight: '15px' }}>Fats:</span> 
+                    <span style={{ marginRight: '15px' }}>{t('mealHistory.fats')}</span> 
                     <span>{group.totals.fats.toFixed(1)} g</span>
                   </div>
                   <div className={styles.summaryItem}>
-                    <span style={{ marginRight: '15px' }}>Carbs:</span> 
+                    <span style={{ marginRight: '15px' }}>{t('mealHistory.carbs')}</span> 
                     <span>{group.totals.carbs.toFixed(1)} g</span>
                   </div>
                 </div>
@@ -187,7 +186,7 @@ const MealHistoryPage = () => {
           ))
         ) : (
           <div className={styles.emptyMessage}>
-            No meals found for this time period.
+            {t('mealHistory.emptyMessage')}
           </div>
         )}
       </div>

@@ -4,12 +4,13 @@ import CreateComment from "./createComment";
 import CommentsList from "./fetchComments";
 import PropTypes from 'prop-types';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation } from 'react-i18next';
 
 const CommentsSection = ({ postId }) => {
   const { user, isAdmin } = useAuth();
+  const { t } = useTranslation();
   const [comments, setComments] = useState([]);
   const [error, setError] = useState("");
-
 
   const fetchComments = async () => {
     try {
@@ -23,7 +24,7 @@ const CommentsSection = ({ postId }) => {
       setError("");
     } catch (error) {
       console.error("Error loading comments:", error);
-      setError("Failed to load comments");
+      setError(t('commentsSection.errorLoad'));
       setComments([]);
     }
   };
@@ -36,7 +37,6 @@ const CommentsSection = ({ postId }) => {
     fetchComments();
   };
 
-  
   const currentUserId = user ? (user.id || user.userId) : null;
 
   return (
@@ -52,7 +52,7 @@ const CommentsSection = ({ postId }) => {
       <CommentsList
         comments={comments}
         currentUserId={currentUserId} 
-        isAdmin={isAdmin}             
+        isAdmin={isAdmin}              
         refreshComments={fetchComments}
       />
     </div>

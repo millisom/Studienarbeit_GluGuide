@@ -4,9 +4,11 @@ import LogMealPage from './LogMealPage';
 import MealsCards from '../components/MealsCards';
 import RecipesCards from '../components/RecipesCards';
 import styles from '../styles/MealsOverview.module.css';
+import { useTranslation } from 'react-i18next';
 
 const MealsOverviewPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [showAllRecipes, setShowAllRecipes] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -17,37 +19,33 @@ const MealsOverviewPage = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.mainTitle}>
-        Nutrition Hub
+        {t('mealsOverview.title')}
       </h1>
 
-      {/* SECTION 1: Log Meal 
-          Uses the new logMealSection which has BOTH the shadow box AND the thick frame */}
       <section className={styles.logMealSection}>
         <h2 className={styles.sectionTitle} style={{ margin: '0 0 20px 0' }}>
-          Log a New Meal
+          {t('mealsOverview.logMealTitle')}
         </h2>
         <LogMealPage onMealLogged={handleMealLogged} />
       </section>
 
-      {/* SECTION 2: Recent Meals (Standard box) */}
       <section className={styles.section} style={{ marginBottom: '30px' }}>
         <h2 className={styles.sectionTitle}>
-          Recent Meals
+          {t('mealsOverview.recentMealsTitle')}
         </h2>
         <MealsCards refreshTrigger={refreshKey} />
       </section>
 
-      {/* SECTION 3: Recipes (Standard box) */}
       <section className={styles.section}>
         <div className={styles.recipeHeader}>
           <h2 className={styles.sectionTitle} style={{ margin: 0 }}>
-            My Recipes
+            {t('mealsOverview.recipesTitle')}
           </h2>
           <button 
             className={styles.createBtn} 
             onClick={() => navigate('/createRecipe')}
           >
-            Create a New Recipe
+            {t('mealsOverview.btnCreateRecipe')}
           </button>
         </div>
 
@@ -58,7 +56,7 @@ const MealsOverviewPage = () => {
         {!showAllRecipes && (
           <div className={styles.center}>
             <button className={styles.seeMoreBtn} onClick={() => setShowAllRecipes(true)}>
-              See More Recipes
+              {t('mealsOverview.btnSeeMore')}
             </button>
           </div>
         )}

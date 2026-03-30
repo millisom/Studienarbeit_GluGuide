@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import styles from '../styles/LogMealPage.module.css';
+import { useTranslation } from 'react-i18next';
 
 const RecipeInstructionsInput = ({ instructions, setInstructions }) => {
+  const { t } = useTranslation();
   const [newStep, setNewStep] = useState('');
 
   const handleChange = (e, index) => {
@@ -24,71 +26,69 @@ const RecipeInstructionsInput = ({ instructions, setInstructions }) => {
   };
 
   const handleAddClick = (e) => {
-      e.preventDefault();
-      if (newStep.trim()) {
-          setInstructions([...instructions, newStep.trim()]);
-          setNewStep('');
-      }
+    e.preventDefault();
+    if (newStep.trim()) {
+      setInstructions([...instructions, newStep.trim()]);
+      setNewStep('');
+    }
   }
 
   return (
-    // REMOVED the extra marginTop here! The parent's gap: 24px will handle the spacing now.
     <div className={styles.inputGroup}>
-      
       <div style={{ display: 'flex', gap: '10px' }}>
         <input
           type="text"
           value={newStep}
           onChange={(e) => setNewStep(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Write a step and press Enter"
+          placeholder={t('recipeInstructions.placeholderAdd')}
           className={styles.input}
           style={{ flex: 1 }}
         />
         <button 
-            onClick={handleAddClick} 
-            className={styles.submitButton} 
-            style={{ marginTop: 0, padding: '12px 16px' }}
+          onClick={handleAddClick} 
+          className={styles.submitButton} 
+          style={{ marginTop: 0, padding: '12px 16px' }}
         >
-            Add Step
+          {t('recipeInstructions.btnAdd')}
         </button>
       </div>
 
       {instructions.length > 0 && (
         <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <h3 className={styles.label} style={{ fontSize: '1.1rem', color: 'var(--color-primary)' }}>
-            Current Steps:
+            {t('recipeInstructions.currentSteps')}
           </h3>
           
           {instructions.map((step, index) => (
             <div key={index} style={{ position: 'relative' }}>
               <label className={styles.label} style={{ fontSize: '0.85rem', color: '#666', marginBottom: '4px', display: 'block' }}>
-                Step {index + 1}
+                {t('recipeInstructions.stepLabel', { index: index + 1 })}
               </label>
               
               <textarea
                 className={styles.textarea}
                 value={step}
                 onChange={(e) => handleChange(e, index)}
-                placeholder={`Edit step ${index + 1}`}
+                placeholder={t('recipeInstructions.placeholderEdit', { index: index + 1 })}
                 style={{ height: '80px', marginBottom: '4px' }}
               />
               
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <button
-                    onClick={(e) => { e.preventDefault(); removeStep(index); }}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#d9534f', 
-                      cursor: 'pointer',
-                      fontSize: '0.85rem',
-                      fontWeight: '600',
-                      padding: '4px 8px'
-                    }}
-                  >
-                    Remove step
-                  </button>
+                <button
+                  onClick={(e) => { e.preventDefault(); removeStep(index); }}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#d9534f', 
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: '600',
+                    padding: '4px 8px'
+                  }}
+                >
+                  {t('recipeInstructions.btnRemove')}
+                </button>
               </div>
             </div>
           ))}

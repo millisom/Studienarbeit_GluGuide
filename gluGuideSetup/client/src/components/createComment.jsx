@@ -6,23 +6,23 @@ import 'react-quill/dist/quill.snow.css';
 import styles from '../styles/Comments.module.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation, Trans } from 'react-i18next';
 
 const CreateComment = ({ postId, onCommentCreated, hasExistingComments }) => {
   const { user, loading } = useAuth(); 
+  const { t } = useTranslation();
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     
-
     if (!user) return;
 
     const plainText = content.replace(/<[^>]+>/g, '').trim();
     if (!plainText) {
-      setError("Comment cannot be empty");
+      setError(t('createComment.errorEmpty'));
       setSuccessMessage("");
       return;
     }
@@ -34,34 +34,36 @@ const CreateComment = ({ postId, onCommentCreated, hasExistingComments }) => {
         { withCredentials: true }
       );
       setContent("");
-      setSuccessMessage("Comment added successfully!");
+      setSuccessMessage(t('createComment.successMsg'));
       setError("");
       if (onCommentCreated) onCommentCreated();
     } catch (error) {
       console.error("Error creating comment:", error);
-      setError("Failed to add comment. Please try again.");
+      setError(t('createComment.errorFailed'));
       setSuccessMessage("");
     }
   };
 
-
   if (loading) {
-    return <p className={styles.loadingMessage}>Loading commenting section...</p>;
+    return <p className={styles.loadingMessage}>{t('createComment.loading')}</p>;
   }
-
 
   if (!user) {
     return (
       <div className={styles.loggedOutCommentPrompt}>
         {hasExistingComments ? (
           <p>
-            Please <Link to="/login" className={styles.authLink}>login</Link> or {' '}
-            <Link to="/signUp" className={styles.authLink}>create an account</Link> to add a comment and be part of this discussion.
+            <Trans i18nKey="createComment.promptDiscussion">
+              Please <Link to="/login" className={styles.authLink}>login</Link> or {' '}
+              <Link to="/signUp" className={styles.authLink}>create an account</Link> to add a comment and be part of this discussion.
+            </Trans>
           </p>
         ) : (
           <p>
-            Please <Link to="/login" className={styles.authLink}>login</Link> or {' '}
-            <Link to="/signUp" className={styles.authLink}>create an account</Link> to be the first one to comment!
+            <Trans i18nKey="createComment.promptFirst">
+              Please <Link to="/login" className={styles.authLink}>login</Link> or {' '}
+              <Link to="/signUp" className={styles.authLink}>create an account</Link> to be the first one to comment!
+            </Trans>
           </p>
         )}
       </div>
@@ -70,7 +72,7 @@ const CreateComment = ({ postId, onCommentCreated, hasExistingComments }) => {
 
   return (
     <div className={styles.addCommentContainer}>
-      <h3 className={styles.title}>Add a Comment</h3>
+      <h3 className={styles.title}>{t('createComment.title')}</h3>
       <form onSubmit={handleSubmit} className={styles.addCommentForm}>
         <ReactQuill
           value={content}
@@ -88,7 +90,7 @@ const CreateComment = ({ postId, onCommentCreated, hasExistingComments }) => {
           }}
         />
         <button type="submit" className={styles.submitButton}>
-          Submit Comment
+          {t('createComment.submitBtn')}
         </button>
         {error && <p className={styles.error}>{error}</p>}
         {successMessage && <p className={styles.successMessage}>{successMessage}</p>}

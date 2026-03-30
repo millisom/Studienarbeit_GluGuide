@@ -6,11 +6,12 @@ import RecipeInstructionsInput from './RecipeInstructionsInput';
 import { createRecipe } from '../api/recipeApi';
 import styles from '../styles/LogMealPage.module.css';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation, Trans } from 'react-i18next';
 
 const RecipeDashboard = () => {
-
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [recipeName, setRecipeName] = useState('');
   const [ingredients, setIngredients] = useState([]);
@@ -31,15 +32,14 @@ const RecipeDashboard = () => {
   };
 
   const handleSubmit = async () => {
-
     if (!user) {
-        setStatus('You must be logged in to save a recipe.');
+        setStatus(t('recipeDashboard.errorAuth'));
         return;
     }
 
-    if (!recipeName.trim()) return setStatus('Please enter a recipe name');
-    if (ingredients.length === 0) return setStatus('Please add at least one ingredient');
-    if (instructions.length === 0) return setStatus('Please add instructions');
+    if (!recipeName.trim()) return setStatus(t('recipeDashboard.errorName'));
+    if (ingredients.length === 0) return setStatus(t('recipeDashboard.errorIngredients'));
+    if (instructions.length === 0) return setStatus(t('recipeDashboard.errorInstructions'));
 
     setIsSaving(true);
     setStatus('');
@@ -54,12 +54,11 @@ const RecipeDashboard = () => {
 
       const newRecipe = await createRecipe(payload);
 
-      setStatus('Recipe created successfully!');
+      setStatus(t('recipeDashboard.success'));
       setRecipeName('');
       setIngredients([]);
       setInstructions([]);
 
-  
       if (newRecipe?.id) {
         setTimeout(() => {
             navigate(`/recipes/${newRecipe.id}`);
@@ -67,37 +66,36 @@ const RecipeDashboard = () => {
       }
     } catch (err) {
       console.error('Save error:', err.response?.data || err.message);
-      setStatus('Failed to create recipe');
+      setStatus(t('recipeDashboard.errorFailed'));
     } finally {
         setIsSaving(false);
     }
   };
 
-
   if (!user) {
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h2>Create Your Recipe</h2>
-            <p>Please <Link to="/login" style={{ color: 'blue' }}>log in</Link> to create and save your own recipes.</p>
+            <h2>{t('recipeDashboard.title')}</h2>
+            <p>
+              <Trans i18nKey="recipeDashboard.loginPrompt">
+                Please <Link to="/login" style={{ color: 'blue' }}>log in</Link> to create and save your own recipes.
+              </Trans>
+            </p>
         </div>
     );
   }
 
   return (
-    // Removed styles.container here so we don't get the "double frame" effect!
-    // Just using a standard div to hold the content.
     <div style={{ width: '100%' }}>
-      <h1 className={styles.title}>Create Your Recipe</h1>
+      <h1 className={styles.title}>{t('recipeDashboard.title')}</h1>
 
-      {/* Keeps the 24px vertical spacing between elements */}
       <div className={styles.mealForm}>
-        
         <div className={styles.inputGroup}>
           <input
             type="text"
             value={recipeName}
             onChange={(e) => setRecipeName(e.target.value)}
-            placeholder="Recipe Name"
+            placeholder={t('recipeDashboard.placeholderName')}
             className={styles.input}
           />
         </div>
@@ -118,11 +116,11 @@ const RecipeDashboard = () => {
           className={styles.submitButton}
           disabled={isSaving}
         >
-          {isSaving ? 'Saving...' : 'Save Recipe'}
+          {isSaving ? t('recipeDashboard.btnSaving') : t('recipeDashboard.btnSave')}
         </button>
 
         {status && (
-          <p className={status.startsWith('Failed') ? styles.errorMessage : styles.status}>
+          <p className={status.includes(t('recipeDashboard.errorFailed')) ? styles.errorMessage : styles.status}>
               {status}
           </p>
         )}
