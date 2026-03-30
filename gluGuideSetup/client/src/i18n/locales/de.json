@@ -628,5 +628,28 @@
     "errorSave": "Fehler beim Speichern der Mahlzeit",
     "errorNoType": "Bitte wählen Sie einen Mahlzeit-Typ aus",
     "errorNoFood": "Bitte fügen Sie Lebensmittel oder ein Rezept hinzu"
+  },
+  "mealHistory": {
+    "title": "Mahlzeiten-Verlauf",
+    "loading": "Verlauf wird geladen...",
+    "loginRequired": "Bitte logge dich ein, um den Verlauf zu sehen.",
+    "errorLoad": "Mahlzeiten-Verlauf konnte nicht geladen werden.",
+    "filter7Days": "Letzte 7 Tage",
+    "filter30Days": "Letzte 30 Tage",
+    "filterAll": "Gesamt",
+    "dailyTotal": "Tagesbilanz",
+    "calories": "Kalorien:",
+    "proteins": "Eiweiß:",
+    "fats": "Fett:",
+    "carbs": "Kohlenhydrate:",
+    "emptyMessage": "Keine Mahlzeiten für diesen Zeitraum gefunden.",
+    "clickTooltip": "Klicken für Details",
+    "mealFallback": "Mahlzeit",
+    "types": {
+      "breakfast": "Frühstück",
+      "lunch": "Mittagessen",
+      "dinner": "Abendessen",
+      "snack": "Snack"
+    }
   }
 }

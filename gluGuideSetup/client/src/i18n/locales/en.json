@@ -628,5 +628,28 @@
     "errorSave": "Error saving meal",
     "errorNoType": "Please select a meal type",
     "errorNoFood": "Please add food or a recipe"
+  },
+  "mealHistory": {
+    "title": "Meal History",
+    "loading": "Loading history...",
+    "loginRequired": "Please log in to view history.",
+    "errorLoad": "Could not load meal history.",
+    "filter7Days": "Last 7 Days",
+    "filter30Days": "Last 30 Days",
+    "filterAll": "All Time",
+    "dailyTotal": "Daily Total",
+    "calories": "Calories:",
+    "proteins": "Proteins:",
+    "fats": "Fats:",
+    "carbs": "Carbs:",
+    "emptyMessage": "No meals found for this time period.",
+    "clickTooltip": "Click to view details",
+    "mealFallback": "Meal",
+    "types": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    }
   }
 }
