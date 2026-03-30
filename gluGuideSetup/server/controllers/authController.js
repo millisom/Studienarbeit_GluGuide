@@ -7,22 +7,23 @@ const { generateResetToken } = require('../helpers/tokenHelper');
 const { createPasswordResetMessage } = require('../helpers/messageHelper');
 
 const authController = {
+
   async signUp(req, res) {
-    const { username, email, password, termsAccepted } = req.body;
+      const { username, email, password, termsAccepted, healthDataConsent } = req.body;
 
-    try {
-      const existingUser = await User.findUserByEmail(email);
-      if (existingUser) {
-        return res.json("exists");
+      try {
+        const existingUser = await User.findUserByEmail(email);
+        if (existingUser) {
+          return res.json("exists");
+        }
+
+        await User.createUser(username, email, password, termsAccepted, healthDataConsent);
+        res.json("notexist");
+      } catch (error) {
+        console.error("Error in sign-up process:", error);
+        res.status(500).json({ error: "Internal Server Error" });
       }
-
-      await User.createUser(username, email, password, termsAccepted);
-      res.json("notexist");
-    } catch (error) {
-      console.error("Error in sign-up process:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  },
+    },
 
   async loginUser(req, res) {
     try {
