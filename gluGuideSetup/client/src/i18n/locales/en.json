@@ -1,0 +1,30 @@
+{
+  "auth": {
+    "signup": "Sign Up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "terms": "I accept the <1>Terms & Conditions</1> and have read the <3>Privacy Policy</3>.",
+    "consent": "I explicitly consent to the processing of my <1>health data</1>...",
+    "alreadyHaveAccount": "Already have an Account? Login here"
+  },
+  "common": {
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact"
+  },
+  "nav": {
+    "logging": "Logging",
+    "meals": "Meals",
+    "blogs": "Blogs",
+    "account": "My Account",
+    "admin": "Admin Dashboard",
+    "about": "About",
+    "contact": "Contact Us",
+    "logout": "Log Out",
+    "login": "Log In / Register",
+    "logout_success": "You have been logged out successfully.",
+    "logout_error": "Failed to log out. Please try again."
+  }
+}

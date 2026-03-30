@@ -1,0 +1,30 @@
+{
+  "auth": {
+    "signup": "Registrieren",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "terms": "Ich akzeptiere die <1>AGB</1> und habe die <3>Datenschutzerklärung</3> gelesen.",
+    "consent": "Ich stimme der Verarbeitung meiner <1>Gesundheitsdaten</1> ausdrücklich zu...",
+    "alreadyHaveAccount": "Haben Sie bereits ein Konto? Hier einloggen"
+  },
+  "common": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "contact": "Kontakt"
+  },
+  "nav": {
+    "logging": "Protokoll",
+    "meals": "Mahlzeiten",
+    "blogs": "Blogs",
+    "account": "Mein Konto",
+    "admin": "Admin-Bereich",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "logout": "Abmelden",
+    "login": "Anmelden / Registrieren",
+    "logout_success": "Erfolgreich abgemeldet.",
+    "logout_error": "Abmeldung fehlgeschlagen. Bitte erneut versuchen."
+  }
+}
