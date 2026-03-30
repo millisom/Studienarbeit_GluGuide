@@ -302,5 +302,22 @@
     "ariaRemoveItem": "{{name}} entfernen",
     "ariaRemoveRecipe": "Rezept {{name}} entfernen",
     "na": "N/V"
+  },
+  "mealsCards": {
+    "loginPrompt": "Bitte anmelden",
+    "loading": "Heutige Mahlzeiten werden geladen...",
+    "errorLoad": "Mahlzeiten konnten nicht geladen werden. Bitte später erneut versuchen.",
+    "todayTotal": "Heutige Gesamtwerte",
+    "unitKcal": "kcal",
+    "labelProtein": "Eiweiß",
+    "labelFat": "Fett",
+    "labelCarbs": "Kohlenhydrate",
+    "noMeals": "Heute noch keine Mahlzeiten protokolliert",
+    "mealFallback": "MAHLZEIT",
+    "labelTime": "Zeit:",
+    "labelTotalCalories": "Gesamt-Kalorien:",
+    "na": "N/V",
+    "btnViewDetails": "Details anzeigen",
+    "btnViewHistory": "Vollständigen Mahlzeitenverlauf anzeigen"
   }
 }

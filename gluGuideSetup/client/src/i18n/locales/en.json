@@ -302,5 +302,22 @@
     "ariaRemoveItem": "Remove {{name}}",
     "ariaRemoveRecipe": "Remove recipe {{name}}",
     "na": "N/A"
+  },
+  "mealsCards": {
+    "loginPrompt": "Please Log In",
+    "loading": "Loading today's meals...",
+    "errorLoad": "Failed to load meals. Please try again later.",
+    "todayTotal": "Today's Total",
+    "unitKcal": "kcal",
+    "labelProtein": "Protein",
+    "labelFat": "Fat",
+    "labelCarbs": "Carbs",
+    "noMeals": "No Meals Logged Today",
+    "mealFallback": "MEAL",
+    "labelTime": "Time:",
+    "labelTotalCalories": "Total Calories:",
+    "na": "N/A",
+    "btnViewDetails": "View Meal Details",
+    "btnViewHistory": "View Full Meal History"
   }
 }
