@@ -668,5 +668,49 @@
     "ariaCreate": "Einen neuen Beitrag erstellen",
     "emptyTitle": "Hier gibt es noch nichts zu sehen!",
     "emptyDescription": "Du hast noch keine Beiträge verfasst. Klicke auf die Schaltfläche oben, um deine Gedanken zu teilen!"
+  },
+  "privacyPolicy": {
+    "title": "Datenschutzerklärung",
+    "lastUpdated": "Zuletzt aktualisiert: März 2026",
+    "btnBack": "Zurück zur Registrierung",
+    "s1": {
+      "title": "1. Einleitung",
+      "content": "Willkommen bei GluGuide. Wir nehmen Ihren Datenschutz ernst. Diese Richtlinie erklärt, welche personenbezogenen Daten wir sammeln, warum wir sie sammeln und wie wir sie schützen, in Übereinstimmung mit der Datenschutz-Grundverordnung (DSGVO)."
+    },
+    "s2": {
+      "title": "2. Welche Daten wir sammeln",
+      "intro": "Um unseren Service bereitzustellen, sammeln wir die folgenden Informationen:",
+      "item1": "<0>Kontodaten:</0> Benutzername, E-Mail-Adresse und ein verschlüsselter Passwort-Hash.",
+      "item2": "<0>Besondere Kategorien von Daten (Gesundheitsdaten):</0> Blutzuckerprotokolle, Mahlzeiteneinträge, Nährwertinformationen (Kohlenhydrate) und persönliche Gesundheitsnotizen.",
+      "consent": "Wir verarbeiten Gesundheitsdaten ausschließlich auf Grundlage Ihrer <1>ausdrücklichen Einwilligung</1>, die Sie bei der Registrierung erteilt haben."
+    },
+    "s3": {
+      "title": "3. Wie wir Ihre Daten verwenden",
+      "content": "Ihre Daten werden ausschließlich zum Betrieb der GluGuide-Anwendung verwendet. Dies umfasst die Anzeige Ihres Dashboards, die Berechnung von Nährwertsummen und die Erstellung von PDF-Gesundheitsberichten. Wir verkaufen Ihre Daten <1>nicht</1> an Dritte."
+    },
+    "s4": {
+      "title": "4. Wo Ihre Daten gespeichert werden",
+      "content": "GluGuide wird sicher auf der Microsoft Azure-Infrastruktur innerhalb der Europäischen Union gehostet. Ihre Daten sind durch Verschlüsselung bei der Übertragung (HTTPS) und Verschlüsselung im Ruhezustand in unserer PostgreSQL-Datenbank geschützt."
+    },
+    "s5": {
+      "title": "5. Datenspeicherung",
+      "content": "Wir bewahren Ihre Daten nur so lange auf, wie Sie ein aktives Konto haben. Wenn Sie sich entscheiden, Ihr Konto zu löschen, werden alle damit verbundenen Daten dauerhaft und unwiderruflich aus unserer aktiven Datenbank gelöscht."
+    },
+    "s6": {
+      "title": "6. Ihre DSGVO-Rechte",
+      "intro": "Im Rahmen der DSGVO haben Sie die folgenden Rechte in Bezug auf Ihre Daten:",
+      "item1": "<0>Recht auf Auskunft & Übertragbarkeit:</0> Sie können jederzeit eine Kopie Ihrer Gesundheitsdaten über die Funktion „PDF exportieren“ in Ihrem Profil herunterladen.",
+      "item2": "<0>Recht auf Löschung:</0> Sie können Ihr Konto und alle damit verbundenen Daten dauerhaft über die Schaltfläche „Konto löschen“ in Ihren Einstellungen löschen.",
+      "item3": "<0>Recht auf Berichtigung:</0> Sie können Ihre Bio, Mahlzeiten und Blutzuckerprotokolle in der App bearbeiten oder aktualisieren.",
+      "item4": "<0>Recht auf Widerruf der Einwilligung:</0> Sie können Ihre Einwilligung zur Verarbeitung Ihrer Gesundheitsdaten jederzeit widerrufen, indem Sie Ihr Konto löschen."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "content": "Wir verwenden ein einziges, unbedingt erforderliches Sitzungscookie, um Sie sicher in der Anwendung angemeldet zu halten. Wir verwenden keine Tracking-, Werbe- oder Analyse-Cookies von Drittanbietern."
+    },
+    "s8": {
+      "title": "8. Kontaktieren Sie uns",
+      "content": "Wenn Sie Fragen zu dieser Datenschutzerklärung haben oder Ihre Rechte ausüben möchten, wenden Sie sich bitte an den Verantwortlichen unter: <1>gluguide01@gmail.com</1>"
+    }
   }
 }

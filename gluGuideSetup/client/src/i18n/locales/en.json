@@ -668,5 +668,49 @@
     "ariaCreate": "Create a new post",
     "emptyTitle": "Nothing to see here... yet!",
     "emptyDescription": "You haven't authored any posts. Click the button above to share your thoughts!"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: March 2026",
+    "btnBack": "Return to Sign Up",
+    "s1": {
+      "title": "1. Introduction",
+      "content": "Welcome to GluGuide. We take your privacy seriously. This policy explains what personal data we collect, why we collect it, and how we protect it, in compliance with the General Data Protection Regulation (GDPR)."
+    },
+    "s2": {
+      "title": "2. What Data We Collect",
+      "intro": "To provide our service, we collect the following information:",
+      "item1": "<0>Account Data:</0> Username, email address, and an encrypted password hash.",
+      "item2": "<0>Special Category Data (Health Data):</0> Blood glucose logs, meal entries, nutritional information (carbs), and personal health notes.",
+      "consent": "We process health data solely based on your <1>explicit consent</1>, which you provided during registration."
+    },
+    "s3": {
+      "title": "3. How We Use Your Data",
+      "content": "Your data is used strictly to operate the GluGuide application. This includes displaying your dashboard, calculating nutritional totals, and generating PDF health reports. We do <1>not</1> sell your data to third parties."
+    },
+    "s4": {
+      "title": "4. Where Your Data is Stored",
+      "content": "GluGuide is hosted securely using Microsoft Azure infrastructure located within the European Union. Your data is protected by encryption in transit (HTTPS) and encryption at rest in our PostgreSQL database."
+    },
+    "s5": {
+      "title": "5. Data Retention",
+      "content": "We keep your data only as long as you have an active account. If you choose to delete your account, all associated data (including glucose logs and meals) is permanently and irreversibly deleted from our active database."
+    },
+    "s6": {
+      "title": "6. Your GDPR Rights",
+      "intro": "Under the GDPR, you have the following rights regarding your data:",
+      "item1": "<0>Right to Access & Portability:</0> You can download a copy of your health data at any time using the \"Export PDF\" feature in your profile.",
+      "item2": "<0>Right to Erasure:</0> You can permanently delete your account and all associated data via the \"Delete Account\" button in your settings.",
+      "item3": "<0>Right to Rectification:</0> You can edit or update your bio, meals, and glucose logs within the app.",
+      "item4": "<0>Right to Withdraw Consent:</0> You may withdraw your consent for us to process your health data by deleting your account."
+    },
+    "s7": {
+      "title": "7. Cookies",
+      "content": "We use a single, strictly necessary session cookie to keep you logged into the application securely. We do not use any tracking, advertising, or third-party analytics cookies."
+    },
+    "s8": {
+      "title": "8. Contact Us",
+      "content": "If you have any questions about this Privacy Policy or wish to exercise your rights, please contact the Data Controller at: <1>gluguide01@gmail.com</1>"
+    }
   }
 }
