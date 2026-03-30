@@ -5,10 +5,15 @@ const pool = require('../config/db');
 const argon2 = require('argon2');
 
 const User = {
-  async createUser(username, email, password, termsAccepted) {
+  async createUser(username, email, password, termsAccepted, healthDataConsent) {
     const hashedPassword = await argon2.hash(password);
-    const query = 'INSERT INTO users (username, email, password_hash, terms_accepted) VALUES ($1, $2, $3, $4) RETURNING *';
-    const values = [username, email, hashedPassword, termsAccepted];
+    
+    const query = `
+      INSERT INTO users (username, email, password_hash, terms_accepted, health_data_consent, consent_timestamp) 
+      VALUES ($1, $2, $3, $4, $5, NOW()) 
+      RETURNING *
+    `;
+    const values = [username, email, hashedPassword, termsAccepted, healthDataConsent];
 
     try {
       const result = await pool.query(query, values);
