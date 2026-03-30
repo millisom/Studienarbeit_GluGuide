@@ -415,5 +415,13 @@
     "unnamed": "Unbenanntes Rezept",
     "totalCalories": "Gesamt-Kalorien:",
     "btnView": "Vollständiges Rezept anzeigen"
+  },
+  "recipeSelector": {
+    "searchPlaceholder": "Rezept suchen...",
+    "loginPlaceholder": "Anmelden, um Rezepte zu suchen",
+    "errorLoadSuggestions": "Vorschläge konnten nicht geladen werden",
+    "errorAuth": "Bitte melde dich an, um Rezeptdetails zu sehen.",
+    "errorLoadDetails": "Rezeptdetails konnten nicht geladen werden.",
+    "portionSize": "Portionsgröße:"
   }
 }
