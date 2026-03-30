@@ -659,5 +659,14 @@
     "recipesTitle": "My Recipes",
     "btnCreateRecipe": "Create a New Recipe",
     "btnSeeMore": "See More Recipes"
+  },
+  "myBlogs": {
+    "loading": "Loading your masterpieces...",
+    "error": "Failed to load your blog posts. Please try again later.",
+    "title": "My Blog Posts",
+    "btnCreate": "Create New Post",
+    "ariaCreate": "Create a new post",
+    "emptyTitle": "Nothing to see here... yet!",
+    "emptyDescription": "You haven't authored any posts. Click the button above to share your thoughts!"
   }
 }

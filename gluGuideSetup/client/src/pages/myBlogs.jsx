@@ -5,8 +5,10 @@ import axiosInstance from '../api/axiosConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faFeatherAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const MyBlogs = () => {
+    const { t } = useTranslation();
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -23,16 +25,16 @@ const MyBlogs = () => {
                 setBlogs(response.data);
             } catch (error) {
                 console.error('Error fetching blogs:', error);
-                setError('Failed to load your blog posts. Please try again later.');
+                setError(t('myBlogs.error'));
             } finally {
                 setLoading(false);
             }
         };
         fetchBlogs();
-    }, []);
+    }, [t]);
 
     if (loading) {
-        return <div className={styles.loadingStatePage}>Loading your masterpieces...</div>;
+        return <div className={styles.loadingStatePage}>{t('myBlogs.loading')}</div>;
     }
 
     if (error) {
@@ -42,13 +44,13 @@ const MyBlogs = () => {
     return (
         <div className={styles.myBlogsPageContainer}>
             <header className={styles.myBlogsHeader}>
-                <h1 className={styles.myBlogsTitle}>My Blog Posts</h1>
+                <h1 className={styles.myBlogsTitle}>{t('myBlogs.title')}</h1>
                 <button 
                     className={`${styles.cardButton} ${styles.createPostButtonPrimary}`}
                     onClick={() => navigate('/create/post')} 
-                    aria-label="Create a new post"
+                    aria-label={t('myBlogs.ariaCreate')}
                 >
-                    <FontAwesomeIcon icon={faPlus} /> Create New Post
+                    <FontAwesomeIcon icon={faPlus} /> {t('myBlogs.btnCreate')}
                 </button>
             </header>
 
@@ -61,8 +63,8 @@ const MyBlogs = () => {
             ) : (
                 <div className={styles.noPostsMessage}>
                     <FontAwesomeIcon icon={faFeatherAlt} size="3x" className={styles.noPostsIcon} />
-                    <h2>Nothing to see here... yet!</h2>
-                    <p>You haven&apos;t authored any posts. Click the button above to share your thoughts!</p>
+                    <h2>{t('myBlogs.emptyTitle')}</h2>
+                    <p>{t('myBlogs.emptyDescription')}</p>
                 </div>
             )}
         </div>

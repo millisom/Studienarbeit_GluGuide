@@ -659,5 +659,14 @@
     "recipesTitle": "Meine Rezepte",
     "btnCreateRecipe": "Neues Rezept erstellen",
     "btnSeeMore": "Mehr Rezepte anzeigen"
+  },
+  "myBlogs": {
+    "loading": "Deine Meisterwerke werden geladen...",
+    "error": "Deine Blog-Beiträge konnten nicht geladen werden. Bitte versuche es später erneut.",
+    "title": "Meine Blog-Beiträge",
+    "btnCreate": "Neuen Beitrag erstellen",
+    "ariaCreate": "Einen neuen Beitrag erstellen",
+    "emptyTitle": "Hier gibt es noch nichts zu sehen!",
+    "emptyDescription": "Du hast noch keine Beiträge verfasst. Klicke auf die Schaltfläche oben, um deine Gedanken zu teilen!"
   }
 }
