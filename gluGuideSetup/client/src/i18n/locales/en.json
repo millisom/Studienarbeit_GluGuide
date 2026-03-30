@@ -259,5 +259,10 @@
     "errorFallback": "Invalid username or password",
     "forgotPassword": "Forgot Password?",
     "signupLink": "Sign up here"
+  },
+  "logout": {
+    "success": "You have been logged out successfully.",
+    "error": "Failed to log out. Please try again.",
+    "button": "Logout"
   }
 }

@@ -259,5 +259,10 @@
     "errorFallback": "Ungültiger Benutzername oder Passwort",
     "forgotPassword": "Passwort vergessen?",
     "signupLink": "Hier registrieren"
+  },
+  "logout": {
+    "success": "Sie wurden erfolgreich abgemeldet.",
+    "error": "Abmeldung fehlgeschlagen. Bitte versuche es erneut.",
+    "button": "Abmelden"
   }
 }
