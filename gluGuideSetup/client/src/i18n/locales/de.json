@@ -733,5 +733,38 @@
     "alertHealth": "Für die Nutzung von GluGuide ist eine ausdrückliche Zustimmung zur Verarbeitung von Gesundheitsdaten erforderlich.",
     "gdprTerms": "Ich akzeptiere die <1>Allgemeinen Geschäftsbedingungen</1> und habe die <3>Datenschutzerklärung</3> gelesen.",
     "gdprHealth": "Ich stimme der Verarbeitung meiner <1>Gesundheitsdaten</1> (z. B. Blutzuckerwerte, Mahlzeitenprotokolle) ausdrücklich zu, um den GluGuide-Service bereitzustellen, wie in der <3>Datenschutzerklärung</3> beschrieben."
+  },
+  "terms": {
+    "title": "Allgemeine Geschäftsbedingungen",
+    "lastUpdated": "Zuletzt aktualisiert: März 2026",
+    "btnBack": "Zurück zur Registrierung",
+    "s1": {
+      "title": "1. Annahme der Bedingungen",
+      "content": "Durch die Registrierung für und die Nutzung von GluGuide erklären Sie sich mit diesen Allgemeinen Geschäftsbedingungen einverstanden. Wenn Sie diesen Bedingungen nicht zustimmen, nutzen Sie unseren Service bitte nicht."
+    },
+    "s2": {
+      "title": "2. Medizinischer Haftungsausschluss (Wichtig)",
+      "disclaimer": "GluGuide ist kein Medizinprodukt und kein Ersatz für professionelle medizinische Beratung.",
+      "content": "Die Anwendung dient ausschließlich der Verfolgung und Protokollierung persönlicher Gesundheitsdaten (wie Blutzuckerspiegel und Kohlenhydrataufnahme). Sie sollten niemals den Rat eines Arztes hinauszögern, ignorieren oder eine medizinische Behandlung aufgrund von Informationen in dieser Anwendung abbrechen. Konsultieren Sie immer Ihren Arzt oder Gesundheitsdienstleister bezüglich Ihres Diabetes-Managements."
+    },
+    "s3": {
+      "title": "3. Benutzerkonten & Sicherheit",
+      "content": "Sie sind für die Wahrung der Vertraulichkeit Ihrer Zugangsdaten verantwortlich. Sie erklären sich damit einverstanden, genaue, aktuelle und vollständige Informationen anzugeben. GluGuide kann nicht für Verluste oder Schäden haftbar gemacht werden, die daraus resultieren, dass Sie Ihre Anmeldedaten nicht geschützt haben."
+    },
+    "s4": {
+      "title": "4. Haftungsbeschränkung",
+      "intro": "Soweit gesetzlich zulässig, haften GluGuide und seine Entwickler nicht für indirekte, zufällige, besondere, Folgeschäden oder Strafschadenersatz, die sich aus Folgendem ergeben:",
+      "item1": "Ihrem Zugriff auf den Dienst oder dessen Nutzung (oder der Unfähigkeit dazu).",
+      "item2": "Etwaigen Ungenauigkeiten oder Fehlern in den Berechnungen der Anwendung, den Nährwertdaten oder den Exportberichten.",
+      "item3": "Unbefugtem Zugriff, unbefugter Nutzung oder Änderung Ihrer Übertragungen oder Inhalte."
+    },
+    "s5": {
+      "title": "5. Kontokündigung",
+      "content": "Wir behalten uns das Recht vor, Ihr Konto jederzeit ohne vorherige Ankündigung oder Haftung zu sperren oder zu kündigen, unter anderem wenn Sie gegen diese Allgemeinen Geschäftsbedingungen verstoßen."
+    },
+    "s6": {
+      "title": "6. Änderungen der Bedingungen",
+      "content": "Wir behalten uns das Recht vor, diese Bedingungen jederzeit zu ändern. Wir werden die Benutzer über wesentliche Änderungen per E-Mail oder durch einen auffälligen Hinweis in der Anwendung informieren."
+    }
   }
 }
