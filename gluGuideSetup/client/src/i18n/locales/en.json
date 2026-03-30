@@ -102,5 +102,31 @@
     "successMsg": "Post created successfully! Redirecting...",
     "errorRedirect": "Post created, but could not redirect. Please check the Blogs page.",
     "errorFailed": "Failed to create post. Please check your input and try again."
+  },
+  "editPost": {
+    "title": "Edit Your Post",
+    "labelPostTitle": "Post Title:",
+    "placeholderTitle": "Post title",
+    "labelContent": "Content:",
+    "labelTags": "Tags (comma-separated):",
+    "placeholderTags": "e.g., health, diet, tips",
+    "labelCurrentImage": "Current Post Image:",
+    "noImage": "No image set.",
+    "btnRemoveImage": "Remove Image",
+    "labelUploadImage": "Upload New Image:",
+    "btnUpload": "Upload Image",
+    "btnSave": "Save Changes",
+    "btnSaving": "Saving...",
+    "btnCancel": "Cancel",
+    "errorLoad": "Failed to load post data. Please try again.",
+    "errorSave": "Failed to save changes. Please check your input.",
+    "errorNoImageSelected": "Please select an image first!",
+    "successUpload": "Image uploaded successfully!",
+    "errorUpload": "Failed to upload image.",
+    "confirmDeleteImage": "Delete current image?",
+    "errorDeleteImage": "Failed to delete image.",
+    "errorAuth": "Please log in to edit posts.",
+    "loading": "Loading post data...",
+    "imageNotFound": "Image Not Found"
   }
 }

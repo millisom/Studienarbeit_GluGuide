@@ -102,5 +102,31 @@
     "successMsg": "Beitrag erfolgreich erstellt! Weiterleitung...",
     "errorRedirect": "Beitrag erstellt, aber Weiterleitung fehlgeschlagen. Bitte prüfe die Blog-Seite.",
     "errorFailed": "Beitrag konnte nicht erstellt werden. Bitte prüfe deine Eingaben und versuche es erneut."
+  },
+  "editPost": {
+    "title": "Beitrag bearbeiten",
+    "labelPostTitle": "Titel des Beitrags:",
+    "placeholderTitle": "Titel des Beitrags",
+    "labelContent": "Inhalt:",
+    "labelTags": "Tags (kommagetrennt):",
+    "placeholderTags": "z.B. Gesundheit, Ernährung, Tipps",
+    "labelCurrentImage": "Aktuelles Beitragsbild:",
+    "noImage": "Kein Bild gesetzt.",
+    "btnRemoveImage": "Bild entfernen",
+    "labelUploadImage": "Neues Bild hochladen:",
+    "btnUpload": "Bild hochladen",
+    "btnSave": "Änderungen speichern",
+    "btnSaving": "Wird gespeichert...",
+    "btnCancel": "Abbrechen",
+    "errorLoad": "Fehler beim Laden des Beitrags. Bitte versuchen Sie es erneut.",
+    "errorSave": "Fehler beim Speichern. Bitte prüfen Sie Ihre Eingaben.",
+    "errorNoImageSelected": "Bitte wählen Sie zuerst ein Bild aus!",
+    "successUpload": "Bild erfolgreich hochgeladen!",
+    "errorUpload": "Bild-Upload fehlgeschlagen.",
+    "confirmDeleteImage": "Aktuelles Bild löschen?",
+    "errorDeleteImage": "Bild konnte nicht gelöscht werden.",
+    "errorAuth": "Bitte loggen Sie sich ein, um Beiträge zu bearbeiten.",
+    "loading": "Beitrag wird geladen...",
+    "imageNotFound": "Bild nicht gefunden"
   }
 }
