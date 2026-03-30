@@ -499,5 +499,21 @@
       "pm_mentor": "Former Project Manager & Mentor"
     },
     "hafsaNote": "Hafsa was instrumental in the last semester of GluGuide as our Project Manager. She has since moved on to her maternity leave. We honor her foundational work and wish her all the best!"
+  },
+  "adminCreateUser": {
+    "title": "Create New User",
+    "labelUsername": "Username",
+    "placeholderUsername": "Username",
+    "labelEmail": "Email",
+    "placeholderEmail": "Email",
+    "labelPassword": "Password",
+    "placeholderPassword": "Password",
+    "labelTerms": "I accept the Terms and Conditions",
+    "labelIsAdmin": "Make Admin",
+    "errorTerms": "Terms must be accepted.",
+    "successMessage": "User created successfully: {{username}}",
+    "errorFallback": "An error occurred.",
+    "btnBack": "Back to Dashboard",
+    "btnCreate": "Create User"
   }
 }

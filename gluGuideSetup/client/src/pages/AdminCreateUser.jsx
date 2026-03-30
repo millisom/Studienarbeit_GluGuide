@@ -4,8 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/Admin.module.css';
+import { useTranslation } from 'react-i18next';
 
 const AdminCreateUser = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +19,7 @@ const AdminCreateUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!termsAccepted) {
-      setMessage('Terms must be accepted.');
+      setMessage(t('adminCreateUser.errorTerms'));
       return;
     }
 
@@ -28,24 +30,24 @@ const AdminCreateUser = () => {
         { withCredentials: true }
       );
 
-      setMessage(`User created successfully: ${res.data.username}`);
+      setMessage(t('adminCreateUser.successMessage', { username: res.data.username }));
       setTimeout(() => navigate('/admin'), 1500);
     } catch (err) {
-      setMessage(err.response?.data?.error || 'An error occurred.');
+      setMessage(err.response?.data?.error || t('adminCreateUser.errorFallback'));
     }
   };
 
   return (
     <div className={styles.formAdminCreate}>
-      <h1 className={styles.title}>Create New User</h1>
+      <h1 className={styles.title}>{t('adminCreateUser.title')}</h1>
       <br />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputField}>
-          <label className={styles.label}>Username</label>
+          <label className={styles.label}>{t('adminCreateUser.labelUsername')}</label>
           <input
             type='text'
             className={styles.input}
-            placeholder='Username'
+            placeholder={t('adminCreateUser.placeholderUsername')}
             value={username}
             required
             onChange={(e) => setUsername(e.target.value)}
@@ -53,11 +55,11 @@ const AdminCreateUser = () => {
         </div>
 
         <div className={styles.inputField}>
-          <label className={styles.label}>Email</label>
+          <label className={styles.label}>{t('adminCreateUser.labelEmail')}</label>
           <input
             type='email'
             className={styles.input}
-            placeholder='Email'
+            placeholder={t('adminCreateUser.placeholderEmail')}
             value={email}
             required
             onChange={(e) => setEmail(e.target.value)}
@@ -65,11 +67,11 @@ const AdminCreateUser = () => {
         </div>
 
         <div className={styles.inputField}>
-          <label className={styles.label}>Password</label>
+          <label className={styles.label}>{t('adminCreateUser.labelPassword')}</label>
           <input
             type='password'
             className={styles.input}
-            placeholder='Password'
+            placeholder={t('adminCreateUser.placeholderPassword')}
             value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
@@ -83,7 +85,7 @@ const AdminCreateUser = () => {
             onChange={(e) => setTermsAccepted(e.target.checked)}
             className={styles.iconSpacing}
           />
-          I accept the Terms and Conditions
+          {t('adminCreateUser.labelTerms')}
         </label>
 
         <label className={styles.labelCheckbox}>
@@ -93,14 +95,14 @@ const AdminCreateUser = () => {
             onChange={(e) => setIsAdmin(e.target.checked)}
             className={styles.iconSpacing}
           />
-          Make Admin
+          {t('adminCreateUser.labelIsAdmin')}
         </label>
 
         {message && (
           <p
             className={styles.message}
             style={{
-              color: message.includes('successfully') ? 'green' : 'red',
+              color: message.includes('successfully') || message.includes('erfolgreich') ? 'green' : 'red',
             }}
           >
             {message}
@@ -117,11 +119,11 @@ const AdminCreateUser = () => {
               icon={faArrowLeft}
               className={styles.iconSpacing}
             />
-            Back to Dashboard
+            {t('adminCreateUser.btnBack')}
           </button>
           <button type='submit' className={styles.primaryButton}>
             <FontAwesomeIcon icon={faUserPlus} className={styles.iconSpacing} />
-            Create User
+            {t('adminCreateUser.btnCreate')}
           </button>
         </div>
       </form>

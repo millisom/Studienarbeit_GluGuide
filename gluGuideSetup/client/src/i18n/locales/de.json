@@ -499,5 +499,21 @@
       "pm_mentor": "Ehemalige Projektmanagerin & Mentorin"
     },
     "hafsaNote": "Hafsa war im letzten Semester als unsere Projektmanagerin maßgeblich an GluGuide beteiligt. Inzwischen ist sie in Mutterschutz gegangen. Wir ehren ihre grundlegende Arbeit und wünschen ihr alles Gute!"
+  },
+  "adminCreateUser": {
+    "title": "Neuen Benutzer erstellen",
+    "labelUsername": "Benutzername",
+    "placeholderUsername": "Benutzername",
+    "labelEmail": "E-Mail",
+    "placeholderEmail": "E-Mail",
+    "labelPassword": "Passwort",
+    "placeholderPassword": "Passwort",
+    "labelTerms": "Ich akzeptiere die Allgemeinen Geschäftsbedingungen",
+    "labelIsAdmin": "Zum Admin machen",
+    "errorTerms": "Die Bedingungen müssen akzeptiert werden.",
+    "successMessage": "Benutzer erfolgreich erstellt: {{username}}",
+    "errorFallback": "Ein Fehler ist aufgetreten.",
+    "btnBack": "Zurück zum Dashboard",
+    "btnCreate": "Benutzer erstellen"
   }
 }
