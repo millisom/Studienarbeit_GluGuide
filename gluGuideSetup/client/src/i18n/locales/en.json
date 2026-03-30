@@ -73,5 +73,8 @@
     "likes": "Likes",
     "ariaEdit": "Edit post titled {{title}}",
     "ariaDelete": "Delete post titled {{title}}"
+  },
+  "commentsSection": {
+    "errorLoad": "Failed to load comments"
   }
 }

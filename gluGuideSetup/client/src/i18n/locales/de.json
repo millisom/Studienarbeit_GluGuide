@@ -73,5 +73,8 @@
     "likes": "Likes",
     "ariaEdit": "Beitrag bearbeiten: {{title}}",
     "ariaDelete": "Beitrag löschen: {{title}}"
+  },
+  "commentsSection": {
+    "errorLoad": "Kommentare konnten nicht geladen werden"
   }
 }
