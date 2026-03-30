@@ -319,5 +319,11 @@
     "na": "N/A",
     "btnViewDetails": "View Meal Details",
     "btnViewHistory": "View Full Meal History"
+  },
+  "postCard": {
+    "author": "Author:",
+    "createdOn": "Created on:",
+    "btnEdit": "Edit",
+    "btnDelete": "Delete"
   }
 }

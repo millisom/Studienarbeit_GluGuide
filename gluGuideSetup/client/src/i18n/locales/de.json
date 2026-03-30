@@ -319,5 +319,11 @@
     "na": "N/V",
     "btnViewDetails": "Details anzeigen",
     "btnViewHistory": "Vollständigen Mahlzeitenverlauf anzeigen"
+  },
+  "postCard": {
+    "author": "Autor:in:",
+    "createdOn": "Erstellt am:",
+    "btnEdit": "Bearbeiten",
+    "btnDelete": "Löschen"
   }
 }
