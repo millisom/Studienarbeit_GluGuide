@@ -293,5 +293,14 @@
     "unknownItem": "Unbekanntes Element",
     "na": "N/V",
     "confirmDelete": "Sind Sie sicher, dass Sie diese Mahlzeit dauerhaft löschen möchten? Dies kann nicht rückgängig gemacht werden."
+  },
+  "mealPreview": {
+    "title": "Aktuelle Mahlzeit",
+    "emptyTitle": "Deine Mahlzeit sieht noch etwas leer aus!",
+    "emptySubtext": "Füge Lebensmittel hinzu oder wähle oben ein Rezept aus.",
+    "recipeLabel": "(Rezept)",
+    "ariaRemoveItem": "{{name}} entfernen",
+    "ariaRemoveRecipe": "Rezept {{name}} entfernen",
+    "na": "N/V"
   }
 }

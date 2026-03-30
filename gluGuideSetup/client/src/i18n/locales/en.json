@@ -293,5 +293,14 @@
     "unknownItem": "Unknown Item",
     "na": "N/A",
     "confirmDelete": "Are you sure you want to permanently delete this meal? This action cannot be undone."
+  },
+  "mealPreview": {
+    "title": "Current Meal Items",
+    "emptyTitle": "Your meal is looking a bit empty!",
+    "emptySubtext": "Add food items or select a recipe above.",
+    "recipeLabel": "(Recipe)",
+    "ariaRemoveItem": "Remove {{name}}",
+    "ariaRemoveRecipe": "Remove recipe {{name}}",
+    "na": "N/A"
   }
 }
