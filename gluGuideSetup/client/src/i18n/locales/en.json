@@ -128,5 +128,22 @@
     "errorAuth": "Please log in to edit posts.",
     "loading": "Loading post data...",
     "imageNotFound": "Image Not Found"
+  },
+  "exportModal": {
+    "title": "Export Health Report",
+    "labelTimePeriod": "Time Period:",
+    "periodWeek": "Last Week",
+    "periodMonth": "Last Month",
+    "period3Months": "Last 3 Months",
+    "btnUnselectAll": "Unselect All",
+    "btnSelectAll": "Select All",
+    "daysSelected": "{{count}} days selected",
+    "loadingDates": "Loading available dates...",
+    "noData": "No data found for this period.",
+    "btnCancel": "Cancel",
+    "btnDownloading": "Generating PDF...",
+    "btnDownload": "Download PDF",
+    "alertSelectDate": "Please select at least one date.",
+    "alertError": "Failed to generate PDF. Please try again."
   }
 }

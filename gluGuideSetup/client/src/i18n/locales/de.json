@@ -128,5 +128,22 @@
     "errorAuth": "Bitte loggen Sie sich ein, um Beiträge zu bearbeiten.",
     "loading": "Beitrag wird geladen...",
     "imageNotFound": "Bild nicht gefunden"
+  },
+  "exportModal": {
+    "title": "Gesundheitsbericht exportieren",
+    "labelTimePeriod": "Zeitraum:",
+    "periodWeek": "Letzte Woche",
+    "periodMonth": "Letzter Monat",
+    "period3Months": "Letzte 3 Monate",
+    "btnUnselectAll": "Alle abwählen",
+    "btnSelectAll": "Alle auswählen",
+    "daysSelected": "{{count}} Tage ausgewählt",
+    "loadingDates": "Verfügbare Daten werden geladen...",
+    "noData": "Keine Daten für diesen Zeitraum gefunden.",
+    "btnCancel": "Abbrechen",
+    "btnDownloading": "PDF wird erstellt...",
+    "btnDownload": "PDF herunterladen",
+    "alertSelectDate": "Bitte wählen Sie mindestens ein Datum aus.",
+    "alertError": "PDF konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
   }
 }

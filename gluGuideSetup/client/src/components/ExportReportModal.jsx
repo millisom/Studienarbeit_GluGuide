@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../api/axiosConfig'; // Ensure you use your axiosInstance
+import axiosInstance from '../api/axiosConfig';
+import { useTranslation } from 'react-i18next';
 
 const ExportReportModal = ({ isOpen, onClose }) => {
-  // Always initialize with empty arrays []
+  const { t, i18n } = useTranslation();
   const [range, setRange] = useState('month');
   const [availableDates, setAvailableDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
@@ -19,14 +20,12 @@ const ExportReportModal = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       const response = await axiosInstance.get(`/export/dates?range=${range}`);
-      
-      // FIX: Use || [] fallback in case the backend returns something unexpected
       const dates = response.data?.dates || []; 
       setAvailableDates(dates);
       setSelectedDates(dates);
     } catch (err) {
       console.error("Error fetching dates:", err);
-      setAvailableDates([]); // Reset to empty array on error
+      setAvailableDates([]); 
     } finally {
       setLoading(false);
     }
@@ -39,7 +38,6 @@ const ExportReportModal = ({ isOpen, onClose }) => {
   };
 
   const handleSelectAll = () => {
-    // FIX: Add optional chaining ?. just in case
     if (selectedDates?.length === availableDates?.length) {
       setSelectedDates([]);
     } else {
@@ -48,7 +46,7 @@ const ExportReportModal = ({ isOpen, onClose }) => {
   };
 
   const handleExport = async () => {
-    if (!selectedDates || selectedDates.length === 0) return alert("Please select at least one date.");
+    if (!selectedDates || selectedDates.length === 0) return alert(t('exportModal.alertSelectDate'));
     
     setExporting(true);
     try {
@@ -72,7 +70,7 @@ const ExportReportModal = ({ isOpen, onClose }) => {
       onClose();
     } catch (err) {
       console.error("Export failed:", err);
-      alert("Failed to generate PDF. Please try again.");
+      alert(t('exportModal.alertError'));
     } finally {
       setExporting(false);
     }
@@ -84,29 +82,31 @@ const ExportReportModal = ({ isOpen, onClose }) => {
     <div className="modal-overlay">
       <div className="export-modal">
         <div className="modal-header">
-           <h3>Export Health Report</h3>
+           <h3>{t('exportModal.title')}</h3>
            <button className="close-x" onClick={onClose}>&times;</button>
         </div>
         
         <div className="range-selector">
-          <label>Time Period:</label>
+          <label>{t('exportModal.labelTimePeriod')}</label>
           <select value={range} onChange={(e) => setRange(e.target.value)}>
-            <option value="week">Last Week</option>
-            <option value="month">Last Month</option>
-            <option value="3months">Last 3 Months</option>
+            <option value="week">{t('exportModal.periodWeek')}</option>
+            <option value="month">{t('exportModal.periodMonth')}</option>
+            <option value="3months">{t('exportModal.period3Months')}</option>
           </select>
         </div>
 
         <div className="date-checklist">
           <div className="checklist-header">
             <button className="select-all-btn" onClick={handleSelectAll}>
-              {selectedDates?.length === availableDates?.length ? 'Unselect All' : 'Select All'}
+              {selectedDates?.length === availableDates?.length 
+                ? t('exportModal.btnUnselectAll') 
+                : t('exportModal.btnSelectAll')}
             </button>
-            <span>{selectedDates?.length || 0} days selected</span>
+            <span>{t('exportModal.daysSelected', { count: selectedDates?.length || 0 })}</span>
           </div>
 
           {loading ? (
-            <p className="loading-text">Loading available dates...</p>
+            <p className="loading-text">{t('exportModal.loadingDates')}</p>
           ) : (
             <div className="date-list">
               {availableDates?.map(date => (
@@ -116,22 +116,22 @@ const ExportReportModal = ({ isOpen, onClose }) => {
                     checked={selectedDates.includes(date)} 
                     onChange={() => handleToggleDate(date)} 
                   />
-                  <span>{new Date(date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                  <span>{new Date(date).toLocaleDateString(i18n.language, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
                 </label>
               ))}
-              {availableDates?.length === 0 && <p className="no-data">No data found for this period.</p>}
+              {availableDates?.length === 0 && <p className="no-data">{t('exportModal.noData')}</p>}
             </div>
           )}
         </div>
 
         <div className="modal-actions">
-          <button className="btn-secondary" onClick={onClose} disabled={exporting}>Cancel</button>
+          <button className="btn-secondary" onClick={onClose} disabled={exporting}>{t('exportModal.btnCancel')}</button>
           <button 
             className="btn-primary" 
             onClick={handleExport} 
             disabled={exporting || !selectedDates || selectedDates.length === 0}
           >
-            {exporting ? 'Generating PDF...' : 'Download PDF'}
+            {exporting ? t('exportModal.btnDownloading') : t('exportModal.btnDownload')}
           </button>
         </div>
       </div>
