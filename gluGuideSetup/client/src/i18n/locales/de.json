@@ -64,5 +64,14 @@
     "btnCancel": "Abbrechen",
     "btnEdit": "Bearbeiten",
     "btnDelete": "Löschen"
+  },
+  "blogCard": {
+    "deleteConfirm": "Bist du sicher, dass du diesen Beitrag löschen möchtest? Dies kann nicht rückgängig gemacht werden.",
+    "deleteSuccess": "Beitrag erfolgreich gelöscht.",
+    "deleteError": "Fehler beim Löschen des Beitrags.",
+    "like": "Like",
+    "likes": "Likes",
+    "ariaEdit": "Beitrag bearbeiten: {{title}}",
+    "ariaDelete": "Beitrag löschen: {{title}}"
   }
 }

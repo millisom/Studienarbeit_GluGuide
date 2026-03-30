@@ -64,5 +64,14 @@
     "btnCancel": "Cancel",
     "btnEdit": "Edit",
     "btnDelete": "Delete"
+  },
+  "blogCard": {
+    "deleteConfirm": "Are you sure you want to delete this post? This action cannot be undone.",
+    "deleteSuccess": "Post deleted successfully.",
+    "deleteError": "Failed to delete post.",
+    "like": "Like",
+    "likes": "Likes",
+    "ariaEdit": "Edit post titled {{title}}",
+    "ariaDelete": "Delete post titled {{title}}"
   }
 }
