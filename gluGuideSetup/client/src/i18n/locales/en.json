@@ -715,5 +715,23 @@
   },
   "recipeSummary": {
     "title": "My Recipe Collection"
+  },
+  "signUp": {
+    "title": "Sign Up",
+    "placeholderUsername": "Username",
+    "placeholderEmail": "Email",
+    "placeholderPassword": "Password",
+    "placeholderConfirmPassword": "Confirm Password",
+    "btnSubmit": "Sign Up",
+    "footerLink": "Already have an Account? Login here",
+    "messageSuccess": "Account created successfully",
+    "messageErrorExists": "There is already a user account with this email",
+    "messageUserExists": "User already exists",
+    "messageErrorGeneral": "An error occurred. Please try again.",
+    "alertMismatch": "Passwords do not match",
+    "alertTerms": "You must accept the Terms and Conditions and Privacy Policy to proceed.",
+    "alertHealth": "Explicit consent for processing health data is required to use GluGuide.",
+    "gdprTerms": "I accept the <1>Terms & Conditions</1> and have read the <3>Privacy Policy</3>.",
+    "gdprHealth": "I explicitly consent to the processing of my <1>health data</1> (e.g., glucose levels, meal logs) to provide the GluGuide service, as outlined in the <3>Privacy Policy</3>."
   }
 }
