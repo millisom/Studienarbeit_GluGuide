@@ -3,17 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/LoginForm.module.css';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const ResetPasswordForm = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
-
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -26,13 +27,12 @@ const ResetPasswordForm = () => {
     setNotification({ message: '', type: '' });
 
     if (newPassword !== confirmPassword) {
-      setNotification({ message: 'Passwords do not match', type: 'error' });
+      setNotification({ message: t('resetPassword.errorMismatch'), type: 'error' });
       return;
     }
 
-
     if (newPassword.length < 8) {
-      setNotification({ message: 'Password must be at least 8 characters long', type: 'error' });
+      setNotification({ message: t('resetPassword.errorLength'), type: 'error' });
       return;
     }
 
@@ -45,13 +45,12 @@ const ResetPasswordForm = () => {
 
       setNotification({ message: response.data.message, type: 'success' });
 
-    
       setTimeout(() => {
         navigate('/login');
       }, 2500);
     } catch (error) {
       setNotification({
-        message: error.response?.data?.message || 'Something went wrong. Please try again.',
+        message: error.response?.data?.message || t('resetPassword.errorFallback'),
         type: 'error',
       });
     } finally {
@@ -59,12 +58,11 @@ const ResetPasswordForm = () => {
     }
   };
 
-
   if (authLoading) return null;
 
   return (
     <form onSubmit={handlePasswordReset} className={styles.formLogIn}>
-        <h1 className="pageTitle">Reset Password</h1>
+        <h1 className="pageTitle">{t('resetPassword.title')}</h1>
         <div className='inputField'>
         <input
           type="password"
@@ -73,7 +71,7 @@ const ResetPasswordForm = () => {
           onChange={(e) => setNewPassword(e.target.value)}
           required
           className={styles.input}
-          placeholder='New Password'
+          placeholder={t('resetPassword.placeholderNew')}
         />
         </div>
         <div className='inputField'>
@@ -84,12 +82,12 @@ const ResetPasswordForm = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           className={styles.input}
-          placeholder='Confirm Password'
+          placeholder={t('resetPassword.placeholderConfirm')}
         />
         </div>
       <div className={styles.buttonGroup}>
         <button type="submit" disabled={isLoading} className={styles.button}>
-          {isLoading ? 'Resetting...' : 'Reset Password'}
+          {isLoading ? t('resetPassword.btnResetting') : t('resetPassword.btnReset')}
         </button>
       </div>
       {notification.message && (

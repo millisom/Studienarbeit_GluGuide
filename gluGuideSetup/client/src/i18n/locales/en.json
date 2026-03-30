@@ -423,5 +423,15 @@
     "errorAuth": "Please log in to view recipe details.",
     "errorLoadDetails": "Failed to load recipe details.",
     "portionSize": "Portion Size:"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "placeholderNew": "New Password",
+    "placeholderConfirm": "Confirm Password",
+    "btnResetting": "Resetting...",
+    "btnReset": "Reset Password",
+    "errorMismatch": "Passwords do not match",
+    "errorLength": "Password must be at least 8 characters long",
+    "errorFallback": "Something went wrong. Please try again."
   }
 }
