@@ -58,8 +58,19 @@ function PrivacyPolicy() {
                 <p>If you have any questions about this Privacy Policy or wish to exercise your rights, please contact the Data Controller at: <strong>gluguide01@gmail.com</strong></p>
             </section>
 
-            <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                <Link to="/" style={{ color: '#3498db', textDecoration: 'none', fontWeight: 'bold' }}>&larr; Return to Home</Link>
+            <div style={{ marginTop: '50px', textAlign: 'center' }}>
+                <Link to="/signup" style={{ 
+                    display: 'inline-block', 
+                    padding: '12px 24px', 
+                    border: '2px solid #3498db', 
+                    borderRadius: '6px', 
+                    color: '#3498db', 
+                    textDecoration: 'none', 
+                    fontWeight: 'bold',
+                    backgroundColor: '#f8f9fa'
+                }}>
+                    &larr; Return to Sign Up
+                </Link>
             </div>
         </div>
     );

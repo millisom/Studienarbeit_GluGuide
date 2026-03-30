@@ -43,8 +43,19 @@ function Terms() {
                 <p>We reserve the right to modify these terms at any time. We will notify users of any significant changes via email or a prominent notice within the application. Continued use of the app after changes constitutes acceptance of the new terms.</p>
             </section>
 
-            <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                <Link to="/" style={{ color: '#e67e22', textDecoration: 'none', fontWeight: 'bold' }}>&larr; Return to Home</Link>
+            <div style={{ marginTop: '50px', textAlign: 'center' }}>
+                <Link to="/signup" style={{ 
+                    display: 'inline-block', 
+                    padding: '12px 24px', 
+                    border: '2px solid #e67e22', 
+                    borderRadius: '6px', 
+                    color: '#e67e22', 
+                    textDecoration: 'none', 
+                    fontWeight: 'bold',
+                    backgroundColor: '#fdf2e9'
+                }}>
+                    &larr; Return to Sign Up
+                </Link>
             </div>
         </div>
     );

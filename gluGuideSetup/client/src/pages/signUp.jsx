@@ -106,7 +106,6 @@ function SignUp() {
                     />
                 </div>
 
-                {/* GDPR: General Terms & Privacy Policy */}
                 <div className={styles.inputField} style={{ marginBottom: '10px', textAlign: 'left' }}>
                     <label className={styles.label} style={{ fontSize: '0.9em', display: 'flex', alignItems: 'flex-start' }}>
                         <input
@@ -122,7 +121,6 @@ function SignUp() {
                     </label>
                 </div>
 
-                {/* GDPR: Explicit Health Data Consent */}
                 <div className={styles.inputField} style={{ marginBottom: '20px', textAlign: 'left' }}>
                     <label className={styles.label} style={{ fontSize: '0.9em', display: 'flex', alignItems: 'flex-start' }}>
                         <input
