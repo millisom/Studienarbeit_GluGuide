@@ -447,5 +447,17 @@
     "activeFilters": "Aktive Filter:",
     "ariaRemove": "Filter {{tag}} entfernen",
     "clearAll": "Alle Tags löschen"
+  },
+  "userProfile": {
+    "loading": "Profil wird geladen...",
+    "errorLoad": "Fehler beim Laden des Benutzerprofils",
+    "userNotFound": "Benutzer nicht gefunden",
+    "noImage": "Kein Bild",
+    "btnEdit": "Mein Profil bearbeiten",
+    "noBio": "Keine Bio verfügbar",
+    "postsBy": "Beiträge von {{username}}",
+    "createdOn": "Erstellt am",
+    "noPosts": "Keine Beiträge verfügbar",
+    "ariaProfile": "Profil von {{username}}"
   }
 }
