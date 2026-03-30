@@ -55,7 +55,7 @@ function PrivacyPolicy() {
 
             <section style={{ marginTop: '20px' }}>
                 <h2 style={{ fontSize: '1.2em', color: '#2980b9' }}>8. Contact Us</h2>
-                <p>If you have any questions about this Privacy Policy or wish to exercise your rights, please contact the Data Controller at: <strong>[Insert Your Email Here]</strong></p>
+                <p>If you have any questions about this Privacy Policy or wish to exercise your rights, please contact the Data Controller at: <strong>gluguide01@gmail.com</strong></p>
             </section>
 
             <div style={{ marginTop: '40px', textAlign: 'center' }}>
