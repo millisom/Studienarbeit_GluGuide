@@ -41,7 +41,7 @@ function SignUp() {
                 email,
                 password,
                 termsAccepted,
-                healthDataConsent // Send this to the backend to prove consent!
+                healthDataConsent 
             })
             .then(res => {
                 if (res.data === "exists") {
@@ -64,7 +64,8 @@ function SignUp() {
     return (
         <div className={styles.formSignUp}>
             <h1 className={styles.pageTitle}>Sign Up</h1>
-            <form onSubmit={register}>
+            {/* Added aria-label so Vitest can find the form by role */}
+            <form onSubmit={register} aria-label="registration-form">
                 <div className={styles.inputField}>
                     <input
                         type="text"
@@ -106,6 +107,7 @@ function SignUp() {
                     />
                 </div>
 
+                {/* GDPR: General Terms & Privacy Policy */}
                 <div className={styles.inputField} style={{ marginBottom: '10px', textAlign: 'left' }}>
                     <label className={styles.label} style={{ fontSize: '0.9em', display: 'flex', alignItems: 'flex-start' }}>
                         <input
@@ -121,6 +123,7 @@ function SignUp() {
                     </label>
                 </div>
 
+                {/* GDPR: Explicit Health Data Consent */}
                 <div className={styles.inputField} style={{ marginBottom: '20px', textAlign: 'left' }}>
                     <label className={styles.label} style={{ fontSize: '0.9em', display: 'flex', alignItems: 'flex-start' }}>
                         <input
