@@ -247,5 +247,17 @@
   "ingredientList": {
     "title": "Ingredients",
     "customQuantity": "custom quantity"
+  },
+  "login": {
+    "welcome": "Welcome Back!",
+    "description": "Log in to your account and manage your content effortlessly.",
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "btnLoggingIn": "Logging in...",
+    "btnLogin": "Login",
+    "errorFallback": "Invalid username or password",
+    "forgotPassword": "Forgot Password?",
+    "signupLink": "Sign up here"
   }
 }

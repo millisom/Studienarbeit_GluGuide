@@ -247,5 +247,17 @@
   "ingredientList": {
     "title": "Zutaten",
     "customQuantity": "Benutzerdefinierte Menge"
+  },
+  "login": {
+    "welcome": "Willkommen zurück!",
+    "description": "Melden Sie sich an, um Ihr Konto mühelos zu verwalten.",
+    "title": "Anmelden",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "btnLoggingIn": "Anmeldung...",
+    "btnLogin": "Anmelden",
+    "errorFallback": "Ungültiger Benutzername oder Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "signupLink": "Hier registrieren"
   }
 }
