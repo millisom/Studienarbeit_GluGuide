@@ -184,5 +184,10 @@
     "btnSending": "Wird gesendet...",
     "btnSend": "Reset-Link senden",
     "errorFallback": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "glucoseChart": {
+    "at": "um",
+    "unit": "mg/dL",
+    "noData": "Keine Glukosewerte für diesen Zeitraum verfügbar."
   }
 }

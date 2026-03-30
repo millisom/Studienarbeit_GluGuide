@@ -184,5 +184,10 @@
     "btnSending": "Sending...",
     "btnSend": "Send Reset Link",
     "errorFallback": "Something went wrong. Please try again."
+  },
+  "glucoseChart": {
+    "at": "at",
+    "unit": "mg/dL",
+    "noData": "No glucose logs available for this time period."
   }
 }
