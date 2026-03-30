@@ -4,18 +4,20 @@ import styles from '../styles/RecipeCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBook,         // For Recipe Name/Header
-  faPepperHot,    // For Ingredients
-  faListCheck,    // For Instructions
-  faBalanceScale, // For Nutritional Info
-  faTrashAlt      // For Delete Button
+  faBook,
+  faPepperHot,
+  faListCheck,
+  faBalanceScale,
+  faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 const RecipeCard = ({ recipeId }) => {
   const navigate = useNavigate();
   const { user } = useAuth(); 
+  const { t } = useTranslation();
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,7 @@ const RecipeCard = ({ recipeId }) => {
       } catch (err) {
         console.error('Failed to fetch recipe:', err);
         setRecipe(null);
-        setError('Failed to load recipe. Please check the ID or try again.');
+        setError(t('recipeCard.errorLoad'));
       } finally {
         setLoading(false);
       }
@@ -41,35 +43,30 @@ const RecipeCard = ({ recipeId }) => {
     if (recipeId) {
       fetchRecipe();
     }
-  }, [recipeId]);
+  }, [recipeId, t]);
 
   const handleDelete = async () => {
     if (!user) return; 
 
-    const confirmed = window.confirm(
-      'Are you sure you want to permanently delete this recipe? This action cannot be undone.'
-    );
+    const confirmed = window.confirm(t('recipeCard.deleteConfirm'));
     if (!confirmed) return;
 
     try {
       await deleteRecipe(recipeId);
-      setSuccessMessage('Recipe deleted successfully! Redirecting...');
+      setSuccessMessage(t('recipeCard.deleteSuccess'));
       
-   
       setTimeout(() => {
         navigate('/recipes'); 
       }, 1500);
     } catch (error) {
       console.error('Error deleting recipe:', error);
-      setError('Failed to delete recipe. Please try again.');
+      setError(t('recipeCard.deleteError'));
     }
   };
 
-
   if (loading) {
-    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>Preparing recipe...</div>;
+    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>{t('recipeCard.loading')}</div>;
   }
-
 
   if (successMessage) {
     return (
@@ -79,22 +76,20 @@ const RecipeCard = ({ recipeId }) => {
     );
   }
 
-
   if (error || !recipe) {
     return (
       <div className={`${styles.statusMessage} ${styles.errorMessage}`}>
-        {error || 'Recipe not found.'}
+        {error || t('recipeCard.notFound')}
       </div>
     );
   }
-
 
   return (
     <div className={styles.recipeDetailContainer}>
       <div className={styles.recipeHeader}>
         <h2 className={styles.recipeNameTitle}>
           <FontAwesomeIcon icon={faBook} style={{ marginRight: '10px' }} />
-          {recipe.name || 'Unnamed Recipe'}
+          {recipe.name || t('recipeCard.unnamed')}
         </h2>
       </div>
 
@@ -102,13 +97,13 @@ const RecipeCard = ({ recipeId }) => {
         <div className={styles.recipeSection}>
           <h3 className={styles.sectionTitle}>
             <FontAwesomeIcon icon={faPepperHot} />
-            Ingredients
+            {t('recipeCard.ingredients')}
           </h3>
           <ul className={styles.ingredientList}>
             {recipe.ingredients.map((ingredient, i) => (
               <li key={`ing-${i}`}>
-                <span className={styles.ingredientName}>{ingredient.name || `Food ID ${ingredient.food_id || 'N/A'}`}</span>
-                <span className={styles.ingredientQuantity}> – {ingredient.quantity_in_grams != null ? `${ingredient.quantity_in_grams}g` : 'N/A'}</span>
+                <span className={styles.ingredientName}>{ingredient.name || t('recipeCard.foodIdLabel', { id: ingredient.food_id || t('recipeCard.na') })}</span>
+                <span className={styles.ingredientQuantity}> – {ingredient.quantity_in_grams != null ? `${ingredient.quantity_in_grams}g` : t('recipeCard.na')}</span>
               </li>
             ))}
           </ul>
@@ -119,7 +114,7 @@ const RecipeCard = ({ recipeId }) => {
         <div className={styles.recipeSection}>
           <h3 className={styles.sectionTitle}>
             <FontAwesomeIcon icon={faListCheck} />
-            Instructions
+            {t('recipeCard.instructions')}
           </h3>
           <ol className={styles.instructionList}>
             {recipe.instructions.map((step, i) => (
@@ -133,13 +128,13 @@ const RecipeCard = ({ recipeId }) => {
         <div className={styles.recipeSection}>
           <h3 className={styles.sectionTitle}>
             <FontAwesomeIcon icon={faBalanceScale} />
-            Nutritional Information (per serving/total)
+            {t('recipeCard.nutritionTitle')}
           </h3>
           <div className={styles.nutritionGrid}>
-            <p><strong>Calories:</strong> {recipe.total_calories != null ? `${recipe.total_calories} kcal` : 'N/A'}</p>
-            <p><strong>Proteins:</strong> {recipe.total_proteins != null ? `${recipe.total_proteins} g` : 'N/A'}</p>
-            <p><strong>Fats:</strong> {recipe.total_fats != null ? `${recipe.total_fats} g` : 'N/A'}</p>
-            <p><strong>Carbs:</strong> {recipe.total_carbs != null ? `${recipe.total_carbs} g` : 'N/A'}</p>
+            <p><strong>{t('recipeCard.calories')}</strong> {recipe.total_calories != null ? `${recipe.total_calories} kcal` : t('recipeCard.na')}</p>
+            <p><strong>{t('recipeCard.proteins')}</strong> {recipe.total_proteins != null ? `${recipe.total_proteins} g` : t('recipeCard.na')}</p>
+            <p><strong>{t('recipeCard.fats')}</strong> {recipe.total_fats != null ? `${recipe.total_fats} g` : t('recipeCard.na')}</p>
+            <p><strong>{t('recipeCard.carbs')}</strong> {recipe.total_carbs != null ? `${recipe.total_carbs} g` : t('recipeCard.na')}</p>
           </div>
         </div>
       )}
@@ -147,12 +142,11 @@ const RecipeCard = ({ recipeId }) => {
       {user && (
         <div className={styles.deleteButtonContainer}>
             <button onClick={handleDelete} className={styles.deleteButton}>
-            <FontAwesomeIcon icon={faTrashAlt} /> Delete Recipe
+            <FontAwesomeIcon icon={faTrashAlt} /> {t('recipeCard.btnDelete')}
             </button>
         </div>
       )}
       
-
       {error && !loading && recipe && (
         <div className={`${styles.statusMessage} ${styles.errorMessage}`} style={{ marginTop: '15px' }}>{error}</div>
       )}

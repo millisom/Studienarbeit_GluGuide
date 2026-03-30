@@ -346,5 +346,24 @@
     "btnSaveBio": "Save Bio",
     "noBio": "No bio set yet. Click the edit icon to add one!",
     "ariaDp": "{{username}}'s profile"
+  },
+  "recipeCard": {
+    "loading": "Preparing recipe...",
+    "errorLoad": "Failed to load recipe. Please check the ID or try again.",
+    "deleteConfirm": "Are you sure you want to permanently delete this recipe? This action cannot be undone.",
+    "deleteSuccess": "Recipe deleted successfully! Redirecting...",
+    "deleteError": "Failed to delete recipe. Please try again.",
+    "notFound": "Recipe not found.",
+    "unnamed": "Unnamed Recipe",
+    "ingredients": "Ingredients",
+    "foodIdLabel": "Food ID {{id}}",
+    "na": "N/A",
+    "instructions": "Instructions",
+    "nutritionTitle": "Nutritional Information (per serving/total)",
+    "calories": "Calories:",
+    "proteins": "Proteins:",
+    "fats": "Fats:",
+    "carbs": "Carbs:",
+    "btnDelete": "Delete Recipe"
   }
 }

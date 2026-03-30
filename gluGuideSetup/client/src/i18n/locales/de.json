@@ -346,5 +346,24 @@
     "btnSaveBio": "Bio speichern",
     "noBio": "Noch keine Bio vorhanden. Klicke auf das Bearbeiten-Symbol, um eine hinzuzufügen!",
     "ariaDp": "Profil von {{username}}"
+  },
+  "recipeCard": {
+    "loading": "Rezept wird vorbereitet...",
+    "errorLoad": "Fehler beim Laden des Rezepts. Bitte ID prüfen oder erneut versuchen.",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Rezept dauerhaft löschen möchten? Dies kann nicht rückgängig gemacht werden.",
+    "deleteSuccess": "Rezept erfolgreich gelöscht! Weiterleitung...",
+    "deleteError": "Löschen fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "notFound": "Rezept nicht gefunden.",
+    "unnamed": "Unbenanntes Rezept",
+    "ingredients": "Zutaten",
+    "foodIdLabel": "Lebensmittel-ID {{id}}",
+    "na": "N/V",
+    "instructions": "Anleitungen",
+    "nutritionTitle": "Nährwertangaben (pro Portion/gesamt)",
+    "calories": "Kalorien:",
+    "proteins": "Eiweiß:",
+    "fats": "Fett:",
+    "carbs": "Kohlenhydrate:",
+    "btnDelete": "Rezept löschen"
   }
 }
