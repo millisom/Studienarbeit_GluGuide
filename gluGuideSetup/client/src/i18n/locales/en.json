@@ -189,5 +189,59 @@
     "at": "at",
     "unit": "mg/dL",
     "noData": "No glucose logs available for this time period."
+  },
+  "glucoseLog": {
+    "checkingAuth": "Checking authentication...",
+    "loginPrompt": "Please log in to view logs.",
+    "pageTitle": "Glucose Readings",
+    "sectionTitle": "Log Your Glucose Level",
+    "labelDate": "Date:",
+    "labelTime": "Time:",
+    "labelType": "Reading Type:",
+    "labelSelectMeal": "Select Meal:",
+    "chooseMeal": "-- Choose a Meal --",
+    "noMeals": "No meals logged on this date.",
+    "labelLevel": "Level (mg/dL):",
+    "btnSubmit": "Log Glucose",
+    "historyTitle": "History & Analysis",
+    "filterLabel": "Filter:",
+    "btnShowLess": "Show Less",
+    "btnFullHistory": "See Full History",
+    "unknownMeal": "Unknown Meal",
+    "table": {
+      "date": "Date",
+      "time": "Time",
+      "type": "Type",
+      "meal": "Associated Meal",
+      "level": "Level",
+      "actions": "Actions"
+    },
+    "types": {
+      "fasting": "Fasting (Morning)",
+      "1h_post_meal": "1 Hour Post-Meal",
+      "2h_post_meal": "2 Hours Post-Meal",
+      "random": "Random / Other",
+      "na": "N/A",
+      "snack": "Snack"
+    },
+    "filters": {
+      "24hours": "Last 24 Hours",
+      "1week": "Last Week",
+      "all": "All Time"
+    },
+    "alerts": {
+      "login": "Please log in.",
+      "validLevel": "Please enter a valid glucose level.",
+      "timeBeforeMeal": "The time entered is before the meal even happened! Please check your time.",
+      "wait1h": "To get a good accuracy, logging must be at least 60 minutes after a meal. Please wait a bit longer!",
+      "wait2h": "For accurate 2-hour tracking, please wait until it has been at least 2 hours since your meal.",
+      "deleteConfirm": "Are you sure you want to delete this glucose log?"
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
   }
 }

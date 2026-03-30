@@ -189,5 +189,59 @@
     "at": "um",
     "unit": "mg/dL",
     "noData": "Keine Glukosewerte für diesen Zeitraum verfügbar."
+  },
+  "glucoseLog": {
+    "checkingAuth": "Authentifizierung wird geprüft...",
+    "loginPrompt": "Bitte melden Sie sich an, um Protokolle zu sehen.",
+    "pageTitle": "Glukose-Messwerte",
+    "sectionTitle": "Glukosewert protokollieren",
+    "labelDate": "Datum:",
+    "labelTime": "Uhrzeit:",
+    "labelType": "Mess-Typ:",
+    "labelSelectMeal": "Mahlzeit wählen:",
+    "chooseMeal": "-- Mahlzeit wählen --",
+    "noMeals": "Keine Mahlzeiten an diesem Datum protokolliert.",
+    "labelLevel": "Wert (mg/dL):",
+    "btnSubmit": "Glukose loggen",
+    "historyTitle": "Verlauf & Analyse",
+    "filterLabel": "Filter:",
+    "btnShowLess": "Weniger anzeigen",
+    "btnFullHistory": "Vollständigen Verlauf anzeigen",
+    "unknownMeal": "Unbekannte Mahlzeit",
+    "table": {
+      "date": "Datum",
+      "time": "Zeit",
+      "type": "Typ",
+      "meal": "Zugehörige Mahlzeit",
+      "level": "Wert",
+      "actions": "Aktionen"
+    },
+    "types": {
+      "fasting": "Nüchtern (Morgens)",
+      "1h_post_meal": "1 Std. nach Mahlzeit",
+      "2h_post_meal": "2 Std. nach Mahlzeit",
+      "random": "Zufällig / Sonstige",
+      "na": "N/V",
+      "snack": "Snack"
+    },
+    "filters": {
+      "24hours": "Letzte 24 Stunden",
+      "1week": "Letzte Woche",
+      "all": "Gesamtzeitraum"
+    },
+    "alerts": {
+      "login": "Bitte loggen Sie sich ein.",
+      "validLevel": "Bitte geben Sie einen gültigen Glukosewert ein.",
+      "timeBeforeMeal": "Die eingegebene Zeit liegt vor der Mahlzeit! Bitte prüfen Sie Ihre Zeitangabe.",
+      "wait1h": "Für eine gute Genauigkeit muss die Messung mindestens 60 Minuten nach einer Mahlzeit erfolgen. Bitte warten Sie noch etwas!",
+      "wait2h": "Für ein genaues 2-Stunden-Tracking warten Sie bitte, bis seit Ihrer Mahlzeit mindestens 2 Stunden vergangen sind.",
+      "deleteConfirm": "Sind Sie sicher, dass Sie diesen Glukose-Eintrag löschen möchten?"
+    },
+    "actions": {
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen"
+    }
   }
 }
