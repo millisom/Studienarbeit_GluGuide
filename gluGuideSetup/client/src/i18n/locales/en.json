@@ -579,5 +579,8 @@
     "errorRemoveAvatar": "Error removing avatar.",
     "errorUpdate": "Error: {{message}}",
     "errorGeneric": "Something went wrong."
+  },
+  "blogs": {
+    "pageTitle": "Our Blogs"
   }
 }

@@ -579,5 +579,8 @@
     "errorRemoveAvatar": "Fehler beim Entfernen des Avatars.",
     "errorUpdate": "Fehler: {{message}}",
     "errorGeneric": "Etwas ist schiefgelaufen."
+  },
+  "blogs": {
+    "pageTitle": "Unsere Blogs"
   }
 }
