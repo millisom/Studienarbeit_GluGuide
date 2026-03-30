@@ -609,5 +609,24 @@
     "blogTitle": "Neues aus unserem Blog",
     "blogError": "Neueste Blog-Beiträge konnten nicht geladen werden.",
     "blogEmpty": "Momentan sind keine Blog-Beiträge verfügbar. Schau bald wieder vorbei!"
+  },
+  "logMeal": {
+    "labelMealType": "Mahlzeit-Typ",
+    "labelTimeEaten": "Gegessen um",
+    "placeholderSelect": "Mahlzeit auswählen",
+    "breakfast": "Frühstück",
+    "lunch": "Mittagessen",
+    "dinner": "Abendessen",
+    "snack": "Snack",
+    "snackNumbered": "Snack {{count}}",
+    "labelReminder": "Erinnere mich in 1 Stunde an den Blutzuckertest",
+    "labelNotes": "Notizen",
+    "placeholderNotes": "Wie fühlst du dich? Irgendwelche Symptome?",
+    "btnSave": "Mahlzeit speichern",
+    "btnSaving": "Wird gespeichert...",
+    "success": "Mahlzeit erfolgreich gespeichert!",
+    "errorSave": "Fehler beim Speichern der Mahlzeit",
+    "errorNoType": "Bitte wählen Sie einen Mahlzeit-Typ aus",
+    "errorNoFood": "Bitte fügen Sie Lebensmittel oder ein Rezept hinzu"
   }
 }

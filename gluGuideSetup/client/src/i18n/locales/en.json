@@ -609,5 +609,24 @@
     "blogTitle": "Latest from Our Blog",
     "blogError": "Failed to load latest blog posts.",
     "blogEmpty": "No blog posts available at the moment. Check back soon!"
+  },
+  "logMeal": {
+    "labelMealType": "Meal Type",
+    "labelTimeEaten": "Time Eaten",
+    "placeholderSelect": "Select Meal Type",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack",
+    "snackNumbered": "Snack {{count}}",
+    "labelReminder": "Remind me to test my glucose in 1 hour",
+    "labelNotes": "Notes",
+    "placeholderNotes": "How are you feeling? Any symptoms?",
+    "btnSave": "Save Meal",
+    "btnSaving": "Saving...",
+    "success": "Meal saved successfully!",
+    "errorSave": "Error saving meal",
+    "errorNoType": "Please select a meal type",
+    "errorNoFood": "Please add food or a recipe"
   }
 }
