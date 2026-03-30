@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertForm.module.css';
+import { useTranslation } from 'react-i18next'; 
 
 const AlertForm = ({ fetchAlerts }) => {
   const { user } = useAuth(); 
+  const { t } = useTranslation(); 
 
-  // 1. CHANGED DEFAULT TO 'once'
   const [reminderFrequency, setReminderFrequency] = useState('once');
   const [reminderTime, setReminderTime] = useState('');
   const [notificationMethod, setNotificationMethod] = useState('app');
-  const [customMessage, setCustomMessage] = useState(''); // NEW STATE
+  const [customMessage, setCustomMessage] = useState(''); 
   
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
@@ -24,20 +25,19 @@ const AlertForm = ({ fetchAlerts }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!user) return setError('You must be logged in to set alerts.');
+    if (!user) return setError(t('alertForm.errorLogin')); 
 
     try {
       const response = await axiosInstance.post('/alerts', {
         reminderFrequency,
         reminderTime,
         notificationMethod,
-        customMessage // NEW: Send custom message
+        customMessage 
       }, { withCredentials: true });
 
-      setSuccessMessage(response.data.message || 'Alert preferences saved!');
+      setSuccessMessage(response.data.message || t('alertForm.successSave')); 
       setError('');
       
-      // Reset form back to defaults
       setReminderFrequency('once'); 
       setReminderTime(''); 
       setNotificationMethod('app');
@@ -47,53 +47,62 @@ const AlertForm = ({ fetchAlerts }) => {
 
     } catch (err) {
       console.error('Error setting alert preferences:', err);
-      setError('Failed to save alert preferences.');
+      setError(t('alertForm.errorSave')); 
       setSuccessMessage(''); 
     }
   };
 
   return (
     <div className={styles.alertFormContainer}>
-      <h2 className={styles.alertFormTitle}>Set Reminder Alerts</h2>
+      <h2 className={styles.alertFormTitle}>{t('alertForm.title')}</h2>
       <form onSubmit={handleSubmit}>
         
         <div className={styles.alertFormField}>
-          <label htmlFor="reminderFrequency" className={styles.alertFormLabel}>Frequency:</label>
+          <label htmlFor="reminderFrequency" className={styles.alertFormLabel}>
+            {t('alertForm.frequency')}
+          </label>
           <select id="reminderFrequency" value={reminderFrequency} onChange={(e) => setReminderFrequency(e.target.value)} className={styles.alertFormSelect}>
-            <option value="once">Once</option> 
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
+            <option value="once">{t('alertForm.freqOnce')}</option> 
+            <option value="daily">{t('alertForm.freqDaily')}</option>
+            <option value="weekly">{t('alertForm.freqWeekly')}</option>
           </select>
         </div>
 
         <div className={styles.alertFormField}>
-          <label htmlFor="notificationMethod" className={styles.alertFormLabel}>Delivery Method:</label>
+          <label htmlFor="notificationMethod" className={styles.alertFormLabel}>
+            {t('alertForm.deliveryMethod')}
+          </label>
           <select id="notificationMethod" value={notificationMethod} onChange={(e) => setNotificationMethod(e.target.value)} className={styles.alertFormSelect}>
-            <option value="app">In-App Popup</option>
-            <option value="email">Email</option>
+            <option value="app">{t('alertForm.methodApp')}</option>
+            <option value="email">{t('alertForm.methodEmail')}</option>
           </select>
         </div>
 
         <div className={styles.alertFormField}>
-          <label htmlFor="reminderTime" className={styles.alertFormLabel}>Time:</label>
+          <label htmlFor="reminderTime" className={styles.alertFormLabel}>
+            {t('alertForm.time')}
+          </label>
           <input type="time" id="reminderTime" value={reminderTime} onChange={(e) => setReminderTime(e.target.value)} className={styles.alertFormInput} required />
         </div>
 
-        {/* NEW CUSTOM MESSAGE INPUT */}
         <div className={styles.alertFormField}>
-          <label htmlFor="customMessage" className={styles.alertFormLabel}>Custom Message (Optional):</label>
+          <label htmlFor="customMessage" className={styles.alertFormLabel}>
+            {t('alertForm.customMessage')}
+          </label>
           <textarea 
             id="customMessage" 
             value={customMessage} 
             onChange={(e) => setCustomMessage(e.target.value)} 
             className={styles.alertFormInput} 
-            placeholder="Leave blank for standard message"
+            placeholder={t('alertForm.placeholder')}
             rows="2"
             style={{ resize: 'vertical' }}
           />
         </div>
 
-        <button type="submit" className={styles.alertFormButton}>Save Preferences</button>
+        <button type="submit" className={styles.alertFormButton}>
+          {t('alertForm.saveBtn')}
+        </button>
       </form>
 
       {successMessage && <p className={styles.successMessage}>{successMessage}</p>}

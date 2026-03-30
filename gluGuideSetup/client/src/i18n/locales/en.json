@@ -26,5 +26,22 @@
     "login": "Log In / Register",
     "logout_success": "You have been logged out successfully.",
     "logout_error": "Failed to log out. Please try again."
+  },
+  "alertForm": {
+    "title": "Set Reminder Alerts",
+    "frequency": "Frequency:",
+    "freqOnce": "Once",
+    "freqDaily": "Daily",
+    "freqWeekly": "Weekly",
+    "deliveryMethod": "Delivery Method:",
+    "methodApp": "In-App Popup",
+    "methodEmail": "Email",
+    "time": "Time:",
+    "customMessage": "Custom Message (Optional):",
+    "placeholder": "Leave blank for standard message",
+    "saveBtn": "Save Preferences",
+    "errorLogin": "You must be logged in to set alerts.",
+    "errorSave": "Failed to save alert preferences.",
+    "successSave": "Alert preferences saved!"
   }
 }

@@ -26,5 +26,22 @@
     "login": "Anmelden / Registrieren",
     "logout_success": "Erfolgreich abgemeldet.",
     "logout_error": "Abmeldung fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "alertForm": {
+    "title": "Erinnerungen einstellen",
+    "frequency": "Häufigkeit:",
+    "freqOnce": "Einmalig",
+    "freqDaily": "Täglich",
+    "freqWeekly": "Wöchentlich",
+    "deliveryMethod": "Zustellungsmethode:",
+    "methodApp": "In-App Popup",
+    "methodEmail": "E-Mail",
+    "time": "Uhrzeit:",
+    "customMessage": "Eigene Nachricht (Optional):",
+    "placeholder": "Leer lassen für Standardnachricht",
+    "saveBtn": "Einstellungen speichern",
+    "errorLogin": "Sie müssen angemeldet sein, um Alarme einzustellen.",
+    "errorSave": "Speichern der Alarmeinstellungen fehlgeschlagen.",
+    "successSave": "Alarmeinstellungen gespeichert!"
   }
 }
