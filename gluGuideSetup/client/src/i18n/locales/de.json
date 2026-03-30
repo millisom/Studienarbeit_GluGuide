@@ -43,5 +43,26 @@
     "errorLogin": "Sie müssen angemeldet sein, um Alarme einzustellen.",
     "errorSave": "Speichern der Alarmeinstellungen fehlgeschlagen.",
     "successSave": "Alarmeinstellungen gespeichert!"
+  },
+  "alertsTable": {
+    "header": "Deine Alarme",
+    "fetchError": "Alarme konnten nicht geladen werden.",
+    "updateError": "Alarm konnte nicht aktualisiert werden.",
+    "deleteError": "Alarm konnte nicht gelöscht werden.",
+    "deleteConfirm": "Bist du sicher, dass du diesen Alarm löschen möchtest?",
+    "noAlerts": "Keine Alarme gefunden",
+    "colFreq": "Häufigkeit",
+    "colMethod": "Methode",
+    "colTime": "Uhrzeit",
+    "colMsg": "Nachricht",
+    "colActions": "Aktionen",
+    "methodApp": "App",
+    "methodEmail": "E-Mail",
+    "statusStandard": "Standard",
+    "placeholderStandard": "Standard Nachricht",
+    "btnSave": "Speichern",
+    "btnCancel": "Abbrechen",
+    "btnEdit": "Bearbeiten",
+    "btnDelete": "Löschen"
   }
 }
