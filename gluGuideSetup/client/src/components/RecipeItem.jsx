@@ -3,37 +3,35 @@ import styles from '../styles/RecipeItem.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
-// Added 'quantity' to the destructured props
 const RecipeItem = ({ recipe, onAdd, quantity = 1 }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   if (!recipe) {
-    return <div className={styles.loading}>Loading recipe details...</div>;
+    return <div className={styles.loading}>{t('recipeItem.loading')}</div>;
   }
 
   const { name, description, total_calories, total_proteins, total_fats, total_carbs, ingredients } = recipe;
 
-  // Helper function to calculate scaled values
   const scale = (value) => {
     const num = parseFloat(value) || 0;
     const result = num * quantity;
-    // If it's a whole number, show it; otherwise, show 1 decimal point
     return result % 1 === 0 ? result : result.toFixed(1);
   };
 
   const handleAddClick = () => {
     if (!user) {
-        alert("Please log in to add recipes to your meal.");
+        alert(t('recipeItem.alertLogin'));
         return;
     }
-    // We pass the base recipe; the parent already handles the quantity logic
     onAdd(recipe);
   };
 
   return (
     <div className={styles.recipeItemContainer}>
-      <h2 className={styles.recipeName}>{name || 'Recipe Name'}</h2>
+      <h2 className={styles.recipeName}>{name || t('recipeItem.nameFallback')}</h2>
       
       {description && (
         <p className={styles.recipeDescription}>{description}</p>
@@ -41,23 +39,23 @@ const RecipeItem = ({ recipe, onAdd, quantity = 1 }) => {
 
       <div className={styles.nutritionSection}>
         <h3 className={styles.sectionTitle}>
-          Nutritional Information {quantity !== 1 ? `(for ${quantity}x portion)` : '(Total)'}
+          {t('recipeItem.labelCalories').replace(':', '')} {quantity !== 1 ? t('recipeItem.nutritionHeaderPortion', { count: quantity }) : t('recipeItem.nutritionHeaderTotal')}
         </h3>
         <div className={styles.nutritionGrid}>
           <div className={styles.nutritionItem}>
-            <span className={styles.nutritionLabel}>Calories:</span>
+            <span className={styles.nutritionLabel}>{t('recipeItem.labelCalories')}</span>
             <span className={styles.nutritionValue}>{scale(total_calories)} kcal</span>
           </div>
           <div className={styles.nutritionItem}>
-            <span className={styles.nutritionLabel}>Protein:</span>
+            <span className={styles.nutritionLabel}>{t('recipeItem.labelProtein')}</span>
             <span className={styles.nutritionValue}>{scale(total_proteins)} g</span>
           </div>
           <div className={styles.nutritionItem}>
-            <span className={styles.nutritionLabel}>Fat:</span>
+            <span className={styles.nutritionLabel}>{t('recipeItem.labelFat')}</span>
             <span className={styles.nutritionValue}>{scale(total_fats)} g</span>
           </div>
           <div className={styles.nutritionItem}>
-            <span className={styles.nutritionLabel}>Carbs:</span>
+            <span className={styles.nutritionLabel}>{t('recipeItem.labelCarbs')}</span>
             <span className={styles.nutritionValue}>{scale(total_carbs)} g</span>
           </div>
         </div>
@@ -65,7 +63,7 @@ const RecipeItem = ({ recipe, onAdd, quantity = 1 }) => {
 
       {ingredients && ingredients.length > 0 && (
         <div className={styles.ingredientsSection}>
-          <h3 className={styles.sectionTitle}>Adjusted Ingredients</h3>
+          <h3 className={styles.sectionTitle}>{t('recipeItem.ingredientsTitle')}</h3>
           <ul className={styles.ingredientsList}>
             {ingredients.map((ing, index) => (
               <li key={index} className={styles.ingredientItem}>
@@ -81,16 +79,15 @@ const RecipeItem = ({ recipe, onAdd, quantity = 1 }) => {
         className={styles.addRecipeButton}
         disabled={!user}
         style={!user ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
-        title={!user ? "Login to add recipes" : "Add to meal"}
+        title={!user ? t('recipeItem.btnTitleDisabled') : t('recipeItem.btnTitleEnabled')}
       >
-        <FontAwesomeIcon icon={faPlusCircle} /> Add This Recipe to Meal
+        <FontAwesomeIcon icon={faPlusCircle} /> {t('recipeItem.btnAdd')}
       </button>
     </div>
   );
 };
 
 RecipeItem.propTypes = {
-  // Added quantity to propTypes
   quantity: PropTypes.number,
   recipe: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,

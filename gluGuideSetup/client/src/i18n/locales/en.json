@@ -386,5 +386,20 @@
     "stepLabel": "Step {{index}}",
     "placeholderEdit": "Edit step {{index}}",
     "btnRemove": "Remove step"
+  },
+  "recipeItem": {
+    "loading": "Loading recipe details...",
+    "nameFallback": "Recipe Name",
+    "nutritionHeaderTotal": "(Total)",
+    "nutritionHeaderPortion": "(for {{count}}x portion)",
+    "labelCalories": "Calories:",
+    "labelProtein": "Protein:",
+    "labelFat": "Fat:",
+    "labelCarbs": "Carbs:",
+    "ingredientsTitle": "Adjusted Ingredients",
+    "alertLogin": "Please log in to add recipes to your meal.",
+    "btnTitleDisabled": "Login to add recipes",
+    "btnTitleEnabled": "Add to meal",
+    "btnAdd": "Add This Recipe to Meal"
   }
 }

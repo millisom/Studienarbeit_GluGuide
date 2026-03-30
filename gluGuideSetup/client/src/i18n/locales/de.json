@@ -386,5 +386,20 @@
     "stepLabel": "Schritt {{index}}",
     "placeholderEdit": "Schritt {{index}} bearbeiten",
     "btnRemove": "Schritt entfernen"
+  },
+  "recipeItem": {
+    "loading": "Rezeptdetails werden geladen...",
+    "nameFallback": "Rezeptname",
+    "nutritionHeaderTotal": "(Gesamt)",
+    "nutritionHeaderPortion": "(für {{count}}x Portion)",
+    "labelCalories": "Kalorien:",
+    "labelProtein": "Eiweiß:",
+    "labelFat": "Fett:",
+    "labelCarbs": "Kohlenhydrate:",
+    "ingredientsTitle": "Angepasste Zutaten",
+    "alertLogin": "Bitte logge dich ein, um Rezepte zu deiner Mahlzeit hinzuzufügen.",
+    "btnTitleDisabled": "Anmelden, um Rezepte hinzuzufügen",
+    "btnTitleEnabled": "Zur Mahlzeit hinzufügen",
+    "btnAdd": "Dieses Rezept zur Mahlzeit hinzufügen"
   }
 }
