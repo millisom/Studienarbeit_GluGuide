@@ -176,5 +176,13 @@
     "rights": "Alle Rechte vorbehalten.",
     "contact": "Kontakt",
     "about": "Über uns"
+  },
+  "forgotPassword": {
+    "description": "Geben Sie unten Ihre registrierte E-Mail-Adresse ein, und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "title": "Passwort vergessen",
+    "placeholder": "E-Mail",
+    "btnSending": "Wird gesendet...",
+    "btnSend": "Reset-Link senden",
+    "errorFallback": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
   }
 }

@@ -176,5 +176,13 @@
     "rights": "All rights reserved.",
     "contact": "Contact Us",
     "about": "About Us"
+  },
+  "forgotPassword": {
+    "description": "Enter your registered email address below, and we'll send you a password reset link.",
+    "title": "Forgot Password",
+    "placeholder": "Email",
+    "btnSending": "Sending...",
+    "btnSend": "Send Reset Link",
+    "errorFallback": "Something went wrong. Please try again."
   }
 }
