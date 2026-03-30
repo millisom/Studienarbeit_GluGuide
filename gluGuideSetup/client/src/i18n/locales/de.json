@@ -162,5 +162,14 @@
     "btnDelete": "Löschen",
     "commentIdLabel": "Kommentar-ID:",
     "deleteConfirm": "Bist du sicher, dass du diesen Kommentar löschen möchtest?"
+  },
+  "foodItem": {
+    "serving": "Portion: 100 Gramm",
+    "calories": "Kalorien:",
+    "carbs": "Kohlenhydrate:",
+    "protein": "Eiweiß:",
+    "fat": "Fett:",
+    "placeholder": "Menge in Gramm",
+    "errorInvalid": "Bitte geben Sie eine gültige Menge in Gramm ein."
   }
 }

@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/FoodItem.module.css';
+import { useTranslation } from 'react-i18next';
 
 const FoodItem = ({ food, onAdd }) => {
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState('');
 
   const handleAdd = () => {
@@ -15,7 +17,7 @@ const FoodItem = ({ food, onAdd }) => {
       onAdd(foodWithQuantity);
       setQuantity(''); 
     } else {
-      alert('Please enter a valid quantity in grams.');
+      alert(t('foodItem.errorInvalid'));
     }
   };
 
@@ -23,20 +25,20 @@ const FoodItem = ({ food, onAdd }) => {
     <div className={styles.foodItemContainer}>
       <div className={styles.header}>
         <h1 className={styles.foodItemTitle}>{food.name}</h1>
-        <h2 className={styles.foodItemTitle2}>Serving: 100 grams</h2>
+        <h2 className={styles.foodItemTitle2}>{t('foodItem.serving')}</h2>
       </div>
       <div className={styles.line}></div>
       <div className={styles.macros}>
-        <p>Calories: {food.calories} kcal</p>
-        <p>Carbs: {food.carbs}g</p>
-        <p>Protein: {food.proteins}g</p>
-        <p>Fat: {food.fats}g</p>
+        <p>{t('foodItem.calories')} {food.calories} kcal</p>
+        <p>{t('foodItem.carbs')} {food.carbs}g</p>
+        <p>{t('foodItem.protein')} {food.proteins}g</p>
+        <p>{t('foodItem.fat')} {food.fats}g</p>
       </div>
       <div className={styles.quantityRow}>
         <input
           type="number"
           min="1"
-          placeholder="Quantity in grams"
+          placeholder={t('foodItem.placeholder')}
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
           className={styles.quantityInput}
@@ -54,7 +56,6 @@ FoodItem.propTypes = {
     carbs: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     proteins: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     fats: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    // Add other expected properties of food if any
   }).isRequired,
   onAdd: PropTypes.func.isRequired
 };

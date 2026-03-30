@@ -162,5 +162,14 @@
     "btnDelete": "Delete",
     "commentIdLabel": "Comment ID:",
     "deleteConfirm": "Are you sure you want to delete this comment?"
+  },
+  "foodItem": {
+    "serving": "Serving: 100 grams",
+    "calories": "Calories:",
+    "carbs": "Carbs:",
+    "protein": "Protein:",
+    "fat": "Fat:",
+    "placeholder": "Quantity in grams",
+    "errorInvalid": "Please enter a valid quantity in grams."
   }
 }
