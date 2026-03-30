@@ -483,5 +483,21 @@
     "delete": "Löschen",
     "author": "Autor:",
     "createdOn": "Erstellt am:"
+  },
+  "aboutUs": {
+    "mainTitle": "Über GluGuide",
+    "introP1": "Willkommen bei <1>GluGuide</1>, Ihrem Begleiter bei der Bewältigung von Schwangerschaftsdiabetes. Unsere Mission ist es, GluGuide zu einer hilfreichen Ressource für Frauen zu entwickeln. Jede Funktion, vom Tracking bis zur Erinnerung, wurde mit Sorgfalt entwickelt, um das Leben ein wenig einfacher zu machen.",
+    "introP2": "Wir sind ein Team von Informatikstudenten im zweiten Jahr. Unsere Vision ist es, eine Web-App zu entwickeln, die Frauen mit Schwangerschaftsdiabetes hilft. Wir setzen uns dafür ein, eine App zu schaffen, die auf die Bedürfnisse von Müttern hört und Werkzeuge bereitstellt, die das Management von Schwangerschaftsdiabetes weniger stressig machen. Die Dokumentation unseres Entwicklungsprozesses hilft uns, uns auf das Wesentliche zu konzentrieren – eine unterstützende, zuverlässige App für unsere Nutzerinnen zu erstellen.",
+    "teamTitle": "Unser Team",
+    "thanksTitle": "Besonderer Dank",
+    "closing": "Gemeinsam setzt sich unser Team leidenschaftlich dafür ein, einen positiven Einfluss auf die Gesundheit von Müttern auszuüben. Vielen Dank, dass Sie sich für GluGuide entschieden haben!",
+    "roles": {
+      "pm": "Projektmanagerin",
+      "sa": "Software-Architektin",
+      "uid": "User-Interface-Designerin",
+      "us": "User Stakeholderin",
+      "pm_mentor": "Ehemalige Projektmanagerin & Mentorin"
+    },
+    "hafsaNote": "Hafsa war im letzten Semester als unsere Projektmanagerin maßgeblich an GluGuide beteiligt. Inzwischen ist sie in Mutterschutz gegangen. Wir ehren ihre grundlegende Arbeit und wünschen ihr alles Gute!"
   }
 }
