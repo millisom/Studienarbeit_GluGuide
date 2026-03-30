@@ -440,5 +440,12 @@
     "noResults": "No food items found matching your query.",
     "errorLoad": "Could not load suggestions. Please try again.",
     "ariaClose": "Close food details"
+  },
+  "tagFilter": {
+    "title": "Filter by Tags:",
+    "placeholder": "Select tags...",
+    "activeFilters": "Active Filters:",
+    "ariaRemove": "Remove {{tag}} filter",
+    "clearAll": "Clear All Tags"
   }
 }

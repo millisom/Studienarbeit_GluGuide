@@ -440,5 +440,12 @@
     "noResults": "Keine Lebensmittel zu Ihrer Suchanfrage gefunden.",
     "errorLoad": "Vorschläge konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
     "ariaClose": "Details schließen"
+  },
+  "tagFilter": {
+    "title": "Nach Tags filtern:",
+    "placeholder": "Tags auswählen...",
+    "activeFilters": "Aktive Filter:",
+    "ariaRemove": "Filter {{tag}} entfernen",
+    "clearAll": "Alle Tags löschen"
   }
 }
