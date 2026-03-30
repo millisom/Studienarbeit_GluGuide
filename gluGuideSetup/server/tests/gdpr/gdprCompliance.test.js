@@ -1,5 +1,5 @@
 const User = require('../../models/authModel');
-const UserModel = require('../../models/userModel'); // For the delete logic
+const UserModel = require('../../models/userModel'); 
 const pool = require('../../config/db');
 const { signUp } = require('../../controllers/authController');
 
@@ -21,12 +21,12 @@ describe('GDPR Compliance Use Cases', () => {
 
       await UserModel.deleteUserById(userId);
 
-      // Check if delete queries were called for health data tables
+
       expect(mockClient.query).toHaveBeenCalledWith('DELETE FROM meals WHERE user_id = $1', [userId]);
       expect(mockClient.query).toHaveBeenCalledWith('DELETE FROM glucose_logs WHERE user_id = $1', [userId]);
       expect(mockClient.query).toHaveBeenCalledWith('DELETE FROM users WHERE id = $1', [userId]);
       
-      // Ensure transaction was committed
+
       expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
     });
   });
@@ -44,19 +44,19 @@ describe('GDPR Compliance Use Cases', () => {
       };
       const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
 
-      // Mock User.findUserByEmail to return null (user doesn't exist)
+ 
       jest.spyOn(User, 'findUserByEmail').mockResolvedValue(null);
       const createSpy = jest.spyOn(User, 'createUser').mockResolvedValue({ id: 1 });
 
       await signUp(req, res);
 
-      // Verify that the controller passed the healthDataConsent to the Model
+  
       expect(createSpy).toHaveBeenCalledWith(
         'gdpr_user', 
         'gdpr@test.com', 
         'Password123!', 
         true, 
-        true // This is the healthDataConsent
+        true 
       );
       expect(res.json).toHaveBeenCalledWith("notexist");
     });
