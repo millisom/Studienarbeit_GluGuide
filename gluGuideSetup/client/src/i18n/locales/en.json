@@ -651,5 +651,13 @@
       "dinner": "Dinner",
       "snack": "Snack"
     }
+  },
+  "mealsOverview": {
+    "title": "Nutrition Hub",
+    "logMealTitle": "Log a New Meal",
+    "recentMealsTitle": "Recent Meals",
+    "recipesTitle": "My Recipes",
+    "btnCreateRecipe": "Create a New Recipe",
+    "btnSeeMore": "See More Recipes"
   }
 }

@@ -651,5 +651,13 @@
       "dinner": "Abendessen",
       "snack": "Snack"
     }
+  },
+  "mealsOverview": {
+    "title": "Ernährungs-Hub",
+    "logMealTitle": "Neue Mahlzeit protokollieren",
+    "recentMealsTitle": "Aktuelle Mahlzeiten",
+    "recipesTitle": "Meine Rezepte",
+    "btnCreateRecipe": "Neues Rezept erstellen",
+    "btnSeeMore": "Mehr Rezepte anzeigen"
   }
 }
