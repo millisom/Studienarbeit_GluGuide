@@ -401,5 +401,19 @@
     "btnTitleDisabled": "Login to add recipes",
     "btnTitleEnabled": "Add to meal",
     "btnAdd": "Add This Recipe to Meal"
+  },
+  "recipesCards": {
+    "loginTitle": "Please Log In",
+    "loginText": "You need to be logged in to view your recipe collection.",
+    "goLogin": "Go to Login",
+    "loading": "Loading recipes...",
+    "errorTitle": "Error Loading Recipes",
+    "errorText": "Failed to load recipes. Please refresh the page or try again later.",
+    "emptyTitle": "Your Cookbook is Empty",
+    "emptyText": "No recipes found yet. How about creating your first culinary masterpiece?",
+    "btnCreate": "Create Recipe",
+    "unnamed": "Unnamed Recipe",
+    "totalCalories": "Total Calories:",
+    "btnView": "View Full Recipe"
   }
 }

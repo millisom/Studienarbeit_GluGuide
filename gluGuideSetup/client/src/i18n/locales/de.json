@@ -401,5 +401,19 @@
     "btnTitleDisabled": "Anmelden, um Rezepte hinzuzufügen",
     "btnTitleEnabled": "Zur Mahlzeit hinzufügen",
     "btnAdd": "Dieses Rezept zur Mahlzeit hinzufügen"
+  },
+  "recipesCards": {
+    "loginTitle": "Bitte anmelden",
+    "loginText": "Du musst angemeldet sein, um deine Rezeptsammlung zu sehen.",
+    "goLogin": "Zum Login",
+    "loading": "Rezepte werden geladen...",
+    "errorTitle": "Fehler beim Laden der Rezepte",
+    "errorText": "Fehler beim Laden der Rezepte. Bitte Seite aktualisieren oder später erneut versuchen.",
+    "emptyTitle": "Dein Kochbuch ist leer",
+    "emptyText": "Noch keine Rezepte gefunden. Wie wäre es mit deinem ersten kulinarischen Meisterwerk?",
+    "btnCreate": "Rezept erstellen",
+    "unnamed": "Unbenanntes Rezept",
+    "totalCalories": "Gesamt-Kalorien:",
+    "btnView": "Vollständiges Rezept anzeigen"
   }
 }

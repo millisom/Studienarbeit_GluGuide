@@ -5,11 +5,12 @@ import styles from '../styles/RecipesCards.module.css';
 import { useAuth } from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader, faPlusCircle, faUtensils } from '@fortawesome/free-solid-svg-icons';
-
+import { useTranslation } from 'react-i18next';
 
 const RecipesCards = ({ limit }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,23 +30,23 @@ const RecipesCards = ({ limit }) => {
         setRecipes(data);
       } catch (error) {
         console.error('Failed to fetch recipes:', error);
-        setError('Failed to load recipes. Please refresh the page or try again later.');
+        setError(t('recipesCards.errorText'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchRecipes();
-  }, [user]);
+  }, [user, t]);
 
   if (!user) {
     return (
       <div className={styles.statusMessageContainer}>
           <FontAwesomeIcon icon={faUtensils} size="3x" style={{ marginBottom: '20px', color: '#ccc'}} />
-          <h2>Please Log In</h2>
-          <p>You need to be logged in to view your recipe collection.</p>
+          <h2>{t('recipesCards.loginTitle')}</h2>
+          <p>{t('recipesCards.loginText')}</p>
           <Link to="/login" style={{ marginTop: '10px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 'bold' }}>
-              Go to Login
+              {t('recipesCards.goLogin')}
           </Link>
       </div>
     );
@@ -55,7 +56,7 @@ const RecipesCards = ({ limit }) => {
     return (
       <div className={styles.statusMessageContainer}>
         <FontAwesomeIcon icon={faBookReader} size="3x" style={{ marginBottom: '20px' }} />
-        <h2>Loading recipes...</h2>
+        <h2>{t('recipesCards.loading')}</h2>
       </div>
     );
   }
@@ -63,7 +64,7 @@ const RecipesCards = ({ limit }) => {
   if (error) {
     return (
       <div className={`${styles.statusMessageContainer} ${styles.errorMessage}`}>
-        <h2>Error Loading Recipes</h2>
+        <h2>{t('recipesCards.errorTitle')}</h2>
         <p>{error}</p>
       </div>
     );
@@ -73,19 +74,18 @@ const RecipesCards = ({ limit }) => {
     return (
       <div className={`${styles.statusMessageContainer} ${styles.noRecipesMessage}`}>
         <FontAwesomeIcon icon={faPlusCircle} size="3x" style={{ marginBottom: '20px' }} />
-        <h2>Your Cookbook is Empty</h2>
-        <p>No recipes found yet. How about creating your first culinary masterpiece?</p>
+        <h2>{t('recipesCards.emptyTitle')}</h2>
+        <p>{t('recipesCards.emptyText')}</p>
         <button 
             className={styles.viewRecipeButton} 
             onClick={() => navigate('/createRecipe')}
             style={{ marginTop: '15px' }}
         >
-            Create Recipe
+            {t('recipesCards.btnCreate')}
         </button>
       </div>
     );
   }
-
 
   const displayedRecipes = limit ? recipes.slice(0, limit) : recipes;
 
@@ -93,17 +93,17 @@ const RecipesCards = ({ limit }) => {
       <div className={styles.recipesGrid}>
         {displayedRecipes.map((recipe) => (
           <div key={recipe.id} className={styles.recipeSummaryCard}>
-            <h3 className={styles.recipeName}>{recipe.name || 'Unnamed Recipe'}</h3>
+            <h3 className={styles.recipeName}>{recipe.name || t('recipesCards.unnamed')}</h3>
             {recipe.total_calories != null && (
                 <p className={styles.recipeCalories}>
-                    <strong>Total Calories:</strong> {recipe.total_calories} kcal
+                    <strong>{t('recipesCards.totalCalories')}</strong> {recipe.total_calories} kcal
                 </p>
             )}
             <button
               className={styles.viewRecipeButton}
               onClick={() => navigate(`/recipes/${recipe.id}`)}
             >
-              View Full Recipe
+              {t('recipesCards.btnView')}
             </button>
           </div>
         ))}
