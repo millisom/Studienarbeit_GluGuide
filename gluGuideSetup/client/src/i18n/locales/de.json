@@ -86,5 +86,21 @@
     "errorEmpty": "Kommentar darf nicht leer sein",
     "successMsg": "Kommentar erfolgreich hinzugefügt!",
     "errorFailed": "Kommentar konnte nicht hinzugefügt werden. Bitte versuche es erneut."
+  },
+  "createPost": {
+    "loading": "Formular wird geladen...",
+    "authPrompt": "Möchtest du deine Erfahrungen teilen? Bitte <1>logge dich ein</1> oder <3>erstelle ein Konto</3>, um Blogbeiträge zu veröffentlichen.",
+    "formTitle": "Neuen Blogbeitrag erstellen",
+    "labelTitle": "Titel:",
+    "labelContent": "Inhalt:",
+    "labelTags": "Tags (kommagetrennt):",
+    "placeholderTags": "z.B. Schwangerschaft, Diät, Tipps",
+    "labelUpload": "Bild hochladen (Optional):",
+    "submitBtn": "Beitrag erstellen",
+    "errorAuth": "Du musst angemeldet sein, um einen Beitrag zu erstellen.",
+    "errorEmpty": "Titel und Inhalt dürfen nicht leer sein.",
+    "successMsg": "Beitrag erfolgreich erstellt! Weiterleitung...",
+    "errorRedirect": "Beitrag erstellt, aber Weiterleitung fehlgeschlagen. Bitte prüfe die Blog-Seite.",
+    "errorFailed": "Beitrag konnte nicht erstellt werden. Bitte prüfe deine Eingaben und versuche es erneut."
   }
 }

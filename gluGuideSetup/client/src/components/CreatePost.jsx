@@ -5,10 +5,11 @@ import 'react-quill/dist/quill.snow.css';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../styles/CreateBlogPost.module.css';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation, Trans } from 'react-i18next';
 
 const CreatePost = () => {
-
   const { user, loading } = useAuth();
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [postPicture, setPostPicture] = useState(null);
@@ -16,7 +17,6 @@ const CreatePost = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
-
 
   const handleFileChange = (e) => {
     setPostPicture(e.target.files[0]);
@@ -26,13 +26,13 @@ const CreatePost = () => {
     event.preventDefault();
 
     if (!user) {
-        setError('You must be logged in to create a post.');
+        setError(t('createPost.errorAuth'));
         return;
     }
 
     const plainTextContent = content.replace(/<[^>]+>/g, '').trim();
     if (!title.trim() || !plainTextContent) {
-        setError('Title and content cannot be empty.');
+        setError(t('createPost.errorEmpty'));
         setSuccessMessage('');
         return;
     }
@@ -60,11 +60,11 @@ const CreatePost = () => {
         setContent('');
         setPostPicture(null);
         setTagsInput('');
-        setSuccessMessage('Post created successfully! Redirecting...');
+        setSuccessMessage(t('createPost.successMsg'));
         setTimeout(() => navigate(`/blogs/view/${id}`), 1500);
       } else {
         console.error('Post ID not found in response:', response.data);
-        setError('Post created, but could not redirect. Please check the Blogs page.');
+        setError(t('createPost.errorRedirect'));
         setTitle('');
         setContent('');
         setPostPicture(null);
@@ -73,17 +73,16 @@ const CreatePost = () => {
 
     } catch (errCatch) {
       if (errCatch.response && errCatch.response.status === 401) {
-        setError('You must be logged in to create a post.');
+        setError(t('createPost.errorAuth'));
       } else {
         console.error('Error creating post:', errCatch.response ? errCatch.response.data : errCatch.message);
-        setError('Failed to create post. Please check your input and try again.');
+        setError(t('createPost.errorFailed'));
       }
     }
   };
 
- 
   if (loading) {
-    return <div className={styles.createPostContainer}><p className={styles.loadingMessage || 'formLoading'}>Loading form...</p></div>;
+    return <div className={styles.createPostContainer}><p className={styles.loadingMessage || 'formLoading'}>{t('createPost.loading')}</p></div>;
   }
 
   if (!user) {
@@ -91,8 +90,10 @@ const CreatePost = () => {
       <div className={styles.createPostContainer}> 
         <div className={styles.authPromptContainer}> 
           <p className={styles.authPromptMessage}>
-            Want to share your insights? Please <Link to="/login" className={styles.authLink}>Login</Link> or {' '}
-            <Link to="/signUp" className={styles.authLink}>Create an Account</Link> to publish your blog posts.
+            <Trans i18nKey="createPost.authPrompt">
+                Want to share your insights? Please <Link to="/login" className={styles.authLink}>Login</Link> or {' '}
+                <Link to="/signUp" className={styles.authLink}>Create an Account</Link> to publish your blog posts.
+            </Trans>
           </p>
         </div>
       </div>
@@ -102,10 +103,10 @@ const CreatePost = () => {
   return (
     <div className={styles.createPostContainer}>
       <div className={styles.createPostRectangle}>
-        <h2 className={styles.formTitle}>Create New Blog Post</h2>
+        <h2 className={styles.formTitle}>{t('createPost.formTitle')}</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Title:</label>
+            <label className={styles.label}>{t('createPost.labelTitle')}</label>
             <input
               type="text"
               value={title}
@@ -115,7 +116,7 @@ const CreatePost = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Content:</label>
+            <label className={styles.label}>{t('createPost.labelContent')}</label>
             <ReactQuill
               value={content}
               onChange={setContent}
@@ -133,17 +134,17 @@ const CreatePost = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Tags (comma-separated):</label>
+            <label className={styles.label}>{t('createPost.labelTags')}</label>
             <input
               type="text"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               className={styles.input}
-              placeholder="e.g., pregnancy, diet, tips"
+              placeholder={t('createPost.placeholderTags')}
             />
           </div>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Upload Picture (Optional):</label>
+            <label className={styles.label}>{t('createPost.labelUpload')}</label>
             <input
               type="file"
               accept="image/*"
@@ -152,7 +153,7 @@ const CreatePost = () => {
             />
           </div>
           <button type="submit" className={styles.submitButton}>
-            Create Post
+            {t('createPost.submitBtn')}
           </button>
           {error && <p className={styles.errorMessage}>{error}</p>}
           {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
