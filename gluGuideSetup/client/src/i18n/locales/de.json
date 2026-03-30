@@ -243,5 +243,9 @@
       "edit": "Bearbeiten",
       "delete": "Löschen"
     }
+  },
+  "ingredientList": {
+    "title": "Zutaten",
+    "customQuantity": "Benutzerdefinierte Menge"
   }
 }
