@@ -9,7 +9,11 @@ function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    
+    // GDPR Consent States
     const [termsAccepted, setTermsAccepted] = useState(false);
+    const [healthDataConsent, setHealthDataConsent] = useState(false);
+    
     const [message, setMessage] = useState('');
 
     async function register(e) {
@@ -20,8 +24,14 @@ function SignUp() {
             return;
         }
 
+        // GDPR Validation
         if (!termsAccepted) {
-            alert("Accept the terms and conditions to proceed");
+            alert("You must accept the Terms and Conditions and Privacy Policy to proceed.");
+            return;
+        }
+
+        if (!healthDataConsent) {
+            alert("Explicit consent for processing health data is required to use GluGuide.");
             return;
         }
 
@@ -30,10 +40,10 @@ function SignUp() {
                 username,
                 email,
                 password,
-                termsAccepted
+                termsAccepted,
+                healthDataConsent // Send this to the backend to prove consent!
             })
             .then(res => {
-
                 if (res.data === "exists") {
                     alert("There is already a user account with this email");
                     setMessage("User already exists");
@@ -95,15 +105,39 @@ function SignUp() {
                         className={styles.input}
                     />
                 </div>
-                <label className={styles.label}>
-                    <input
-                        type="checkbox"
-                        name="termsAccepted"  
-                        onChange={(e) => setTermsAccepted(e.target.checked)}
-                        style={{ marginRight: '8px' }}
-                    />
-                    I accept the Terms and Conditions
-                </label>
+
+                {/* GDPR: General Terms & Privacy Policy */}
+                <div className={styles.inputField} style={{ marginBottom: '10px', textAlign: 'left' }}>
+                    <label className={styles.label} style={{ fontSize: '0.9em', display: 'flex', alignItems: 'flex-start' }}>
+                        <input
+                            type="checkbox"
+                            name="termsAccepted"  
+                            onChange={(e) => setTermsAccepted(e.target.checked)}
+                            style={{ marginRight: '10px', marginTop: '4px' }}
+                            required
+                        />
+                        <span>
+                            I accept the <Link to="/terms">Terms & Conditions</Link> and have read the <Link to="/privacy">Privacy Policy</Link>.
+                        </span>
+                    </label>
+                </div>
+
+                {/* GDPR: Explicit Health Data Consent */}
+                <div className={styles.inputField} style={{ marginBottom: '20px', textAlign: 'left' }}>
+                    <label className={styles.label} style={{ fontSize: '0.9em', display: 'flex', alignItems: 'flex-start' }}>
+                        <input
+                            type="checkbox"
+                            name="healthDataConsent"  
+                            onChange={(e) => setHealthDataConsent(e.target.checked)}
+                            style={{ marginRight: '10px', marginTop: '4px' }}
+                            required
+                        />
+                        <span>
+                            I explicitly consent to the processing of my <strong>health data</strong> (e.g., glucose levels, meal logs) to provide the GluGuide service, as outlined in the Privacy Policy.
+                        </span>
+                    </label>
+                </div>
+
                 <div className={styles.buttonGroup}>
                     <button type="submit" className={styles.button}>Sign Up</button>
                 </div>
@@ -113,7 +147,11 @@ function SignUp() {
              {message && (
                 <div
                     data-testid={message === "Account created successfully" ? "success-message" : "error-message"}
-                    style={{ color: message === "Account created successfully" ? "green" : "red" }}
+                    style={{ 
+                        color: message === "Account created successfully" ? "green" : "red",
+                        marginTop: '15px',
+                        textAlign: 'center'
+                    }}
                 >
                     {message}
                 </div>
