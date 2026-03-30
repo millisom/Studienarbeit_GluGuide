@@ -534,5 +534,27 @@
     "tableActions": "Actions",
     "btnEdit": "Edit",
     "btnDelete": "Delete"
+  },
+  "adminEditPost": {
+    "title": "Edit Post \"{{title}}\" (as Admin)",
+    "errorLoad": "Failed to load post.",
+    "loading": "Loading post data...",
+    "labelPostTitle": "Post Title:",
+    "labelContent": "Content:",
+    "labelTags": "Tags (comma-separated):",
+    "placeholderTags": "e.g., health, diet, tips",
+    "labelCurrentImage": "Current Post Image:",
+    "btnRemoveImage": "Remove Image",
+    "noImageSet": "There is no current image set.",
+    "labelUploadNew": "Upload New Image:",
+    "uploadTip": "First choose a new image, then click \"Upload Image\"!",
+    "btnUpload": "Upload Image",
+    "btnSaving": "Saving...",
+    "btnSave": "Save",
+    "btnCancel": "Cancel",
+    "alertSelectImage": "Please select an image first!",
+    "errorUpload": "Failed to upload image.",
+    "errorDeleteImage": "Failed to delete image.",
+    "errorSave": "Failed to save post. Check console for details."
   }
 }

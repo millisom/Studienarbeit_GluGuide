@@ -534,5 +534,27 @@
     "tableActions": "Aktionen",
     "btnEdit": "Bearbeiten",
     "btnDelete": "Löschen"
+  },
+    "adminEditPost": {
+    "title": "Beitrag „{{title}}“ bearbeiten (als Admin)",
+    "errorLoad": "Beitrag konnte nicht geladen werden.",
+    "loading": "Beitragdaten werden geladen...",
+    "labelPostTitle": "Beitragstitel:",
+    "labelContent": "Inhalt:",
+    "labelTags": "Tags (kommagetrennt):",
+    "placeholderTags": "z. B. Gesundheit, Diät, Tipps",
+    "labelCurrentImage": "Aktuelles Beitragsbild:",
+    "btnRemoveImage": "Bild entfernen",
+    "noImageSet": "Es ist momentan kein Bild gesetzt.",
+    "labelUploadNew": "Neues Bild hochladen:",
+    "uploadTip": "Wählen Sie zuerst ein neues Bild aus und klicken Sie dann auf „Bild hochladen“!",
+    "btnUpload": "Bild hochladen",
+    "btnSaving": "Wird gespeichert...",
+    "btnSave": "Speichern",
+    "btnCancel": "Abbrechen",
+    "alertSelectImage": "Bitte wählen Sie zuerst ein Bild aus!",
+    "errorUpload": "Bild konnte nicht hochgeladen werden.",
+    "errorDeleteImage": "Bild konnte nicht gelöscht werden.",
+    "errorSave": "Beitrag konnte nicht gespeichert werden. Details finden Sie in der Konsole."
   }
 }

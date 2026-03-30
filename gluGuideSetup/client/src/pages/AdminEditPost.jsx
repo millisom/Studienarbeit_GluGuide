@@ -6,13 +6,14 @@ import "react-quill/dist/quill.snow.css";
 import styles from "../styles/EditPost.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faXmark, faSave } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
-
 
 const AdminEditPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -39,12 +40,12 @@ const AdminEditPost = () => {
       })
       .catch((err) => {
         console.error("Error loading post:", err.response ? err.response.data : err.message);
-        setError("Failed to load post.");
+        setError(t('adminEditPost.errorLoad'));
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [id]);
+  }, [id, t]);
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -59,7 +60,7 @@ const AdminEditPost = () => {
       navigate(`/blogs/view/${id}`);
     } catch (err) {
       console.error("Error saving post:", err.response ? err.response.data : err.message);
-      setError("Failed to save post. Check console for details.");
+      setError(t('adminEditPost.errorSave'));
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +68,7 @@ const AdminEditPost = () => {
 
   const handleUploadImage = async () => {
     if (!image) {
-      alert("Please select an image first!");
+      alert(t('adminEditPost.alertSelectImage'));
       return;
     }
 
@@ -83,7 +84,7 @@ const AdminEditPost = () => {
       setImageUrl(response.data.imageUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
-      setError("Failed to upload image.");
+      setError(t('adminEditPost.errorUpload'));
     }
   };
 
@@ -95,20 +96,19 @@ const AdminEditPost = () => {
       setImageUrl("");
     } catch (error) {
       console.error("Error deleting image:", error);
-      setError("Failed to delete image.");
+      setError(t('adminEditPost.errorDeleteImage'));
     }
   };
 
   return (
     <div className={styles.editPostContainer}>
-      <h2 className={styles.title}>Edit Post "{title}" (as Admin)</h2>
+      <h2 className={styles.title}>{t('adminEditPost.title', { title })}</h2>
       {error && <p className={styles.errorMessage}>{error}</p>}
-      {isLoading && <p>Loading post data...</p>}
+      {isLoading && <p>{t('adminEditPost.loading')}</p>}
 
       {!isLoading && (
         <div className={styles.form}>
-          {/* Post Title */}
-          <label className={styles.label}>Post Title:</label>
+          <label className={styles.label}>{t('adminEditPost.labelPostTitle')}</label>
           <input
             type="text"
             value={title}
@@ -116,26 +116,23 @@ const AdminEditPost = () => {
             className={styles.input}
           />
 
-          {/* Post Content */}
-          <label className={styles.label}>Content:</label>
+          <label className={styles.label}>{t('adminEditPost.labelContent')}</label>
           <ReactQuill
             value={content}
             onChange={setContent}
             className={styles.quillEditor}
           />
 
-          {/* Tags Input */}
-          <label className={styles.label}>Tags (comma-separated):</label>
+          <label className={styles.label}>{t('adminEditPost.labelTags')}</label>
           <input
             type="text"
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
-            placeholder="e.g., health, diet, tips"
+            placeholder={t('adminEditPost.placeholderTags')}
             className={styles.input}
           />
 
-          {/* Current Post Image */}
-          <label className={styles.label}>Current Post Image:</label>
+          <label className={styles.label}>{t('adminEditPost.labelCurrentImage')}</label>
           {imageUrl ? (
             <>
               <div className={styles.imagePreview}>
@@ -155,13 +152,13 @@ const AdminEditPost = () => {
                     icon={faTrash}
                     className={styles.iconSpacing}
                   />
-                  Remove Image
+                  {t('adminEditPost.btnRemoveImage')}
                 </button>
               </div>
             </>
           ) : (
             <>
-              <p>There is no current image set.</p>
+              <p>{t('adminEditPost.noImageSet')}</p>
               <button
                 type="button"
                 className={styles.deleteButton}
@@ -169,22 +166,22 @@ const AdminEditPost = () => {
                 disabled
               >
                 <FontAwesomeIcon icon={faTrash} className={styles.iconSpacing} />
-                Remove Image
+                {t('adminEditPost.btnRemoveImage')}
               </button>
             </>
           )}
 
-          <label className={styles.label}>Upload New Image:</label>
+          <label className={styles.label}>{t('adminEditPost.labelUploadNew')}</label>
           <input
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
             className={styles.fileInput}
           />
-          <small>First choose a new image, then click "Upload Image"!</small>
+          <small>{t('adminEditPost.uploadTip')}</small>
           <button onClick={handleUploadImage} className={styles.uploadButton}>
-            Upload Image
+            {t('adminEditPost.btnUpload')}
           </button>
-          {/* Action Buttons */}
+          
           <div className={styles.buttonGroup}>
             <button
               type="button"
@@ -193,7 +190,7 @@ const AdminEditPost = () => {
               className={styles.saveButton}
             >
               <FontAwesomeIcon icon={faSave} className={styles.iconSpacing} />
-              {isLoading ? "Saving..." : "Save"}
+              {isLoading ? t('adminEditPost.btnSaving') : t('adminEditPost.btnSave')}
             </button>
             <button
               type="button"
@@ -201,7 +198,7 @@ const AdminEditPost = () => {
               className={styles.cancelButton}
             >
               <FontAwesomeIcon icon={faXmark} className={styles.iconSpacing} />
-              Cancel
+              {t('adminEditPost.btnCancel')}
             </button>
           </div>
         </div>
