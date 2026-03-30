@@ -459,5 +459,13 @@
     "createdOn": "Created on",
     "noPosts": "No posts available",
     "ariaProfile": "{{username}}'s profile"
+  },
+  "viewBlogEntries": {
+    "loading": "Loading blog entries...",
+    "title": "Explore Blog Entries",
+    "searchPlaceholder": "Search by title or author...",
+    "noPosts": "No posts match your search or filters.",
+    "confirmDelete": "Are you sure you want to delete this post?",
+    "deleteError": "Failed to delete the post. Please try again."
   }
 }

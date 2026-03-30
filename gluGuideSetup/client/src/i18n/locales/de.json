@@ -459,5 +459,13 @@
     "createdOn": "Erstellt am",
     "noPosts": "Keine Beiträge verfügbar",
     "ariaProfile": "Profil von {{username}}"
+  },
+  "viewBlogEntries": {
+    "loading": "Blogeinträge werden geladen...",
+    "title": "Blogeinträge entdecken",
+    "searchPlaceholder": "Nach Titel oder Autor suchen...",
+    "noPosts": "Keine Beiträge entsprechen Ihrer Suche oder Ihren Filtern.",
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?",
+    "deleteError": "Beitrag konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
   }
 }
