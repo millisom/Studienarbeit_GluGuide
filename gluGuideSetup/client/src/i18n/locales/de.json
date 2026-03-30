@@ -171,5 +171,10 @@
     "fat": "Fett:",
     "placeholder": "Menge in Gramm",
     "errorInvalid": "Bitte geben Sie eine gültige Menge in Gramm ein."
+  },
+  "footer": {
+    "rights": "Alle Rechte vorbehalten.",
+    "contact": "Kontakt",
+    "about": "Über uns"
   }
 }

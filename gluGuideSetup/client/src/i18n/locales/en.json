@@ -171,5 +171,10 @@
     "fat": "Fat:",
     "placeholder": "Quantity in grams",
     "errorInvalid": "Please enter a valid quantity in grams."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "contact": "Contact Us",
+    "about": "About Us"
   }
 }
