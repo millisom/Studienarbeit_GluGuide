@@ -365,5 +365,18 @@
     "fats": "Fett:",
     "carbs": "Kohlenhydrate:",
     "btnDelete": "Rezept löschen"
+  },
+  "recipeDashboard": {
+    "title": "Erstelle dein Rezept",
+    "loginPrompt": "Bitte <1>loggen Sie sich ein</1>, um Rezepte zu erstellen und zu speichern.",
+    "placeholderName": "Rezeptname",
+    "btnSave": "Rezept speichern",
+    "btnSaving": "Wird gespeichert...",
+    "success": "Rezept erfolgreich erstellt!",
+    "errorAuth": "Bitte logge Sie sich ein, um ein Rezept zu speichern.",
+    "errorName": "Bitte gib einen Rezeptnamen ein",
+    "errorIngredients": "Bitte füge mindestens eine Zutat hinzu",
+    "errorInstructions": "Bitte füge eine Anleitung hinzu",
+    "errorFailed": "Rezept konnte nicht erstellt werden"
   }
 }

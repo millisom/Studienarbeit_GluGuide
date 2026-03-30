@@ -365,5 +365,18 @@
     "fats": "Fats:",
     "carbs": "Carbs:",
     "btnDelete": "Delete Recipe"
+  },
+  "recipeDashboard": {
+    "title": "Create Your Recipe",
+    "loginPrompt": "Please <1>log in</1> to create and save your own recipes.",
+    "placeholderName": "Recipe Name",
+    "btnSave": "Save Recipe",
+    "btnSaving": "Saving...",
+    "success": "Recipe created successfully!",
+    "errorAuth": "You must be logged in to save a recipe.",
+    "errorName": "Please enter a recipe name",
+    "errorIngredients": "Please add at least one ingredient",
+    "errorInstructions": "Please add instructions",
+    "errorFailed": "Failed to create recipe"
   }
 }
