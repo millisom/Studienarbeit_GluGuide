@@ -367,7 +367,7 @@
     "btnDelete": "Rezept löschen"
   },
   "recipeDashboard": {
-    "title": "Erstelle dein Rezept",
+    "title": "Erstellen Sie ein Rezept",
     "loginPrompt": "Bitte <1>loggen Sie sich ein</1>, um Rezepte zu erstellen und zu speichern.",
     "placeholderName": "Rezeptname",
     "btnSave": "Rezept speichern",
@@ -378,5 +378,13 @@
     "errorIngredients": "Bitte füge mindestens eine Zutat hinzu",
     "errorInstructions": "Bitte füge eine Anleitung hinzu",
     "errorFailed": "Rezept konnte nicht erstellt werden"
+  },
+  "recipeInstructions": {
+    "placeholderAdd": "Schritt schreiben und Enter drücken",
+    "btnAdd": "Schritt hinzufügen",
+    "currentSteps": "Aktuelle Schritte:",
+    "stepLabel": "Schritt {{index}}",
+    "placeholderEdit": "Schritt {{index}} bearbeiten",
+    "btnRemove": "Schritt entfernen"
   }
 }

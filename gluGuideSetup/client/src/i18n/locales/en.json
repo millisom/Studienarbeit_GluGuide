@@ -378,5 +378,13 @@
     "errorIngredients": "Please add at least one ingredient",
     "errorInstructions": "Please add instructions",
     "errorFailed": "Failed to create recipe"
+  },
+  "recipeInstructions": {
+    "placeholderAdd": "Write a step and press Enter",
+    "btnAdd": "Add Step",
+    "currentSteps": "Current Steps:",
+    "stepLabel": "Step {{index}}",
+    "placeholderEdit": "Edit step {{index}}",
+    "btnRemove": "Remove step"
   }
 }
