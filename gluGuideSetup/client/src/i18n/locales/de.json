@@ -582,5 +582,16 @@
   },
   "blogs": {
     "pageTitle": "Unsere Blogs"
+  },
+  "contactUs": {
+    "title": "Kontaktieren Sie uns",
+    "subtitle": "Bei Fragen kontaktieren Sie uns bitte über das untenstehende Formular oder wenden Sie sich direkt per E-Mail oder Telefon an uns.",
+    "labelName": "Name:",
+    "labelEmail": "E-Mail:",
+    "labelMessage": "Nachricht:",
+    "btnSubmit": "Absenden",
+    "success": "Vielen Dank für Ihre Nachricht, wir melden uns in Kürze bei Ihnen!",
+    "directEmail": "E-Mail:",
+    "directPhone": "Telefon:"
   }
 }

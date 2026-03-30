@@ -582,5 +582,16 @@
   },
   "blogs": {
     "pageTitle": "Our Blogs"
+  },
+  "contactUs": {
+    "title": "Contact Us",
+    "subtitle": "For any queries, please contact us using the form below or reach out directly via email or phone.",
+    "labelName": "Name:",
+    "labelEmail": "Email:",
+    "labelMessage": "Message:",
+    "btnSubmit": "Submit",
+    "success": "Thanks for contacting us, we'll get back to you soon!",
+    "directEmail": "Email:",
+    "directPhone": "Phone:"
   }
 }
