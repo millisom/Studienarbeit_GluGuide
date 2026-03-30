@@ -467,5 +467,21 @@
     "noPosts": "Keine Beiträge entsprechen Ihrer Suche oder Ihren Filtern.",
     "confirmDelete": "Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?",
     "deleteError": "Beitrag konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
+  },
+  "viewPost": {
+    "loading": "Beitrag wird geladen...",
+    "errorLoad": "Fehler beim Laden des Beitrags",
+    "notFound": "Beitrag nicht gefunden.",
+    "likeError": "Beim Liken des Beitrags ist ein Fehler aufgetreten.",
+    "deleteConfirm": "Bist du sicher, dass du diesen Beitrag löschen möchtest?",
+    "deleteSuccess": "Beitrag erfolgreich gelöscht.",
+    "deleteError": "Beitrag konnte nicht gelöscht werden.",
+    "loginToLike": "Einloggen, um diesen Beitrag zu liken!",
+    "likeCount": "{{count}} Like",
+    "likeCount_plural": "{{count}} Likes",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "author": "Autor:",
+    "createdOn": "Erstellt am:"
   }
 }

@@ -467,5 +467,21 @@
     "noPosts": "No posts match your search or filters.",
     "confirmDelete": "Are you sure you want to delete this post?",
     "deleteError": "Failed to delete the post. Please try again."
+  },
+  "viewPost": {
+    "loading": "Loading post...",
+    "errorLoad": "Failed to load post",
+    "notFound": "Post not found.",
+    "likeError": "An error occurred while liking the post.",
+    "deleteConfirm": "Are you sure you want to delete this post?",
+    "deleteSuccess": "Post deleted successfully.",
+    "deleteError": "Failed to delete post.",
+    "loginToLike": "Login to like this post!",
+    "likeCount": "{{count}} Like",
+    "likeCount_plural": "{{count}} Likes",
+    "edit": "Edit",
+    "delete": "Delete",
+    "author": "Author:",
+    "createdOn": "Created on:"
   }
 }
