@@ -76,5 +76,15 @@
   },
   "commentsSection": {
     "errorLoad": "Failed to load comments"
+  },
+  "createComment": {
+    "loading": "Loading commenting section...",
+    "promptDiscussion": "Please <1>login</1> or <3>create an account</3> to add a comment and be part of this discussion.",
+    "promptFirst": "Please <1>login</1> or <3>create an account</3> to be the first one to comment!",
+    "title": "Add a Comment",
+    "submitBtn": "Submit Comment",
+    "errorEmpty": "Comment cannot be empty",
+    "successMsg": "Comment added successfully!",
+    "errorFailed": "Failed to add comment. Please try again."
   }
 }

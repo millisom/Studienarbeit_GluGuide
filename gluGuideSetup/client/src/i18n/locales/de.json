@@ -76,5 +76,15 @@
   },
   "commentsSection": {
     "errorLoad": "Kommentare konnten nicht geladen werden"
+  },
+  "createComment": {
+    "loading": "Kommentarbereich wird geladen...",
+    "promptDiscussion": "Bitte <1>logge dich ein</1> oder <3>erstelle ein Konto</3>, um einen Kommentar hinzuzufügen und Teil dieser Diskussion zu sein.",
+    "promptFirst": "Bitte <1>logge dich ein</1> oder <3>erstelle ein Konto</3>, um als Erster zu kommentieren!",
+    "title": "Einen Kommentar hinzufügen",
+    "submitBtn": "Kommentar absenden",
+    "errorEmpty": "Kommentar darf nicht leer sein",
+    "successMsg": "Kommentar erfolgreich hinzugefügt!",
+    "errorFailed": "Kommentar konnte nicht hinzugefügt werden. Bitte versuche es erneut."
   }
 }
