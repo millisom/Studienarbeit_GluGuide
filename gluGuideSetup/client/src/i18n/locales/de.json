@@ -556,5 +556,28 @@
     "errorUpload": "Bild konnte nicht hochgeladen werden.",
     "errorDeleteImage": "Bild konnte nicht gelöscht werden.",
     "errorSave": "Beitrag konnte nicht gespeichert werden. Details finden Sie in der Konsole."
+  },
+  "adminEditUser": {
+    "loading": "Benutzerdaten werden geladen...",
+    "title": "Benutzer bearbeiten",
+    "labelUsername": "Benutzername",
+    "labelEmail": "E-Mail",
+    "labelAdmin": "Zum Admin machen",
+    "labelBio": "Bio",
+    "labelPassword": "Neues Passwort",
+    "passwordPlaceholder": "Leer lassen, um aktuelles Passwort zu behalten",
+    "labelAvatar": "Avatar",
+    "noAvatar": "Kein Avatar gesetzt.",
+    "btnRemoveAvatar": "Avatar entfernen",
+    "btnBack": "Zurück zum Dashboard",
+    "btnUpdate": "Benutzer aktualisieren",
+    "confirmRemoveAvatar": "Sind Sie sicher, dass Sie den Avatar dieses Benutzers entfernen möchten?",
+    "successUpdate": "Benutzer erfolgreich aktualisiert!",
+    "successRemoveAvatar": "Benutzer-Avatar erfolgreich entfernt.",
+    "errorFetch": "Fehler beim Abrufen der Benutzerdaten.",
+    "errorFetchAvatar": "Avatar konnte nicht geladen werden.",
+    "errorRemoveAvatar": "Fehler beim Entfernen des Avatars.",
+    "errorUpdate": "Fehler: {{message}}",
+    "errorGeneric": "Etwas ist schiefgelaufen."
   }
 }

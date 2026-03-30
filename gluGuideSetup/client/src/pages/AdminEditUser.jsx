@@ -9,12 +9,14 @@ import {
   faSave,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminEditUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [user, setUser] = useState({
     username: '',
@@ -33,7 +35,7 @@ const AdminEditUser = () => {
         credentials: 'include',
       });
       if (!res.ok) {
-        throw new Error('Failed to fetch user data');
+        throw new Error(t('adminEditUser.errorFetch'));
       }
       const data = await res.json();
       setUser({
@@ -44,7 +46,7 @@ const AdminEditUser = () => {
       });
     } catch (err) {
       console.error(err);
-      setMessage('Error fetching user data.');
+      setMessage(t('adminEditUser.errorFetch'));
     }
   };
 
@@ -56,7 +58,7 @@ const AdminEditUser = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to fetch avatar.');
+        throw new Error(data.error || t('adminEditUser.errorFetchAvatar'));
       }
 
       setAvatarUrl(data.url || '');
@@ -94,19 +96,19 @@ const AdminEditUser = () => {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Something went wrong.');
+        throw new Error(data.error || t('adminEditUser.errorGeneric'));
       }
 
-      setMessage('User updated successfully!');
+      setMessage(t('adminEditUser.successUpdate'));
       setTimeout(() => navigate('/admin'), 1500);
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
+      setMessage(t('adminEditUser.errorUpdate', { message: error.message }));
     }
   };
 
   const handleRemoveAvatar = async () => {
     if (
-      !window.confirm('Are you sure you want to remove this user’s avatar?')
+      !window.confirm(t('adminEditUser.confirmRemoveAvatar'))
     ) {
       return;
     }
@@ -119,27 +121,27 @@ const AdminEditUser = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to remove avatar.');
+        throw new Error(data.error || t('adminEditUser.errorRemoveAvatar'));
       }
 
       setAvatarUrl('');
-      setMessage('User avatar removed successfully.');
+      setMessage(t('adminEditUser.successRemoveAvatar'));
     } catch (err) {
-      setMessage(err.message || 'Error removing avatar.');
+      setMessage(err.message || t('adminEditUser.errorRemoveAvatar'));
     }
   };
 
   if (loading) {
-    return <p className={styles.loading}>Loading user data...</p>;
+    return <p className={styles.loading}>{t('adminEditUser.loading')}</p>;
   }
 
   return (
     <div className={styles.formAdminCreate}>
-      <h1 className={styles.title}>Edit User</h1>
+      <h1 className={styles.title}>{t('adminEditUser.title')}</h1>
       <br />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputField}>
-          <label className={styles.label}>Username</label>
+          <label className={styles.label}>{t('adminEditUser.labelUsername')}</label>
           <input
             type='text'
             className={styles.input}
@@ -150,7 +152,7 @@ const AdminEditUser = () => {
         </div>
 
         <div className={styles.inputField}>
-          <label className={styles.label}>Email</label>
+          <label className={styles.label}>{t('adminEditUser.labelEmail')}</label>
           <input
             type='email'
             className={styles.input}
@@ -168,12 +170,12 @@ const AdminEditUser = () => {
               onChange={(e) => setUser({ ...user, is_admin: e.target.checked })}
               className={styles.iconSpacing}
             />
-            Make Admin
+            {t('adminEditUser.labelAdmin')}
           </label>
         </div>
 
         <div className={styles.inputField}>
-          <label className={styles.label}>Bio</label>
+          <label className={styles.label}>{t('adminEditUser.labelBio')}</label>
           <ReactQuill
             value={user.profile_bio}
             onChange={(value) => setUser({ ...user, profile_bio: value })}
@@ -183,18 +185,18 @@ const AdminEditUser = () => {
         </div>
 
         <div className={styles.inputField}>
-          <label className={styles.label}>New Password</label>
+          <label className={styles.label}>{t('adminEditUser.labelPassword')}</label>
           <input
             type='password'
             className={styles.input}
-            placeholder='Leave empty to keep current password'
+            placeholder={t('adminEditUser.passwordPlaceholder')}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
         </div>
 
         <div className={styles.inputField}>
-          <label className={styles.label}>Avatar</label>
+          <label className={styles.label}>{t('adminEditUser.labelAvatar')}</label>
           {avatarUrl ? (
             <div className={styles.avatarPreview}>
               <img
@@ -204,7 +206,7 @@ const AdminEditUser = () => {
               />
             </div>
           ) : (
-            <p>No avatar set.</p>
+            <p>{t('adminEditUser.noAvatar')}</p>
           )}
           <button
             type='button'
@@ -213,7 +215,7 @@ const AdminEditUser = () => {
             disabled={!avatarUrl}
           >
             <FontAwesomeIcon icon={faTrash} className={styles.iconSpacing} />
-            Remove Avatar
+            {t('adminEditUser.btnRemoveAvatar')}
           </button>
         </div>
 
@@ -221,7 +223,7 @@ const AdminEditUser = () => {
           <p
             className={styles.message}
             style={{
-              color: message.includes('successfully') ? 'green' : 'red',
+              color: (message === t('adminEditUser.successUpdate') || message === t('adminEditUser.successRemoveAvatar')) ? 'green' : 'red',
             }}
           >
             {message}
@@ -238,11 +240,11 @@ const AdminEditUser = () => {
               icon={faArrowLeft}
               className={styles.iconSpacing}
             />
-            Back to Dashboard
+            {t('adminEditUser.btnBack')}
           </button>
           <button type='submit' className={styles.primaryButton}>
             <FontAwesomeIcon icon={faSave} className={styles.iconSpacing} />
-            Update User
+            {t('adminEditUser.btnUpdate')}
           </button>
         </div>
       </form>

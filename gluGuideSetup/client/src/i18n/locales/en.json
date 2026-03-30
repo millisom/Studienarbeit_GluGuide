@@ -556,5 +556,28 @@
     "errorUpload": "Failed to upload image.",
     "errorDeleteImage": "Failed to delete image.",
     "errorSave": "Failed to save post. Check console for details."
+  },
+  "adminEditUser": {
+    "loading": "Loading user data...",
+    "title": "Edit User",
+    "labelUsername": "Username",
+    "labelEmail": "Email",
+    "labelAdmin": "Make Admin",
+    "labelBio": "Bio",
+    "labelPassword": "New Password",
+    "passwordPlaceholder": "Leave empty to keep current password",
+    "labelAvatar": "Avatar",
+    "noAvatar": "No avatar set.",
+    "btnRemoveAvatar": "Remove Avatar",
+    "btnBack": "Back to Dashboard",
+    "btnUpdate": "Update User",
+    "confirmRemoveAvatar": "Are you sure you want to remove this user’s avatar?",
+    "successUpdate": "User updated successfully!",
+    "successRemoveAvatar": "User avatar removed successfully.",
+    "errorFetch": "Error fetching user data.",
+    "errorFetchAvatar": "Failed to fetch avatar.",
+    "errorRemoveAvatar": "Error removing avatar.",
+    "errorUpdate": "Error: {{message}}",
+    "errorGeneric": "Something went wrong."
   }
 }
