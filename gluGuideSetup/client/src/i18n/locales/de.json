@@ -515,5 +515,24 @@
     "errorFallback": "Ein Fehler ist aufgetreten.",
     "btnBack": "Zurück zum Dashboard",
     "btnCreate": "Benutzer erstellen"
+  },
+  "adminDashboard": {
+    "loading": "Benutzer werden geladen...",
+    "errorFetch": "Benutzer konnten nicht geladen werden",
+    "errorDelete": "Benutzer konnte nicht gelöscht werden.",
+    "errorGeneral": "Fehler: {{error}}",
+    "titleDashboard": "Admin-Dashboard",
+    "welcomeText": "Willkommen! Hier können Sie Benutzer verwalten, einschließlich Erstellen, Bearbeiten oder Löschen von Konten.",
+    "btnCreateUser": "Neuen Benutzer erstellen",
+    "titleUserManagement": "Benutzerverwaltung",
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
+    "tableId": "ID",
+    "tableUsername": "Benutzername",
+    "tableEmail": "E-Mail",
+    "tableCreatedAt": "Erstellt am",
+    "tableAdmin": "Admin?",
+    "tableActions": "Aktionen",
+    "btnEdit": "Bearbeiten",
+    "btnDelete": "Löschen"
   }
 }
