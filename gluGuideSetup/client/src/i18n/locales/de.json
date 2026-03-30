@@ -325,5 +325,26 @@
     "createdOn": "Erstellt am:",
     "btnEdit": "Bearbeiten",
     "btnDelete": "Löschen"
+  },
+  "profileCard": {
+    "loading": "Profil wird geladen...",
+    "fetchError": "Profildaten konnten nicht geladen werden.",
+    "bioLoadError": "Bio konnte nicht geladen werden.",
+    "bioUpdateError": "Bio-Update fehlgeschlagen: {{error}}",
+    "dpUpdateError": "Profilbild-Update fehlgeschlagen: {{error}}",
+    "dpDeleteError": "Fehler beim Löschen des Profilbilds: {{error}}",
+    "dpDeleteConfirm": "Profilbild löschen?",
+    "accountDeletePrompt": "Gib \"{{confirmText}}\" zur Bestätigung ein.",
+    "accountDeleteKey": "LÖSCHEN",
+    "accountDeleteError": "Fehler beim Löschen des Kontos: {{error}}",
+    "btnSave": "Speichern",
+    "btnCancel": "Abbrechen",
+    "navMyBlogs": "Meine Blogs",
+    "navExportPdf": "Gesundheits-PDF exportieren",
+    "btnDeleteAccount": "Konto löschen",
+    "bioTitle": "Über mich",
+    "btnSaveBio": "Bio speichern",
+    "noBio": "Noch keine Bio vorhanden. Klicke auf das Bearbeiten-Symbol, um eine hinzuzufügen!",
+    "ariaDp": "Profil von {{username}}"
   }
 }

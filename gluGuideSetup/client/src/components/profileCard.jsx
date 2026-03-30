@@ -15,10 +15,12 @@ import { useAuth } from '../context/AuthContext';
 import AlertForm from './AlertForm';
 import AlertsTable from './AlertsTable';
 import ExportReportModal from './ExportReportModal';
+import { useTranslation } from 'react-i18next';
 
 const ProfileCard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [bio, setBio] = useState('');
   const [currentBio, setCurrentBio] = useState('');
@@ -33,8 +35,6 @@ const ProfileCard = () => {
   const [previewDp, setPreviewDp] = useState(null);
 
   const [alertRefreshTrigger, setAlertRefreshTrigger] = useState(0);
-  
-
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   useEffect(() => {
@@ -58,15 +58,15 @@ const ProfileCard = () => {
         setDpUrl(dpRes.data.url || '');
       } catch (err) {
         console.error('Error fetching profile data:', err);
-        setError('Failed to fetch profile data.');
-        setBio('Could not load bio.');
+        setError(t('profileCard.fetchError'));
+        setBio(t('profileCard.bioLoadError'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfileData();
-  }, [user]);
+  }, [user, t]);
 
   const handleBioEditToggle = () => {
     setCurrentBio(bio);
@@ -82,7 +82,7 @@ const ProfileCard = () => {
         setError(null);
       }
     } catch (error) {
-      setError(`Failed to update bio: ${error.response?.data?.error || error.message}`);
+      setError(t('profileCard.bioUpdateError', { error: error.response?.data?.error || error.message }));
     }
   };
 
@@ -107,7 +107,7 @@ const ProfileCard = () => {
       setSelectedDpFile(null);
       setPreviewDp(null);
     } catch (error) {
-      setError(`Failed to update display picture: ${error.message}`);
+      setError(t('profileCard.dpUpdateError', { error: error.message }));
     }
   };
 
@@ -118,19 +118,19 @@ const ProfileCard = () => {
   };
 
   const handleDeleteDp = async () => {
-    if (!window.confirm('Delete display picture?')) return;
+    if (!window.confirm(t('profileCard.dpDeleteConfirm'))) return;
     try {
       await axiosInstance.delete('/deleteDp');
       setDpUrl('');
       setIsEditingDp(false);
     } catch (error) {
-      setError(`Error deleting display picture: ${error.message}`);
+      setError(t('profileCard.dpDeleteError', { error: error.message }));
     }
   };
 
   const handleDeleteAccount = async () => {
-    const confirmText = "DELETE";
-    const confirmation = prompt(`Type "${confirmText}" to confirm.`);
+    const confirmText = t('profileCard.accountDeleteKey');
+    const confirmation = prompt(t('profileCard.accountDeletePrompt', { confirmText }));
     if (confirmation !== confirmText) return;
 
     try {
@@ -140,7 +140,7 @@ const ProfileCard = () => {
         navigate('/login');
       }
     } catch (error) {
-      setError(`Error deleting account: ${error.message}`);
+      setError(t('profileCard.accountDeleteError', { error: error.message }));
     }
   };
 
@@ -154,7 +154,7 @@ const ProfileCard = () => {
   };
 
   if (!user) return null;
-  if (loading) return <div className={styles.loadingState}>Loading profile...</div>;
+  if (loading) return <div className={styles.loadingState}>{t('profileCard.loading')}</div>;
 
   return (
     <div className={styles.profileCardContainer}>
@@ -167,7 +167,7 @@ const ProfileCard = () => {
             <img
               className={styles.profileDp}
               src={previewDp || dpUrl || 'https://via.placeholder.com/180'}
-              alt={`${user.username}'s profile`}
+              alt={t('profileCard.ariaDp', { username: user.username })}
             />
             {!isEditingDp && (
               <button className={styles.dpEditButton} onClick={() => setIsEditingDp(true)}>
@@ -181,10 +181,10 @@ const ProfileCard = () => {
               <input type='file' onChange={handleFileChange} accept="image/*" className={styles.dpFileInput} />
               <div className={styles.dpEditActions}>
                 <button onClick={handleSaveDp} className={`${styles.actionButtonSmall} ${styles.saveButtonSmall}`} disabled={!selectedDpFile}>
-                  <FontAwesomeIcon icon={faSave} /> Save
+                  <FontAwesomeIcon icon={faSave} /> {t('profileCard.btnSave')}
                 </button>
                 <button onClick={handleCancelDpEdit} className={`${styles.actionButtonSmall} ${styles.cancelButtonSmall}`}>
-                  <FontAwesomeIcon icon={faTimes} /> Cancel
+                  <FontAwesomeIcon icon={faTimes} /> {t('profileCard.btnCancel')}
                 </button>
               </div>
             </div>
@@ -194,12 +194,11 @@ const ProfileCard = () => {
           
           <nav className={styles.profileActions}>
             <button className={styles.actionButton} onClick={() => navigate('/myBlogs')}>
-              <FontAwesomeIcon icon={faBlog} className={styles.buttonIcon} /> My Blogs
+              <FontAwesomeIcon icon={faBlog} className={styles.buttonIcon} /> {t('profileCard.navMyBlogs')}
             </button>
 
-
             <button className={styles.actionButton} onClick={() => setIsExportModalOpen(true)} style={{ backgroundColor: '#27ae60', color: 'white' }}>
-              <FontAwesomeIcon icon={faFileDownload} className={styles.buttonIcon} /> Export Health PDF
+              <FontAwesomeIcon icon={faFileDownload} className={styles.buttonIcon} /> {t('profileCard.navExportPdf')}
             </button>
 
             <div style={{ marginTop: '30px', width: '100%' }}>
@@ -209,14 +208,14 @@ const ProfileCard = () => {
 
           <div className={styles.dangerZone}>
             <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
-              <FontAwesomeIcon icon={faSignOutAlt} className={styles.buttonIcon} /> Delete Account
+              <FontAwesomeIcon icon={faSignOutAlt} className={styles.buttonIcon} /> {t('profileCard.btnDeleteAccount')}
             </button>
           </div>
         </aside>
 
         <main className={styles.profileContent}>
           <div className={styles.bioSectionHeader}>
-            <h2 className={styles.bioTitle}>About Me</h2>
+            <h2 className={styles.bioTitle}>{t('profileCard.bioTitle')}</h2>
             {!isEditingBio && (
               <button className={styles.bioEditIcon} onClick={handleBioEditToggle}>
                 <FontAwesomeIcon icon={faEdit} />
@@ -235,16 +234,16 @@ const ProfileCard = () => {
               />
               <div className={styles.bioEditActions}>
                 <button onClick={handleSaveBio} className={`${styles.actionButton} ${styles.saveButton}`}>
-                  <FontAwesomeIcon icon={faSave} /> Save Bio
+                  <FontAwesomeIcon icon={faSave} /> {t('profileCard.btnSaveBio')}
                 </button>
                 <button onClick={handleBioEditToggle} className={`${styles.actionButton} ${styles.cancelButton}`}>
-                  <FontAwesomeIcon icon={faTimes} /> Cancel
+                  <FontAwesomeIcon icon={faTimes} /> {t('profileCard.btnCancel')}
                 </button>
               </div>
             </div>
           ) : (
             <div className={styles.bioDisplay}>
-              {bio ? parse(bio) : <p>No bio set yet. Click the edit icon to add one!</p>}
+              {bio ? parse(bio) : <p>{t('profileCard.noBio')}</p>}
             </div>
           )}
 
@@ -254,7 +253,6 @@ const ProfileCard = () => {
           
         </main>
       </div>
-
 
       <ExportReportModal 
         isOpen={isExportModalOpen} 

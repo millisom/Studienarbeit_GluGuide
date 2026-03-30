@@ -325,5 +325,26 @@
     "createdOn": "Created on:",
     "btnEdit": "Edit",
     "btnDelete": "Delete"
+  },
+  "profileCard": {
+    "loading": "Loading profile...",
+    "fetchError": "Failed to fetch profile data.",
+    "bioLoadError": "Could not load bio.",
+    "bioUpdateError": "Failed to update bio: {{error}}",
+    "dpUpdateError": "Failed to update display picture: {{error}}",
+    "dpDeleteError": "Error deleting display picture: {{error}}",
+    "dpDeleteConfirm": "Delete display picture?",
+    "accountDeletePrompt": "Type \"{{confirmText}}\" to confirm.",
+    "accountDeleteKey": "DELETE",
+    "accountDeleteError": "Error deleting account: {{error}}",
+    "btnSave": "Save",
+    "btnCancel": "Cancel",
+    "navMyBlogs": "My Blogs",
+    "navExportPdf": "Export Health PDF",
+    "btnDeleteAccount": "Delete Account",
+    "bioTitle": "About Me",
+    "btnSaveBio": "Save Bio",
+    "noBio": "No bio set yet. Click the edit icon to add one!",
+    "ariaDp": "{{username}}'s profile"
   }
 }
