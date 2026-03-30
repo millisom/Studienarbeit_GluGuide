@@ -593,5 +593,21 @@
     "success": "Vielen Dank für Ihre Nachricht, wir melden uns in Kürze bei Ihnen!",
     "directEmail": "E-Mail:",
     "directPhone": "Telefon:"
+  },
+  "homepage": {
+    "loading": "Laden...",
+    "heroTitle": "Willkommen bei GluGuide!",
+    "heroDescription": "Dein Partner bei der Bewältigung von Schwangerschaftsdiabetes. Verfolge deinen Blutzucker, entdecke hilfreiche Einblicke und verbinde dich mit einer unterstützenden Community.",
+    "featuresTitle": "Entdecke, was GluGuide bietet",
+    "feature1": "Protokolliere deine Blutzuckerwerte mit unserem intuitiven Tracker.",
+    "feature2": "Erstelle und teile deine Erfahrungen in Blog-Beiträgen.",
+    "feature3": "Katalogisiere deine eigenen Mahlzeiten und Rezepte für eine einfache Protokollierung.",
+    "feature4": "Erstelle dein öffentliches Profil und vernetze dich mit anderen.",
+    "feature5": "Engagiere dich in der Community durch Kommentare und Likes.",
+    "feature6": "Nimm an Diskussionen teil und teile deinen Weg.",
+    "btnCreateAccount": "Konto erstellen",
+    "blogTitle": "Neues aus unserem Blog",
+    "blogError": "Neueste Blog-Beiträge konnten nicht geladen werden.",
+    "blogEmpty": "Momentan sind keine Blog-Beiträge verfügbar. Schau bald wieder vorbei!"
   }
 }

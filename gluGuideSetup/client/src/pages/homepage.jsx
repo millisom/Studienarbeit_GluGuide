@@ -4,10 +4,12 @@ import PostCard from '../components/PostCard';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/Homepage.module.css';
+import { useTranslation } from 'react-i18next';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const Homepage = () => {
+    const { t } = useTranslation();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [latestPosts, setLatestPosts] = useState([]);
@@ -20,14 +22,12 @@ const Homepage = () => {
             try {
                 const response = await fetch(`${API_BASE_URL}/status`, { credentials: 'include' });
                 if (!response.ok) {
-                    console.error("Error fetching session status, response not OK:", response.status);
                     setIsLoggedIn(false);
                     return; 
                 }
                 const data = await response.json();
                 setIsLoggedIn(data.valid);
             } catch (err) {
-                console.error("Error fetching session status:", err);
                 setIsLoggedIn(false);
             } finally {
                 setIsLoading(false);
@@ -42,14 +42,13 @@ const Homepage = () => {
                 ) || [];
                 setLatestPosts(sortedPosts.slice(0, 3));
             } catch (error) {
-                console.error("Error fetching latest posts:", error);
-                setPostsError('Failed to load latest blog posts.');
+                setPostsError(t('homepage.blogError'));
             }
         };
 
         fetchSessionStatus();
         fetchLatestPosts();
-    }, []);
+    }, [t]);
 
     const handleViewPostClick = (postId) => {
         navigate(`/blogs/view/${postId}`);
@@ -60,45 +59,44 @@ const Homepage = () => {
     };
 
     if (isLoading) {
-        return <div className={styles.loadingPage}>Loading...</div>;
+        return <div className={styles.loadingPage}>{t('homepage.loading')}</div>;
     }
 
-if (isLoggedIn) {
+    if (isLoggedIn) {
         return (
-                <>
-                    <GlucoseLog />
-                </>
-                
+            <>
+                <GlucoseLog />
+            </>
         );
     } else {
         return (
             <div className={styles.homepageContainer}>
                 <div className={styles.heroSection}>
-                    <h1 className={styles.title}>Welcome to GluGuide!</h1>
+                    <h1 className={styles.title}>{t('homepage.heroTitle')}</h1>
                     <p className={styles.description}>
-                        Your partner in managing gestational diabetes. Track your glucose, discover helpful insights, and connect with a supportive community.
+                        {t('homepage.heroDescription')}
                     </p>
                 </div>
 
                 <section className={styles.featuresOverviewSection}>
-                    <h2 className={styles.sectionTitle}>Discover What GluGuide Offers</h2>
+                    <h2 className={styles.sectionTitle}>{t('homepage.featuresTitle')}</h2>
                     <ul className={styles.featuresList}>
-                        <li>Log your glucose levels with our intuitive tracker.</li>
-                        <li>Create and share your experiences through blog posts.</li>
-                        <li>Catalog your own meals and recipes for easy logging.</li>
-                        <li>Build your public profile and connect with others.</li>
-                        <li>Engage with the community by commenting and liking posts.</li>
-                        <li>Participate in discussions and share your journey.</li>
+                        <li>{t('homepage.feature1')}</li>
+                        <li>{t('homepage.feature2')}</li>
+                        <li>{t('homepage.feature3')}</li>
+                        <li>{t('homepage.feature4')}</li>
+                        <li>{t('homepage.feature5')}</li>
+                        <li>{t('homepage.feature6')}</li>
                     </ul>
                     <div className={styles.ctaButtonContainer}>
                         <button className={styles.ctaButton} onClick={() => navigate('/signUp')}>
-                            Create Your Account
+                            {t('homepage.btnCreateAccount')}
                         </button>
                     </div>
                 </section>
 
                 <section className={styles.latestPostsSection}>
-                    <h2 className={styles.sectionTitle}>Latest from Our Blog</h2>
+                    <h2 className={styles.sectionTitle}>{t('homepage.blogTitle')}</h2>
                     {postsError && <p className={styles.errorText}>{postsError}</p>}
                     {latestPosts.length > 0 ? (
                         <div className={styles.postsGrid}>
@@ -114,7 +112,7 @@ if (isLoggedIn) {
                             ))}
                         </div>
                     ) : (
-                        !postsError && <p>No blog posts available at the moment. Check back soon!</p>
+                        !postsError && <p>{t('homepage.blogEmpty')}</p>
                     )}
                 </section>
             </div>

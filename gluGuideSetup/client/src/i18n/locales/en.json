@@ -593,5 +593,21 @@
     "success": "Thanks for contacting us, we'll get back to you soon!",
     "directEmail": "Email:",
     "directPhone": "Phone:"
+  },
+  "homepage": {
+    "loading": "Loading...",
+    "heroTitle": "Welcome to GluGuide!",
+    "heroDescription": "Your partner in managing gestational diabetes. Track your glucose, discover helpful insights, and connect with a supportive community.",
+    "featuresTitle": "Discover What GluGuide Offers",
+    "feature1": "Log your glucose levels with our intuitive tracker.",
+    "feature2": "Create and share your experiences through blog posts.",
+    "feature3": "Catalog your own meals and recipes for easy logging.",
+    "feature4": "Build your public profile and connect with others.",
+    "feature5": "Engage with the community by commenting and liking posts.",
+    "feature6": "Participate in discussions and share your journey.",
+    "btnCreateAccount": "Create Your Account",
+    "blogTitle": "Latest from Our Blog",
+    "blogError": "Failed to load latest blog posts.",
+    "blogEmpty": "No blog posts available at the moment. Check back soon!"
   }
 }
