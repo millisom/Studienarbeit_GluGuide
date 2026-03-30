@@ -116,7 +116,7 @@ function SignUp() {
                             required
                         />
                         <span>
-                            I accept the <Link to="/terms" style={{ color: '#007bff', textDecoration: 'underline' }}>Terms & Conditions</Link> and have read the <Link to="/privacy" style={{ color: '#007bff', textDecoration: 'underline' }}>Privacy Policy</Link>.
+                            I accept the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>Terms & Conditions</Link> and have read the <Link to="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>Privacy Policy</Link>.
                         </span>
                     </label>
                 </div>
@@ -131,7 +131,7 @@ function SignUp() {
                             required
                         />
                         <span>
-                            I explicitly consent to the processing of my <strong>health data</strong> (e.g., glucose levels, meal logs) to provide the GluGuide service, as outlined in the <Link to="/privacy" style={{ color: '#007bff', textDecoration: 'underline' }}>Privacy Policy</Link>.
+                            I explicitly consent to the processing of my <strong>health data</strong> (e.g., glucose levels, meal logs) to provide the GluGuide service, as outlined in the <Link to="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>Privacy Policy</Link>.
                         </span>
                     </label>
                 </div>
