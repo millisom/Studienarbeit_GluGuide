@@ -9,10 +9,11 @@ import styles from '../styles/Comments.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation, Trans } from 'react-i18next';
 
 const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => {
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
   const { user, loading } = useAuth();
   
   const [editingCommentId, setEditingCommentId] = useState(null);
@@ -55,7 +56,7 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
       ? `/admin/comments/${commentId}`
       : `/comments/${commentId}`;
 
-    if (window.confirm("Are you sure you want to delete this comment?")) {
+    if (window.confirm(t('commentsList.deleteConfirm'))) {
       try {
         await axiosInstance.delete(url, { withCredentials: true });
         refreshComments();
@@ -86,14 +87,14 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
   };
 
   if (loading) {
-    return <p className={styles.loadingMessage}>Loading comments...</p>;
+    return <p className={styles.loadingMessage}>{t('commentsList.loading')}</p>;
   }
 
   if (!comments || comments.length === 0) {
     if (isLoggedIn) {
         return (
           <p className={styles.noComments}>
-            No comments yet. Be the first to comment!
+            {t('commentsList.noComments')}
           </p>
         );
     }
@@ -102,7 +103,7 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
 
   return (
     <div className={styles.commentsContainer}>
-      <h3 className={styles.title}>Comments ({comments.length})</h3>
+      <h3 className={styles.title}>{t('commentsList.title', { count: comments.length })}</h3>
       <div className={styles.commentsList}>
         {comments.map((comment) => (
           <div key={comment.id} className={styles.commentCard}>
@@ -113,7 +114,7 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
               >
                 {comment.username}
               </button>{" "}
-              said:
+              {t('commentsList.said')}
             </p>
 
             {editingCommentId === comment.id ? (
@@ -138,13 +139,13 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
                     onClick={() => handleEdit(comment.id)}
                     className={styles.saveButton}
                   >
-                    Save
+                    {t('commentsList.btnSave')}
                   </button>
                   <button
                     onClick={() => setEditingCommentId(null)}
                     className={styles.cancelButton}
                   >
-                    Cancel
+                    {t('commentsList.btnCancel')}
                   </button>
                 </div>
               </div>
@@ -153,11 +154,11 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
             )}
 
             <p className={styles.commentDate}>
-              Commented at: {new Date(comment.created_at).toLocaleString()}
+              {t('commentsList.commentedAt')} {new Date(comment.created_at).toLocaleString(i18n.language)}
               {new Date(comment.created_at).getTime() !== new Date(comment.updated_at).getTime() && (
                 <>
                   {" "}
-                  | Last updated at: {new Date(comment.updated_at).toLocaleString()}
+                  | {t('commentsList.lastUpdated')} {new Date(comment.updated_at).toLocaleString(i18n.language)}
                 </>
               )}
             </p>
@@ -170,18 +171,20 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
                       onClick={() => handleLike(comment.id)}
                       className={styles.likeButton}
                     >
-                      <FontAwesomeIcon icon={faThumbsUp} /> Like ({comment.likes})
+                      <FontAwesomeIcon icon={faThumbsUp} /> {t('commentsList.btnLike')} ({comment.likes})
                     </button>
                     <button
                       onClick={() => handleDislike(comment.id)}
                       className={styles.dislikeButton}
                     >
-                      <FontAwesomeIcon icon={faThumbsDown} /> Dislike ({comment.dislikes})
+                      <FontAwesomeIcon icon={faThumbsDown} /> {t('commentsList.btnDislike')} ({comment.dislikes})
                     </button>
                   </>
                 ) : (
                   <p className={styles.authActionPrompt}>
-                    <Link to="/login" className={styles.authLink}>Login</Link> or <Link to="/signUp" className={styles.authLink}>Sign Up</Link> to rate.
+                    <Trans i18nKey="commentsList.authPrompt">
+                      <Link to="/login" className={styles.authLink}>Login</Link> or <Link to="/signUp" className={styles.authLink}>Sign Up</Link> to rate.
+                    </Trans>
                   </p>
                 )}
                 
@@ -191,18 +194,18 @@ const CommentsList = ({ comments, currentUserId, isAdmin, refreshComments }) => 
                       onClick={() => startEditing(comment.id, comment.content)}
                       className={styles.editButton}
                     >
-                      Edit
+                      {t('commentsList.btnEdit')}
                     </button>
                     <button
                       onClick={() => handleDelete(comment.id)}
                       className={styles.deleteButton}
                     >
-                      Delete
+                      {t('commentsList.btnDelete')}
                     </button>
                   </>
                 )}
               </div>
-              <small className={styles.commentId}>Comment ID: (#{comment.id})</small>
+              <small className={styles.commentId}>{t('commentsList.commentIdLabel')} (#{comment.id})</small>
             </div>
           </div>
         ))}

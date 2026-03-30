@@ -145,5 +145,22 @@
     "btnDownload": "Download PDF",
     "alertSelectDate": "Please select at least one date.",
     "alertError": "Failed to generate PDF. Please try again."
+  },
+  "commentsList": {
+    "loading": "Loading comments...",
+    "noComments": "No comments yet. Be the first to comment!",
+    "title": "Comments ({{count}})",
+    "said": "said:",
+    "btnSave": "Save",
+    "btnCancel": "Cancel",
+    "commentedAt": "Commented at:",
+    "lastUpdated": "Last updated at:",
+    "btnLike": "Like",
+    "btnDislike": "Dislike",
+    "authPrompt": "<1>Login</1> or <3>Sign Up</3> to rate.",
+    "btnEdit": "Edit",
+    "btnDelete": "Delete",
+    "commentIdLabel": "Comment ID:",
+    "deleteConfirm": "Are you sure you want to delete this comment?"
   }
 }

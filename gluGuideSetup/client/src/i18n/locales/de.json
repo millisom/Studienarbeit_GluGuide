@@ -145,5 +145,22 @@
     "btnDownload": "PDF herunterladen",
     "alertSelectDate": "Bitte wählen Sie mindestens ein Datum aus.",
     "alertError": "PDF konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+  },
+  "commentsList": {
+    "loading": "Kommentare werden geladen...",
+    "noComments": "Noch keine Kommentare. Schreibe den ersten Kommentar!",
+    "title": "Kommentare ({{count}})",
+    "said": "sagte:",
+    "btnSave": "Speichern",
+    "btnCancel": "Abbrechen",
+    "commentedAt": "Kommentiert am:",
+    "lastUpdated": "Zuletzt aktualisiert am:",
+    "btnLike": "Like",
+    "btnDislike": "Dislike",
+    "authPrompt": "<1>Einloggen</1> oder <3>Registrieren</3>, um zu bewerten.",
+    "btnEdit": "Bearbeiten",
+    "btnDelete": "Löschen",
+    "commentIdLabel": "Kommentar-ID:",
+    "deleteConfirm": "Bist du sicher, dass du diesen Kommentar löschen möchtest?"
   }
 }
