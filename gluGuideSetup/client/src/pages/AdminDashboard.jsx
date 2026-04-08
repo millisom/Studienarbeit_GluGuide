@@ -172,7 +172,7 @@ const AdminDashboard = () => {
                   <td>
                     {i18n.language === 'de' ? article.title_de : article.title_en}
                   </td>
-                  <td>{article.category}</td>
+                  <td>{i18n.language === 'de' ? article.category_de : article.category_en}</td>
                   <td>
                     <button 
                       className={styles.editButton} 

@@ -21,11 +21,11 @@ const AdminEditKnowledge = () => {
         setArticle(res.data);
       } catch (err) {
         console.error("Fehler beim Laden des Artikels:", err);
-        setError("Artikel konnte nicht geladen werden.");
+        setError(t('adminEditKnowledge.errorLoad'));
       }
     };
     fetchArticle();
-  }, [id]);
+  }, [id, t]);
 
   const handleUpdate = async (formData) => {
     setLoading(true);
@@ -41,7 +41,7 @@ const AdminEditKnowledge = () => {
       navigate('/admin');
     } catch (err) {
       console.error("Update-Fehler:", err);
-      setError(t('adminEditPost.errorSave') || "Fehler beim Aktualisieren des Artikels.");
+      setError(t('adminEditPost.errorSave'));
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ const AdminEditKnowledge = () => {
 
   return (
     <div className={styles.editPostContainer}>
-      <h2 className={styles.title}>Wissensartikel bearbeiten</h2>
+      <h2 className={styles.title}>{t('adminEditKnowledge.title')}</h2>
       
       {error && <p className={styles.errorMessage}>{error}</p>}
       
@@ -60,7 +60,7 @@ const AdminEditKnowledge = () => {
           isLoading={loading} 
         />
       ) : (
-        <p>{t('adminEditPost.loading') || "Lade Daten..."}</p>
+        <p>{t('adminEditPost.loading')}</p>
       )}
     </div>
   );

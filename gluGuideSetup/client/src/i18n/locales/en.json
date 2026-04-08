@@ -220,6 +220,7 @@
       "actions": "Actions"
     },
     "types": {
+      "null":"Not specified",
       "fasting": "Fasting (Morning)",
       "1h_post_meal": "1 Hour Post-Meal",
       "2h_post_meal": "2 Hours Post-Meal",
@@ -787,17 +788,38 @@
     "hubTitle": "Knowledge Hub",
     "hubSubtitle": "Evidence-based articles and tips to help you manage your gestational diabetes.",
     "readMore": "Read More",
-    "hiddenSugars": {
-      "title": "Hidden Sugars: Where They Lurk",
-      "summary": "Sugar isn't just in sweets. Learn how to spot it in everyday foods."
-    },
-    "understandingSpikes": {
-      "title": "One High Value is Not a Failure",
-      "summary": "Spikes happen. Learn how to handle them without panic."
-    },
-    "postpartumCare": {
-      "title": "Life After Birth: Postpartum Care",
-      "summary": "What to expect with your blood sugar and health after your baby is born."
-    }
+    "loading": "Loading article...",
+    "errorLoad": "Could not load the article. Please try again later.",
+    "notFound": "Article not found.",
+    "btnBack": "Back to Hub",
+    "btnCreate": "Create Article"
+  },
+  "adminKnowledgeForm": {
+    "imageOptional": "Article Image (Optional)",
+    "preview": "Preview",
+    "tagsLabel": "Tags (Keywords)",
+    "tagsPlaceholder": "e.g. Tips, Nutrition, Birth (comma separated)",
+    "sectionDe": "Deutsch (DE)",
+    "categoryDe": "Kategorie (DE)",
+    "categoryPlaceholderDe": "z.B. Ernährung",
+    "titleDe": "Titel (DE)",
+    "titlePlaceholderDe": "Titel des Artikels",
+    "summaryDe": "Zusammenfassung (DE) - Appears on the card",
+    "contentDe": "Vollständiger Artikel-Inhalt (DE)",
+    "sectionEn": "English (EN)",
+    "categoryEn": "Category (EN)",
+    "categoryPlaceholderEn": "e.g. Nutrition",
+    "titleEn": "Title (EN)",
+    "titlePlaceholderEn": "Article Title",
+    "summaryEn": "Summary (EN) - Appears on the card",
+    "contentEn": "Full Article Content (EN)"
+  },
+  "adminCreateKnowledge": {
+    "title": "Create New Knowledge Article",
+    "error": "Error creating the article."
+  },
+  "adminEditKnowledge": {
+    "title": "Edit Knowledge Article",
+    "errorLoad": "Could not load the article."
   }
 }

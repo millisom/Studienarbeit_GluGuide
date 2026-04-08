@@ -12,21 +12,15 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
   const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
-    category_de: '',
-    category_en: '',
-    tags: '',
-    title_de: '',
-    title_en: '',
-    summary_de: '',
-    summary_en: '',
-    content_de: '',
-    content_en: '',
+    category_de: '', category_en: '', tags: '',
+    title_de: '', title_en: '',
+    summary_de: '', summary_en: '',
+    content_de: '', content_en: '',
     image_url: ''
   });
   
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-
 
   const summaryModules = {
     toolbar: [
@@ -64,7 +58,6 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
     e.preventDefault();
     const submissionData = new FormData();
     
-    // Daten für den Versand vorbereiten
     Object.keys(formData).forEach(key => {
       if (key === 'tags') {
         const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(t => t !== "");
@@ -86,21 +79,21 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
       <div className={styles.inputGroup} style={{ marginBottom: '30px', textAlign: 'left' }}>
         <label className={styles.label}>
           <FontAwesomeIcon icon={faImage} style={{ marginRight: '8px' }} />
-          Artikel-Bild (Optional)
+          {t('adminKnowledgeForm.imageOptional')}
         </label>
         {previewUrl && (
           <div className={styles.imagePreview} style={{ margin: '10px 0' }}>
-            <img src={previewUrl} alt="Vorschau" className={styles.previewImage} style={{ maxWidth: '300px', borderRadius: '8px' }} />
+            <img src={previewUrl} alt={t('adminKnowledgeForm.preview')} className={styles.previewImage} style={{ maxWidth: '300px', borderRadius: '8px' }} />
           </div>
         )}
         <input type="file" onChange={handleFileChange} className={styles.fileInput} accept="image/*" />
       </div>
 
       <div className={styles.inputGroup}>
-        <label className={styles.label}>Tags (Schlagworte)</label>
+        <label className={styles.label}>{t('adminKnowledgeForm.tagsLabel')}</label>
         <input 
           name="tags" 
-          placeholder="z.B. Tipps, Ernährung, Geburt (mit Komma trennen)" 
+          placeholder={t('adminKnowledgeForm.tagsPlaceholder')} 
           value={formData.tags} 
           onChange={(e) => setFormData({...formData, tags: e.target.value})} 
           className={styles.input} 
@@ -108,31 +101,30 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginTop: '20px' }}>
-
         <div className={styles.languageSection}>
           <h3 className={styles.title} style={{ fontSize: '1.2rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '5px' }}>
-            Deutsch (DE)
+            {t('adminKnowledgeForm.sectionDe')}
           </h3>
           
-          <label className={styles.label}>Kategorie (DE)</label>
+          <label className={styles.label}>{t('adminKnowledgeForm.categoryDe')}</label>
           <input 
-            placeholder="z.B. Ernährung" 
+            placeholder={t('adminKnowledgeForm.categoryPlaceholderDe')} 
             value={formData.category_de} 
             onChange={(e) => setFormData({...formData, category_de: e.target.value})} 
             className={styles.input} 
             required 
           />
 
-          <label className={styles.label}>Titel (DE)</label>
+          <label className={styles.label}>{t('adminKnowledgeForm.titleDe')}</label>
           <input 
-            placeholder="Titel des Artikels" 
+            placeholder={t('adminKnowledgeForm.titlePlaceholderDe')} 
             value={formData.title_de} 
             onChange={(e) => setFormData({...formData, title_de: e.target.value})} 
             className={styles.input} 
             required 
           />
 
-          <label className={styles.label}>Zusammenfassung (DE) - Erscheint auf der Karte</label>
+          <label className={styles.label}>{t('adminKnowledgeForm.summaryDe')}</label>
           <ReactQuill 
             theme="snow" 
             modules={summaryModules}
@@ -140,7 +132,7 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
             onChange={(val) => handleQuillChange('summary_de', val)} 
           />
 
-          <label className={styles.label} style={{ marginTop: '20px', display: 'block' }}>Vollständiger Artikel-Inhalt (DE)</label>
+          <label className={styles.label} style={{ marginTop: '20px', display: 'block' }}>{t('adminKnowledgeForm.contentDe')}</label>
           <ReactQuill 
             theme="snow" 
             value={formData.content_de} 
@@ -150,28 +142,28 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
 
         <div className={styles.languageSection}>
           <h3 className={styles.title} style={{ fontSize: '1.2rem', borderBottom: '2px solid var(--color-primary)', paddingBottom: '5px' }}>
-            English (EN)
+            {t('adminKnowledgeForm.sectionEn')}
           </h3>
 
-          <label className={styles.label}>Category (EN)</label>
+          <label className={styles.label}>{t('adminKnowledgeForm.categoryEn')}</label>
           <input 
-            placeholder="e.g. Nutrition" 
+            placeholder={t('adminKnowledgeForm.categoryPlaceholderEn')} 
             value={formData.category_en} 
             onChange={(e) => setFormData({...formData, category_en: e.target.value})} 
             className={styles.input} 
             required 
           />
 
-          <label className={styles.label}>Title (EN)</label>
+          <label className={styles.label}>{t('adminKnowledgeForm.titleEn')}</label>
           <input 
-            placeholder="Article Title" 
+            placeholder={t('adminKnowledgeForm.titlePlaceholderEn')} 
             value={formData.title_en} 
             onChange={(e) => setFormData({...formData, title_en: e.target.value})} 
             className={styles.input} 
             required 
           />
 
-          <label className={styles.label}>Summary (EN) - Appears on the card</label>
+          <label className={styles.label}>{t('adminKnowledgeForm.summaryEn')}</label>
           <ReactQuill 
             theme="snow" 
             modules={summaryModules}
@@ -179,7 +171,7 @@ const AdminKnowledgeForm = ({ initialData, onSubmit, isLoading }) => {
             onChange={(val) => handleQuillChange('summary_en', val)} 
           />
 
-          <label className={styles.label} style={{ marginTop: '20px', display: 'block' }}>Full Article Content (EN)</label>
+          <label className={styles.label} style={{ marginTop: '20px', display: 'block' }}>{t('adminKnowledgeForm.contentEn')}</label>
           <ReactQuill 
             theme="snow" 
             value={formData.content_en} 

@@ -8,7 +8,6 @@ import styles from '../styles/ArticleView.module.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-
 const decodeHTML = (html) => {
   if (!html) return '';
   const txt = document.createElement("textarea");
@@ -33,7 +32,7 @@ const ArticleView = () => {
         setArticle(response.data);
       } catch (err) {
         console.error("Fehler beim Laden des Artikels:", err);
-        setError(t('knowledge.errorLoad') || 'Artikel konnte nicht geladen werden.');
+        setError(t('knowledge.errorLoad'));
       } finally {
         setLoading(false);
       }
@@ -48,7 +47,6 @@ const ArticleView = () => {
   const isDe = i18n.language === 'de';
   const title = isDe ? article.title_de : article.title_en;
   
-
   const rawContent = isDe ? article.content_de : article.content_en;
   const content = decodeHTML(rawContent);
   
@@ -57,7 +55,7 @@ const ArticleView = () => {
   return (
     <div className={styles.articleContainer}>
       <button className={styles.backButton} onClick={() => navigate('/knowledge')}>
-        <FontAwesomeIcon icon={faArrowLeft} /> {t('knowledge.btnBack') || 'Zurück'}
+        <FontAwesomeIcon icon={faArrowLeft} /> {t('knowledge.btnBack')}
       </button>
 
       <article className={styles.mainContent}>

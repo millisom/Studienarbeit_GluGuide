@@ -220,6 +220,7 @@
       "actions": "Aktionen"
     },
     "types": {
+      "null": "Keine Angabe",
       "fasting": "Nüchtern (Morgens)",
       "1h_post_meal": "1 Std. nach Mahlzeit",
       "2h_post_meal": "2 Std. nach Mahlzeit",
@@ -787,17 +788,38 @@
     "hubTitle": "Wissensdatenbank",
     "hubSubtitle": "Evidenzbasierte Artikel und Tipps zur Unterstützung bei Schwangerschaftsdiabetes.",
     "readMore": "Weiterlesen",
-    "hiddenSugars": {
-      "title": "Versteckte Zucker: Wo sie lauern",
-      "summary": "Zucker steckt nicht nur in Süßigkeiten. Lerne, ihn in alltäglichen Lebensmitteln zu erkennen."
-    },
-    "understandingSpikes": {
-      "title": "Ein hoher Wert ist kein Versagen",
-      "summary": "Ausreißer passieren. Erfahre, wie du ohne Panik damit umgehst."
-    },
-    "postpartumCare": {
-      "title": "Das Leben nach der Geburt: Nachsorge",
-      "summary": "Was dich in Bezug auf Blutzucker und Gesundheit erwartet, wenn dein Baby da ist."
-    }
+    "loading": "Lade Artikel...",
+    "errorLoad": "Der Artikel konnte nicht geladen werden. Bitte versuche es später noch einmal.",
+    "notFound": "Artikel nicht gefunden.",
+    "btnBack": "Zurück zur Übersicht",
+    "btnCreate": "Artikel erstellen"
+  },
+  "adminKnowledgeForm": {
+    "imageOptional": "Artikel-Bild (Optional)",
+    "preview": "Vorschau",
+    "tagsLabel": "Tags (Schlagworte)",
+    "tagsPlaceholder": "z.B. Tipps, Ernährung, Geburt (mit Komma trennen)",
+    "sectionDe": "Deutsch (DE)",
+    "categoryDe": "Kategorie (DE)",
+    "categoryPlaceholderDe": "z.B. Ernährung",
+    "titleDe": "Titel (DE)",
+    "titlePlaceholderDe": "Titel des Artikels",
+    "summaryDe": "Zusammenfassung (DE) - Erscheint auf der Karte",
+    "contentDe": "Vollständiger Artikel-Inhalt (DE)",
+    "sectionEn": "English (EN)",
+    "categoryEn": "Category (EN)",
+    "categoryPlaceholderEn": "e.g. Nutrition",
+    "titleEn": "Title (EN)",
+    "titlePlaceholderEn": "Article Title",
+    "summaryEn": "Summary (EN) - Appears on the card",
+    "contentEn": "Full Article Content (EN)"
+  },
+  "adminCreateKnowledge": {
+    "title": "Neuen Wissensartikel anlegen",
+    "error": "Fehler beim Erstellen des Artikels."
+  },
+  "adminEditKnowledge": {
+    "title": "Wissensartikel bearbeiten",
+    "errorLoad": "Artikel konnte nicht geladen werden."
   }
 }

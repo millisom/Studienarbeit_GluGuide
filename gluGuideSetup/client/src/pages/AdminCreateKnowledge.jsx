@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import AdminKnowledgeForm from '../components/AdminKnowledgeForm';
 import styles from '../styles/EditPost.module.css';
+import { useTranslation } from 'react-i18next';
 
 const AdminCreateKnowledge = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async (data) => {
@@ -15,7 +17,7 @@ const AdminCreateKnowledge = () => {
       navigate('/admin');
     } catch (err) {
       console.error(err);
-      alert("Fehler beim Erstellen.");
+      alert(t('adminCreateKnowledge.error'));
     } finally {
       setLoading(false);
     }
@@ -23,7 +25,7 @@ const AdminCreateKnowledge = () => {
 
   return (
     <div className={styles.editPostContainer}>
-      <h2 className={styles.title}>Neuen Wissensartikel anlegen</h2>
+      <h2 className={styles.title}>{t('adminCreateKnowledge.title')}</h2>
       <AdminKnowledgeForm onSubmit={handleCreate} isLoading={loading} />
     </div>
   );
