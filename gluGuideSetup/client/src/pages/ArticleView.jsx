@@ -8,6 +8,14 @@ import styles from '../styles/ArticleView.module.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+
+const decodeHTML = (html) => {
+  if (!html) return '';
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+};
+
 const ArticleView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -39,7 +47,11 @@ const ArticleView = () => {
 
   const isDe = i18n.language === 'de';
   const title = isDe ? article.title_de : article.title_en;
-  const content = isDe ? article.content_de : article.content_en;
+  
+
+  const rawContent = isDe ? article.content_de : article.content_en;
+  const content = decodeHTML(rawContent);
+  
   const category = isDe ? article.category_de : article.category_en;
 
   return (
@@ -67,7 +79,6 @@ const ArticleView = () => {
           </div>
         )}
 
-        {/* FIX: Hier wird der HTML-Inhalt korrekt gerendert */}
         <div 
           className={styles.textContent} 
           dangerouslySetInnerHTML={{ __html: content }} 
