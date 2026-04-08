@@ -821,5 +821,15 @@
   "adminEditKnowledge": {
     "title": "Edit Knowledge Article",
     "errorLoad": "Could not load the article."
+  },
+  "worryBox": {
+    "title": "Worry Box",
+    "privateLabel": "Private",
+    "description": "This is a safe space for your fears and anxieties. Use this to 'offload' your thoughts. This content is strictly private and will never be included in your medical exports.",
+    "placeholder": "What is on your mind today? (e.g., 'I'm worried about the next test', 'I feel overwhelmed by food')...",
+    "btnClear": "Clear Box",
+    "btnSave": "Save Thoughts",
+    "saving": "Saving...",
+    "confirmClear": "Are you sure you want to clear your Worry Box? These thoughts will be permanently deleted."
   }
 }

@@ -8,42 +8,48 @@ const WorryBox = ({ userId }) => {
   const [note, setNote] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-
   useEffect(() => {
     const fetchWorry = async () => {
       try {
-        const res = await axiosInstance.get('/user/worry-box');
+        const res = await axiosInstance.get('/worry-box'); 
         if (res.data?.content) setNote(res.data.content);
       } catch (err) {
         console.error("Could not load worry box content", err);
       }
     };
-    if (userId) fetchWorry();
-  }, [userId]);
+    fetchWorry(); 
+  }, []); 
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await axiosInstance.post('/user/worry-box', { content: note });
-      // Visual feedback could go here
+      await axiosInstance.post('/worry-box', { content: note });
+      console.log("Worry saved successfully!");
     } catch (err) {
       console.error("Save failed", err);
+      alert(t('worryBox.saveError') || "Error saving thoughts");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleClear = () => {
+  const handleClear = async () => {
     if (window.confirm(t('worryBox.confirmClear'))) {
+      const oldNote = note;
       setNote('');
-      axiosInstance.post('/user/worry-box', { content: '' });
+      try {
+        await axiosInstance.post('/worry-box', { content: '' });
+      } catch (err) {
+        setNote(oldNote); 
+        console.error("Clear failed", err);
+      }
     }
   };
 
   return (
     <div className={styles.worryContainer}>
       <div className={styles.header}>
-        <h3> {t('worryBox.title')}</h3>
+        <h3>{t('worryBox.title')}</h3>
         <span className={styles.privacyBadge}>{t('worryBox.privateLabel')}</span>
       </div>
       <p className={styles.description}>{t('worryBox.description')}</p>
