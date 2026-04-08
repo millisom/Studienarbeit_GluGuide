@@ -256,21 +256,21 @@ const adminController = {
     }
   },
 
-  createKnowledgeArticle: async (req, res) => {
-    const { category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de } = req.body;
-    try {
-      const result = await pool.query(
-        `INSERT INTO knowledge_articles 
-        (category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-        [category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de]
-      );
-      res.status(201).json(result.rows[0]);
-    } catch (err) {
-      console.error("Error creating article:", err);
-      res.status(500).json({ error: "Server error" });
-    }
-  },
+createKnowledgeArticle: async (req, res) => {
+  const { category, tags, title_en, summary_en, content_en, title_de, summary_de, content_de } = req.body;
+  const image_url = req.file ? req.file.filename : null;
+  try {
+    const result = await pool.query(
+      `INSERT INTO knowledge_articles 
+      (category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+      [category, image_url, JSON.parse(tags), title_en, summary_en, content_en, title_de, summary_de, content_de]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+},
 
   editKnowledgeArticle: async (req, res) => {
     const { id } = req.params;

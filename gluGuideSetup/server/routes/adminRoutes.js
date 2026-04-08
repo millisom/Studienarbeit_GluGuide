@@ -2,12 +2,41 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const adminMiddleware = require('../middleware/adminMiddleware');
+const multer = require('multer');
+const path = require('path');
+
+// Multer Konfiguration für den Upload von Bildern in der Wissensdatenbank
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Sicherstellen, dass dieser Ordner existiert
+  },
+  filename: (req, file, cb) => {
+    // Eindeutiger Dateiname: knowledge-Zeitstempel-Originalname
+    cb(null, 'knowledge-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // Knowledge Article management routes
-router.post('/admin/knowledge', adminMiddleware, adminController.createKnowledgeArticle);
+// Wir fügen upload.single('knowledgeImage') hinzu, um das Bild aus dem FormData zu verarbeiten
+router.post(
+  '/admin/knowledge', 
+  adminMiddleware, 
+  upload.single('knowledgeImage'), 
+  adminController.createKnowledgeArticle
+);
+
 router.get('/admin/knowledge', adminMiddleware, adminController.listKnowledgeArticles);
 router.get('/admin/knowledge/:id', adminMiddleware, adminController.getSingleKnowledgeArticle);
-router.put('/admin/knowledge/:id', adminMiddleware, adminController.editKnowledgeArticle);
+
+router.put(
+  '/admin/knowledge/:id', 
+  adminMiddleware, 
+  upload.single('knowledgeImage'), 
+  adminController.editKnowledgeArticle
+);
+
 router.delete('/admin/knowledge/:id', adminMiddleware, adminController.deleteKnowledgeArticle);
 
 // User management routes
