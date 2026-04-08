@@ -8,7 +8,7 @@
     justify-content: space-between;
     align-items: center;
     z-index: 10;
-    padding: 10px 20px; /* Adjust for visual spacing */
+    padding: 10px 20px; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -57,4 +57,51 @@
 
 .logoutButton:hover {
     background: var(--color-secondary);
+}
+
+
+.navButtonLink {
+    background: none;
+    border: none;
+    padding: 0;        
+    cursor: pointer;
+    display: inline-block; 
+    line-height: normal; 
+    
+
+    position: relative;
+    font-family: inherit;
+    font-size: 18px;     
+    font-weight: 500;   
+    color: #fff;        
+    margin-right: 40px;   
+}
+
+
+.navButtonLink::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: #fff;
+    transition: all 0.3s;
+}
+
+.navButtonLink:hover::before {
+    width: 100%;
+}
+
+.logoutButton {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: background 0.3s;
 }

@@ -26,19 +26,18 @@ const Profile = {
         }
     },
 
-    async getUserDp(username){
+    async getUserDp(username) {
         const query = 'SELECT profile_picture FROM users WHERE username = $1';
         const values = [username];
         try {
             const result = await pool.query(query, values);
             return result.rows[0];
-        }
-        catch (error) {
+        } catch (error) {
             throw new Error('Error fetching user dp: ' + error.message);
         }
     },
 
-    async setUserDp(username, dp){
+    async setUserDp(username, dp) {
         const query = 'UPDATE users SET profile_picture = $1 WHERE username = $2';
         const values = [dp, username];
         try {
@@ -52,7 +51,7 @@ const Profile = {
         }
     },
 
-    async deleteDp(username){
+    async deleteDp(username) {
         const query = 'UPDATE users SET profile_picture = NULL WHERE username = $1';
         const values = [username];
         try {
@@ -65,6 +64,7 @@ const Profile = {
             throw new Error('Error deleting user dp: ' + error.message);
         }
     },
+
     async getUserByName(username) {
         const query = 'SELECT id FROM users WHERE username = $1';
         const values = [username];
@@ -75,6 +75,7 @@ const Profile = {
             throw new Error('Error fetching user by username: ' + error.message);
         }
     },
+
     async getPostsForUser(userId) {
         const query = 'SELECT * FROM posts WHERE user_id = $1';
         const values = [userId];
@@ -86,6 +87,7 @@ const Profile = {
             throw new Error('Error fetching posts for user: ' + error.message);
         }
     },
+
     async updatePostForUser(userId, title, content) {
         const query = 'UPDATE posts SET title = $1, content = $2 WHERE user_id = $3';
         const values = [title, content, userId];
@@ -96,6 +98,7 @@ const Profile = {
             throw new Error('Error updating post for user: ' + error.message);
         }
     },
+
     async deleteAccount(username) {
         const query = 'DELETE FROM users WHERE username = $1';
         const values = [username];
@@ -104,6 +107,34 @@ const Profile = {
             return result.rowCount;
         } catch (error) {
             throw new Error('Error deleting user account: ' + error.message);
+        }
+    },
+
+
+    async getWorryBox(username) {
+        const query = 'SELECT content FROM worry_box WHERE username = $1';
+        const values = [username];
+        try {
+            const result = await pool.query(query, values);
+            return result.rows[0];
+        } catch (error) {
+            throw new Error('Error fetching worry box: ' + error.message);
+        }
+    },
+
+    async setWorryBox(username, content) {
+        const query = `
+            INSERT INTO worry_box (username, content) 
+            VALUES ($1, $2) 
+            ON CONFLICT (username) 
+            DO UPDATE SET content = EXCLUDED.content, updated_at = CURRENT_TIMESTAMP
+        `;
+        const values = [username, content];
+        try {
+            const result = await pool.query(query, values);
+            return result.rowCount;
+        } catch (error) {
+            throw new Error('Error setting worry box: ' + error.message);
         }
     }
 };

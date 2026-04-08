@@ -821,5 +821,15 @@
   "adminEditKnowledge": {
     "title": "Wissensartikel bearbeiten",
     "errorLoad": "Artikel konnte nicht geladen werden."
+  },
+  "worryBox": {
+    "title": "Kummerkasten",
+    "privateLabel": "Privat",
+    "description": "Dies ist ein sicherer Ort für deine Sorgen und Ängste. Nutze ihn, um deine Gedanken 'abzuladen'. Dieser Inhalt ist streng privat und wird niemals in deine medizinischen Berichte aufgenommen.",
+    "placeholder": "Was beschäftigt dich heute? (z.B. 'Ich habe Angst vor dem nächsten Test', 'Das Essen stresst mich gerade')...",
+    "btnClear": "Kasten leeren",
+    "btnSave": "Gedanken speichern",
+    "saving": "Speichert...",
+    "confirmClear": "Bist du sicher, dass du deinen Kummerkasten leeren möchtest? Diese Gedanken werden unwiderruflich gelöscht."
   }
 }
