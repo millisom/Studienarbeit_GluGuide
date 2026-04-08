@@ -117,6 +117,7 @@ const Navbar = () => {
                         <>
                             <Link to="/">{t('nav.logging')}</Link>
                             <Link to="/meals">{t('nav.meals')}</Link>
+                            <Link to="/knowledge">{t('nav.knowledgeHub')}</Link>
                             <Link to="/blogs">{t('nav.blogs')}</Link>
                             <Link to="/account">{t('nav.account')}</Link>
                             {isAdmin && <Link to="/admin">{t('nav.admin')}</Link>}

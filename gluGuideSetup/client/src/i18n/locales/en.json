@@ -25,7 +25,8 @@
     "logout": "Log Out",
     "login": "Log In / Register",
     "logout_success": "You have been logged out successfully.",
-    "logout_error": "Failed to log out. Please try again."
+    "logout_error": "Failed to log out. Please try again.",
+    "knowledgeHub": "Knowledge Base"
   },
   "alertForm": {
     "title": "Set Reminder Alerts",
@@ -208,6 +209,8 @@
     "btnShowLess": "Show Less",
     "btnFullHistory": "See Full History",
     "unknownMeal": "Unknown Meal",
+    "labelMood": "How are you feeling today? (Optional)",
+    "moodHint": "Remember, stress can impact your readings!",
     "table": {
       "date": "Date",
       "time": "Time",
@@ -217,6 +220,7 @@
       "actions": "Actions"
     },
     "types": {
+      "null":"Not specified",
       "fasting": "Fasting (Morning)",
       "1h_post_meal": "1 Hour Post-Meal",
       "2h_post_meal": "2 Hours Post-Meal",
@@ -766,5 +770,56 @@
       "title": "6. Changes to Terms",
       "content": "We reserve the right to modify these terms at any time. We will notify users of any significant changes via email or a prominent notice within the application. Continued use of the app after changes constitutes acceptance of the new terms."
     }
+  },
+  "empowerment": {
+    "dailyMotivationTitle": "Daily Motivation",
+    "snippet1": "You are doing a great job! A single high reading is just data, not a failure.",
+    "snippet2": "Remember to take a deep breath. Stress can affect your blood sugar.",
+    "snippet3": "Did you know? Taking the stairs instead of the elevator counts as activity!",
+    "snippet4": "Gestational diabetes doesn't mean you will have diabetes forever."
+  },
+  "moods": {
+    "relaxed": "Relaxed",
+    "normal": "Normal",
+    "stressed": "Stressed",
+    "anxious": "Anxious"
+  },
+  "knowledge": {
+    "hubTitle": "Knowledge Hub",
+    "hubSubtitle": "Evidence-based articles and tips to help you manage your gestational diabetes.",
+    "readMore": "Read More",
+    "loading": "Loading article...",
+    "errorLoad": "Could not load the article. Please try again later.",
+    "notFound": "Article not found.",
+    "btnBack": "Back to Hub",
+    "btnCreate": "Create Article"
+  },
+  "adminKnowledgeForm": {
+    "imageOptional": "Article Image (Optional)",
+    "preview": "Preview",
+    "tagsLabel": "Tags (Keywords)",
+    "tagsPlaceholder": "e.g. Tips, Nutrition, Birth (comma separated)",
+    "sectionDe": "Deutsch (DE)",
+    "categoryDe": "Kategorie (DE)",
+    "categoryPlaceholderDe": "z.B. Ernährung",
+    "titleDe": "Titel (DE)",
+    "titlePlaceholderDe": "Titel des Artikels",
+    "summaryDe": "Zusammenfassung (DE) - Appears on the card",
+    "contentDe": "Vollständiger Artikel-Inhalt (DE)",
+    "sectionEn": "English (EN)",
+    "categoryEn": "Category (EN)",
+    "categoryPlaceholderEn": "e.g. Nutrition",
+    "titleEn": "Title (EN)",
+    "titlePlaceholderEn": "Article Title",
+    "summaryEn": "Summary (EN) - Appears on the card",
+    "contentEn": "Full Article Content (EN)"
+  },
+  "adminCreateKnowledge": {
+    "title": "Create New Knowledge Article",
+    "error": "Error creating the article."
+  },
+  "adminEditKnowledge": {
+    "title": "Edit Knowledge Article",
+    "errorLoad": "Could not load the article."
   }
 }

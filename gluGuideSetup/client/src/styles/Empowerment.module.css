@@ -1,0 +1,49 @@
+.empowermentCard {
+  background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%);
+  border-left: 5px solid #26a69a; 
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.empowermentCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.empowermentTitle {
+  margin: 0 0 10px 0;
+  color: #00695c; 
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.empowermentText {
+  margin: 0;
+  color: #37474f;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+
+.empowermentButton {
+  margin-top: 15px;
+  background-color: #26a69a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.empowermentButton:hover {
+  background-color: #00897b;
+}
