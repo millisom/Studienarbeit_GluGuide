@@ -1,0 +1,67 @@
+.worryContainer {
+  background: #fff9db; /* Soft sticky-note yellow */
+  border-left: 5px solid #fcc419;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.privacyBadge {
+  background: #e9ecef;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 20px;
+  color: #495057;
+  font-weight: bold;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #fab005;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btnSave {
+  background: #f08c00;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnClear {
+  background: transparent;
+  color: #ae3e3e;
+  border: 1px solid #ae3e3e;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
