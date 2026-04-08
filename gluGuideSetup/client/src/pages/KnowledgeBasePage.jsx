@@ -80,9 +80,12 @@ const KnowledgeBasePage = () => {
                 <h4 className={styles.postTitle}>{currentTitle}</h4>
                 
                 <div className={styles.postDetails}>
-                  <p className={styles.postInfo} style={{ color: '#fff' }}>
-                    {currentSummary}
-                  </p>
+                  {/* FIX: dangerouslySetInnerHTML für die Zusammenfassung auf der Karte */}
+                  <div 
+                    className={styles.postInfo} 
+                    style={{ color: '#fff', textAlign: 'left' }}
+                    dangerouslySetInnerHTML={{ __html: currentSummary }}
+                  />
                 </div>
 
                 {article.tags && article.tags.length > 0 && (

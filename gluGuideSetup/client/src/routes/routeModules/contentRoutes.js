@@ -7,7 +7,7 @@ const CreatePost = lazy(() => import('../../pages/createPost.jsx'));
 const MyBlogs = lazy(() => import('../../pages/myBlogs.jsx'));
 const UserProfile = lazy(() => import('../../components/UserProfile.jsx'));
 const KnowledgeBasePage = lazy(() => import('../../pages/KnowledgeBasePage.jsx'));
-// const ArticleView = lazy(() => import('../../pages/ArticleView.jsx')); // We'll uncomment this when we build it!
+const ArticleView = lazy(() => import('../../pages/ArticleView.jsx'));
 
 
 export const contentRoutes = [
@@ -19,5 +19,5 @@ export const contentRoutes = [
   { path: "/viewPost/:id", element: ViewPost },
   { path: "/profile/:username", element: UserProfile },
   { path: "/knowledge", element: KnowledgeBasePage },
-  // { path: "/knowledge/:id", element: ArticleView }, // We'll uncomment this when we build it!
+  { path: "/knowledge/:id", element: ArticleView },
 ];

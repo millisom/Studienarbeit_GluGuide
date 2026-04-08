@@ -37,10 +37,10 @@ const ArticleView = () => {
   if (error) return <div className={styles.errorContainer}>{error}</div>;
   if (!article) return <div className={styles.centered}>{t('knowledge.notFound')}</div>;
 
-
   const isDe = i18n.language === 'de';
   const title = isDe ? article.title_de : article.title_en;
   const content = isDe ? article.content_de : article.content_en;
+  const category = isDe ? article.category_de : article.category_en;
 
   return (
     <div className={styles.articleContainer}>
@@ -53,7 +53,7 @@ const ArticleView = () => {
           <h1 className={styles.title}>{title}</h1>
           <div className={styles.meta}>
             <span className={styles.metaItem}>
-              <FontAwesomeIcon icon={faTag} /> {article.category}
+              <FontAwesomeIcon icon={faTag} /> {category}
             </span>
             <span className={styles.metaItem}>
               <FontAwesomeIcon icon={faClock} /> {new Date(article.created_at).toLocaleDateString(i18n.language)}
@@ -67,6 +67,7 @@ const ArticleView = () => {
           </div>
         )}
 
+        {/* FIX: Hier wird der HTML-Inhalt korrekt gerendert */}
         <div 
           className={styles.textContent} 
           dangerouslySetInnerHTML={{ __html: content }} 
