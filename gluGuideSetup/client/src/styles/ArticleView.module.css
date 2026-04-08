@@ -1,0 +1,68 @@
+.articleContainer {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.meta {
+  display: flex;
+  gap: 20px;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+.heroImage {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.heroImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.textContent {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #34495e;
+}
+
+/* Styling für HTML-Elemente aus dem Editor */
+.textContent h2 { margin-top: 30px; color: #2c3e50; }
+.textContent p { margin-bottom: 20px; }
+
+.tagBadge {
+  background: #f0f2f5;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #606770;
+  margin-right: 8px;
+}
+
+.centered { text-align: center; padding: 50px; }
