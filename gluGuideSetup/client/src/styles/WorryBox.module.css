@@ -1,10 +1,36 @@
 .worryContainer {
-  background: #fff9db; /* Soft sticky-note yellow */
-  border-left: 5px solid #fcc419;
+  background: #fff9db;
   padding: 20px;
   border-radius: 12px;
-  margin-top: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  max-width: 100%;
+}
+
+.editorWrapper {
+  margin-bottom: 15px;
+  background: white;
+  border-radius: 8px;
+}
+
+
+.quillEditor :global(.ql-container) {
+  font-family: inherit;
+  font-size: 1rem;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  height: auto; 
+}
+
+.quillEditor :global(.ql-editor) {
+  min-height: 150px; 
+  max-height: 70vh; 
+  overflow-y: auto; 
+  height: auto;
+}
+
+.quillEditor :global(.ql-toolbar) {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #fdfdfd;
 }
 
 .header {
@@ -23,25 +49,6 @@
   font-weight: bold;
 }
 
-.description {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 15px;
-  line-height: 1.4;
-}
-
-.textarea {
-  width: 100%;
-  min-height: 120px;
-  padding: 12px;
-  border: 1px solid #fab005;
-  border-radius: 8px;
-  resize: vertical;
-  font-family: inherit;
-  margin-bottom: 15px;
-  outline: none;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -52,16 +59,17 @@
   background: #f08c00;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .btnClear {
   background: transparent;
   color: #ae3e3e;
   border: 1px solid #ae3e3e;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
 }

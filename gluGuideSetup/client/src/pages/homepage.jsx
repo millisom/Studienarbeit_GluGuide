@@ -65,10 +65,8 @@ const Homepage = () => {
 
     if (isLoggedIn) {
         return (
-            <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px' }}>
-                <div style={{ marginBottom: '30px' }}>
-                    <DailyEmpowermentWidget />
-                </div>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+                <DailyEmpowermentWidget />
                 <GlucoseLog />
             </div>
         );

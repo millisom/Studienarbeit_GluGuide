@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import theme styles
 import axiosInstance from '../api/axiosConfig';
 import { useTranslation } from 'react-i18next';
 import styles from '../styles/WorryBox.module.css';
 
-const WorryBox = ({ userId }) => {
+const WorryBox = () => {
   const { t } = useTranslation();
   const [note, setNote] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  // Minimal toolbar for a "journal" feel
+  const modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['clean']
+    ],
+  };
 
   useEffect(() => {
     const fetchWorry = async () => {
@@ -27,7 +38,6 @@ const WorryBox = ({ userId }) => {
       console.log("Worry saved successfully!");
     } catch (err) {
       console.error("Save failed", err);
-      alert(t('worryBox.saveError') || "Error saving thoughts");
     } finally {
       setIsSaving(false);
     }
@@ -35,12 +45,10 @@ const WorryBox = ({ userId }) => {
 
   const handleClear = async () => {
     if (window.confirm(t('worryBox.confirmClear'))) {
-      const oldNote = note;
       setNote('');
       try {
         await axiosInstance.post('/worry-box', { content: '' });
       } catch (err) {
-        setNote(oldNote); 
         console.error("Clear failed", err);
       }
     }
@@ -54,12 +62,17 @@ const WorryBox = ({ userId }) => {
       </div>
       <p className={styles.description}>{t('worryBox.description')}</p>
       
-      <textarea
-        className={styles.textarea}
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-        placeholder={t('worryBox.placeholder')}
-      />
+      {/* Quill Editor replaces the textarea */}
+      <div className={styles.editorWrapper}>
+        <ReactQuill
+          theme="snow"
+          value={note}
+          onChange={setNote}
+          modules={modules}
+          placeholder={t('worryBox.placeholder')}
+          className={styles.quillEditor}
+        />
+      </div>
       
       <div className={styles.actions}>
         <button onClick={handleClear} className={styles.btnClear}>

@@ -121,18 +121,10 @@ const Navbar = () => {
                             <Link to="/blogs">{t('nav.blogs')}</Link>
 
                             <button 
-                                className={styles.worryTrigger} 
+                                className={styles.navButtonLink} 
                                 onClick={() => setWorryModalOpen(true)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'inherit',
-                                    font: 'inherit',
-                                    cursor: 'pointer',
-                                    padding: '0 10px'
-                                }}
                             >
-                            {t('worryBox.title')}
+                                {t('worryBox.title')}
                             </button>
 
                             <Link to="/account">{t('nav.account')}</Link>
@@ -154,7 +146,6 @@ const Navbar = () => {
                 </nav>
             </header>
 
-            {/* Render the Modal component */}
             <WorryModal 
                 isOpen={isWorryModalOpen} 
                 onClose={() => setWorryModalOpen(false)} 
