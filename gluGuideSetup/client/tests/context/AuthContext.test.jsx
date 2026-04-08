@@ -3,6 +3,13 @@ import { AuthProvider, useAuth } from '../../src/context/AuthContext';
 import axios from '../../src/api/axiosConfig';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en' }
+  })
+}));
+
 vi.mock('../../src/api/axiosConfig');
 
 describe('AuthContext Integration', () => {
@@ -30,7 +37,6 @@ describe('AuthContext Integration', () => {
   });
 
   it('führt Login erfolgreich durch', async () => {
-
     axios.post.mockResolvedValue({ data: { Login: true } });
     axios.get.mockResolvedValue({ 
       data: { valid: true, username: 'NewUser', is_admin: false } 

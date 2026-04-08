@@ -3,6 +3,12 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TagFilter from '../../src/components/TagFilter';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en' }
+  })
+}));
 
 vi.mock('react-select', () => ({
   default: ({ onChange, value = [], options = [], placeholder, isMulti, classNamePrefix }) => (
@@ -36,7 +42,6 @@ vi.mock('react-select', () => ({
   )
 }));
 
-
 vi.mock('@fortawesome/react-fontawesome', () => ({
   FontAwesomeIcon: ({ icon, size }) => {
     const name = typeof icon === 'object' && icon.iconName ? icon.iconName : 'unknown';
@@ -47,7 +52,6 @@ vi.mock('@fortawesome/react-fontawesome', () => ({
 vi.mock('@fortawesome/free-solid-svg-icons', () => ({
   faTimes: { iconName: 'times' }
 }));
-
 
 vi.mock('../../src/styles/ViewBlogEntries.module.css', () => ({
   default: {
@@ -82,19 +86,19 @@ describe('TagFilter Component', () => {
 
   it('renders correctly with selected tags', () => {
     render(<TagFilter {...mockProps} />);
-    expect(screen.getByText('Filter by Tags:')).toBeInTheDocument();
+    expect(screen.getByText('tagFilter.title')).toBeInTheDocument();
     expect(screen.getAllByText('react').length).toBeGreaterThan(0);
-    expect(screen.getByText('Clear All Tags')).toBeInTheDocument();
-    expect(screen.getByText('Active Filters:')).toBeInTheDocument();
+    expect(screen.getByText('tagFilter.clearAll')).toBeInTheDocument();
+    expect(screen.getByText('tagFilter.activeFilters')).toBeInTheDocument();
     expect(screen.getByTestId('mock-select')).toBeInTheDocument();
     expect(screen.getByTestId('current-value').textContent).toContain('react');
-    expect(screen.getByTestId('select-input')).toHaveAttribute('placeholder', 'Select tags...');
+    expect(screen.getByTestId('select-input')).toHaveAttribute('placeholder', 'tagFilter.placeholder');
     expect(screen.getByTestId('select-input')).toHaveAttribute('aria-multiselectable', 'true');
   });
 
   it('calls clearAllTags when clear button is clicked', () => {
     render(<TagFilter {...mockProps} />);
-    fireEvent.click(screen.getByText('Clear All Tags'));
+    fireEvent.click(screen.getByText('tagFilter.clearAll'));
     expect(mockProps.clearAllTags).toHaveBeenCalledTimes(1);
   });
 
@@ -113,8 +117,8 @@ describe('TagFilter Component', () => {
 
   it('does not render selected section if no tags are selected', () => {
     render(<TagFilter {...mockProps} selectedTags={[]} selectedTagValues={[]} />);
-    expect(screen.queryByText('Active Filters:')).not.toBeInTheDocument();
-    expect(screen.queryByText('Clear All Tags')).not.toBeInTheDocument();
+    expect(screen.queryByText('tagFilter.activeFilters')).not.toBeInTheDocument();
+    expect(screen.queryByText('tagFilter.clearAll')).not.toBeInTheDocument();
   });
 
   it('renders multiple selected tags and remove buttons', () => {
@@ -139,7 +143,7 @@ describe('TagFilter Component', () => {
 
   it('renders without crashing when tagOptions is empty', () => {
     render(<TagFilter {...mockProps} tagOptions={[]} selectedTags={[]} selectedTagValues={[]} />);
-    expect(screen.getByText('Filter by Tags:')).toBeInTheDocument();
+    expect(screen.getByText('tagFilter.title')).toBeInTheDocument();
     expect(screen.getByTestId('mock-select')).toBeInTheDocument();
   });
 

@@ -3,6 +3,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from '../../src/api/axiosConfig';
 import { useBlogPosts } from '../../src/hooks/useBlogPosts';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en' }
+  })
+}));
+
 vi.mock('../../src/api/axiosConfig');
 
 describe('useBlogPosts Custom Hook', () => {

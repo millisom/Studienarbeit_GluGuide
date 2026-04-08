@@ -1,9 +1,16 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import PostTags from '../../src/components/PostTags';
 
-// Mocking der CSS Modules
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en' }
+  })
+}));
+
 vi.mock('../../src/styles/ViewBlogEntries.module.css', () => ({
   default: {
     tagsContainer: 'tagsContainer',
@@ -32,7 +39,6 @@ describe('PostTags Component', () => {
     
     fireEvent.click(screen.getByText('javascript'));
     
-    // Erwartet das Hinzufügen zum bestehenden Array
     expect(setSelectedTags).toHaveBeenCalledWith(['react', 'javascript']);
   });
 
@@ -42,7 +48,6 @@ describe('PostTags Component', () => {
     
     fireEvent.click(screen.getByText('react'));
     
-    // NEU: Erwartet das Entfernen (nur 'node' bleibt übrig)
     expect(setSelectedTags).toHaveBeenCalledWith(['node']);
   });
 
@@ -53,7 +58,6 @@ describe('PostTags Component', () => {
     const tagButton = screen.getByText('javascript');
     const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
     
-    // Spion auf stopPropagation setzen
     const stopSpy = vi.spyOn(clickEvent, 'stopPropagation');
     
     fireEvent(tagButton, clickEvent);
@@ -65,15 +69,14 @@ describe('PostTags Component', () => {
     const { container } = render(<PostTags tags={defaultTags} selectedTags={['react']} setSelectedTags={vi.fn()} />);
     const buttons = container.querySelectorAll('button');
     
-    expect(buttons[0]).toHaveClass('selectedTagInCard'); // react
-    expect(buttons[1]).not.toHaveClass('selectedTagInCard'); // javascript
-    expect(buttons[2]).not.toHaveClass('selectedTagInCard'); // node
+    expect(buttons[0]).toHaveClass('selectedTagInCard');
+    expect(buttons[1]).not.toHaveClass('selectedTagInCard');
+    expect(buttons[2]).not.toHaveClass('selectedTagInCard');
   });
 
   it('renders nothing if tags array is empty', () => {
     const { container } = render(<PostTags tags={[]} selectedTags={[]} setSelectedTags={vi.fn()} />);
     
-    // Da die Komponente jetzt 'null' zurückgibt, darf der Container nicht existieren
     expect(container.firstChild).toBeNull();
   });
 

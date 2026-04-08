@@ -1,7 +1,17 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import App from '../src/App';
+
+// i18n Mock hinzufügen (inkl. initReactI18next)
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en', changeLanguage: vi.fn() }
+  }),
+  Trans: ({ children }) => children,
+  initReactI18next: { type: '3rdParty', init: vi.fn() }
+}));
 
 // Mock the AppRoutes component
 vi.mock('../src/routes', () => ({
@@ -18,12 +28,17 @@ vi.mock('../src/components/layout/AppLayout', () => ({
 }));
 
 describe('App Component', () => {
-  it('renders AppLayout and AppRoutes', () => {
-    render(<App />);
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders AppLayout and AppRoutes', async () => {
+    await act(async () => {
+      render(<App />);
+    });
     
-    // Check that the layout and routes are rendered
     expect(screen.getByTestId('app-layout')).toBeInTheDocument();
     expect(screen.getByTestId('app-routes')).toBeInTheDocument();
     expect(screen.getByText('Mocked Routes')).toBeInTheDocument();
   });
-}); 
+});

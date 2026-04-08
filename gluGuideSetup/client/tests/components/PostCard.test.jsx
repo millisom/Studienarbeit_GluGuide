@@ -5,6 +5,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { AuthContext } from '../../src/context/AuthContext';
 import PostCard from '../../src/components/PostCard';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en' }
+  })
+}));
 
 vi.mock('../../src/components/PostTags', () => ({
   default: ({ tags }) => <div data-testid="post-tags">{tags.join(',')}</div>
@@ -47,7 +53,7 @@ describe('PostCard Component', () => {
 
   it('renders admin actions when isAdmin is true', () => {
     renderWithProviders(<PostCard post={mockPost} handleViewClick={vi.fn()} setSelectedTags={vi.fn()} />, { isAdmin: true, user: {} });
-    expect(screen.getByText('Edit')).toBeInTheDocument();
-    expect(screen.getByText('Delete')).toBeInTheDocument();
+    expect(screen.getByText(/postCard\.btnEdit/i)).toBeInTheDocument();
+    expect(screen.getByText(/postCard\.btnDelete/i)).toBeInTheDocument();
   });
 });
