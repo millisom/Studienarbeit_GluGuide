@@ -246,6 +246,75 @@ const adminController = {
     }
   },
 
+  listKnowledgeArticles: async (req, res) => {
+    try {
+      const result = await pool.query("SELECT * FROM knowledge_articles ORDER BY created_at DESC");
+      res.status(200).json(result.rows);
+    } catch (err) {
+      console.error("Error listing articles:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+
+  createKnowledgeArticle: async (req, res) => {
+    const { category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de } = req.body;
+    try {
+      const result = await pool.query(
+        `INSERT INTO knowledge_articles 
+        (category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+        [category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de]
+      );
+      res.status(201).json(result.rows[0]);
+    } catch (err) {
+      console.error("Error creating article:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+
+  editKnowledgeArticle: async (req, res) => {
+    const { id } = req.params;
+    const { category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de } = req.body;
+    try {
+      const result = await pool.query(
+        `UPDATE knowledge_articles SET 
+          category=$1, image_url=$2, tags=$3, 
+          title_en=$4, summary_en=$5, content_en=$6, 
+          title_de=$7, summary_de=$8, content_de=$9, 
+          updated_at=NOW()
+        WHERE id=$10 RETURNING *`,
+        [category, image_url, tags, title_en, summary_en, content_en, title_de, summary_de, content_de, id]
+      );
+      if (result.rows.length === 0) return res.status(404).json({ error: "Article not found" });
+      res.json(result.rows[0]);
+    } catch (err) {
+      console.error("Error editing article:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+
+  deleteKnowledgeArticle: async (req, res) => {
+    const { id } = req.params;
+    try {
+      await pool.query("DELETE FROM knowledge_articles WHERE id=$1", [id]);
+      res.status(200).json({ message: "Article deleted successfully" });
+    } catch (err) {
+      console.error("Error deleting article:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+
+  getSingleKnowledgeArticle: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const result = await pool.query("SELECT * FROM knowledge_articles WHERE id=$1", [id]);
+      if (result.rows.length === 0) return res.status(404).json({ error: "Article not found" });
+      res.json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+
   deleteComment: async (req, res) => {
     const commentId = req.params.id;
     try {

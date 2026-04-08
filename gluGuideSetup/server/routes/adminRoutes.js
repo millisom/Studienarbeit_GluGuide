@@ -3,6 +3,13 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
+// Knowledge Article management routes
+router.post('/admin/knowledge', adminMiddleware, adminController.createKnowledgeArticle);
+router.get('/admin/knowledge', adminMiddleware, adminController.listKnowledgeArticles);
+router.get('/admin/knowledge/:id', adminMiddleware, adminController.getSingleKnowledgeArticle);
+router.put('/admin/knowledge/:id', adminMiddleware, adminController.editKnowledgeArticle);
+router.delete('/admin/knowledge/:id', adminMiddleware, adminController.deleteKnowledgeArticle);
+
 // User management routes
 router.post('/admin/createUser', adminMiddleware, adminController.createUser);
 router.get('/admin/users', adminMiddleware, adminController.listUsers);
