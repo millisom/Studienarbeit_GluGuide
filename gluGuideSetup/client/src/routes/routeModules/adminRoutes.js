@@ -1,15 +1,17 @@
 import { lazy } from 'react';
 
-// Lazy load admin-related components
-const AdminDashboard = lazy(() => import('../../pages/AdminDashboard'));
-const AdminCreateUser = lazy(() => import('../../pages/AdminCreateUser'));
-const AdminEditUser = lazy(() => import('../../pages/AdminEditUser'));
-const AdminEditPost = lazy(() => import('../../pages/AdminEditPost'));
+const AdminDashboard = lazy(() => import('../../pages/AdminDashboard.jsx'));
+const AdminCreateUser = lazy(() => import('../../pages/AdminCreateUser.jsx'));
+const AdminEditUser = lazy(() => import('../../pages/AdminEditUser.jsx'));
+const AdminEditPost = lazy(() => import('../../pages/AdminEditPost.jsx'));
+const AdminCreateKnowledge = lazy(() => import('../../pages/AdminCreateKnowledge.jsx'));
+const AdminEditKnowledge = lazy(() => import('../../pages/AdminEditKnowledge.jsx'));
 
-// Export routes as objects
 export const adminRoutes = [
   { path: "/admin", element: AdminDashboard },
   { path: "/admin/createUser", element: AdminCreateUser },
   { path: "/admin/editUser/:id", element: AdminEditUser },
   { path: "/admin/editPost/:id", element: AdminEditPost },
-]; 
+  { path: "/admin/createKnowledge", element: AdminCreateKnowledge },
+  { path: "/admin/editKnowledge/:id", element: AdminEditKnowledge },
+];

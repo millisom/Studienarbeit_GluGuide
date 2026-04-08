@@ -12,8 +12,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../styles/Admin.module.css';
 import { useTranslation } from 'react-i18next';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+// WICHTIG: Importiere deine axiosInstance
+import axiosInstance from '../api/axiosConfig'; 
 
 const AdminDashboard = () => {
   const { t, i18n } = useTranslation();
@@ -24,61 +24,64 @@ const AdminDashboard = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const fetchUsers = () => {
-    return fetch(`${API_BASE_URL}/admin/users`, { credentials: 'include' })
-      .then((res) => {
-        if (!res.ok) throw new Error(t('adminDashboard.errorFetch'));
-        return res.json();
-      })
-      .then((data) => setUsers(data));
-  };
-
-
-  const fetchArticles = () => {
-    return fetch(`${API_BASE_URL}/admin/knowledge`, { credentials: 'include' })
-      .then((res) => {
-        if (!res.ok) throw new Error(t('adminDashboard.errorFetch'));
-        return res.json();
-      })
-      .then((data) => setArticles(data));
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([fetchUsers(), fetchArticles()])
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [t]);
-
-  const handleDeleteUser = (id) => {
-    if (window.confirm(t('adminDashboard.confirmDelete'))) {
-      fetch(`${API_BASE_URL}/admin/user/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-        .then(async (res) => {
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || t('adminDashboard.errorDelete'));
-          setMessage(data.message);
-          fetchUsers();
-        })
-        .catch((err) => setMessage(err.message));
+  // Umstellung auf axiosInstance für die Sitzungssicherheit
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get('/admin/users');
+      setUsers(response.data);
+    } catch (err) {
+      console.error("Fehler beim Laden der Benutzer:", err);
+      throw new Error(t('adminDashboard.errorFetch'));
     }
   };
 
+  const fetchArticles = async () => {
+    try {
+      const response = await axiosInstance.get('/admin/knowledge');
+      setArticles(response.data);
+    } catch (err) {
+      console.error("Fehler beim Laden der Artikel:", err);
+      throw new Error(t('adminDashboard.errorFetch'));
+    }
+  };
 
-  const handleDeleteArticle = (id) => {
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        // Lädt beide Ressourcen gleichzeitig mit den korrekten Anmeldedaten
+        await Promise.all([fetchUsers(), fetchArticles()]);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [t]);
+
+  const handleDeleteUser = async (id) => {
+    if (window.confirm(t('adminDashboard.confirmDelete'))) {
+      try {
+        const response = await axiosInstance.delete(`/admin/user/${id}`);
+        setMessage(response.data.message);
+        fetchUsers();
+      } catch (err) {
+        setMessage(err.response?.data?.error || t('adminDashboard.errorDelete'));
+      }
+    }
+  };
+
+  const handleDeleteArticle = async (id) => {
     if (window.confirm(t('viewBlogEntries.confirmDelete'))) {
-      fetch(`${API_BASE_URL}/admin/knowledge/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-        .then(async (res) => {
-          if (!res.ok) throw new Error(t('viewBlogEntries.deleteError'));
-          setMessage(t('viewBlogEntries.deleteSuccess') || "Article Deleted");
-          fetchArticles();
-        })
-        .catch((err) => setMessage(err.message));
+      try {
+        const response = await axiosInstance.delete(`/admin/knowledge/${id}`);
+        setMessage(t('viewBlogEntries.deleteSuccess') || "Artikel gelöscht");
+        fetchArticles();
+      } catch (err) {
+        setMessage(err.response?.data?.error || t('viewBlogEntries.deleteError'));
+      }
     }
   };
 
@@ -97,16 +100,14 @@ const AdminDashboard = () => {
                 <FontAwesomeIcon icon={faUserPlus} className={styles.iconSpacing} />
                 {t('adminDashboard.btnCreateUser')}
               </button>
-              {/* New Create Article Button */}
               <button className={styles.squareButton} onClick={() => navigate('/admin/createKnowledge')}>
                 <FontAwesomeIcon icon={faPlus} className={styles.iconSpacing} />
-                {t('knowledge.btnCreate') || "Create Article"}
+                {t('knowledge.btnCreate') || "Artikel erstellen"}
               </button>
             </div>
           </div>
         </section>
       </div>
-
 
       <section className={styles.card}>
         <div className={styles.cardBody}>
@@ -149,7 +150,6 @@ const AdminDashboard = () => {
         </div>
       </section>
 
-
       <section className={styles.card} style={{ marginTop: '30px' }}>
         <div className={styles.cardBody}>
           <h2 className={styles.title}>
@@ -161,7 +161,7 @@ const AdminDashboard = () => {
               <tr>
                 <th>{t('adminDashboard.tableId')}</th>
                 <th>{t('adminEditPost.labelPostTitle')}</th>
-                <th>Category</th>
+                <th>Kategorie</th>
                 <th>{t('adminDashboard.tableActions')}</th>
               </tr>
             </thead>
