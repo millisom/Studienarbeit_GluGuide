@@ -25,7 +25,8 @@
     "logout": "Abmelden",
     "login": "Anmelden / Registrieren",
     "logout_success": "Erfolgreich abgemeldet. Bis bald!",
-    "logout_error": "Abmeldung fehlgeschlagen. Bitte versuche es erneut."
+    "logout_error": "Abmeldung fehlgeschlagen. Bitte versuche es erneut.",
+    "knowledgeHub": "Wissensdatenbank"
   },
   "alertForm": {
     "title": "Erinnerungen einstellen",
@@ -208,6 +209,8 @@
     "btnShowLess": "Weniger anzeigen",
     "btnFullHistory": "Vollständigen Verlauf anzeigen",
     "unknownMeal": "Unbekannte Mahlzeit",
+    "labelMood": "Wie fühlst du dich heute? (Optional)",
+    "moodHint": "Denk daran, Stress kann deine Werte beeinflussen!",
     "table": {
       "date": "Datum",
       "time": "Zeit",
@@ -765,6 +768,36 @@
     "s6": {
       "title": "6. Änderungen der Bedingungen",
       "content": "Wir behalten uns das Recht vor, diese Bedingungen jederzeit zu ändern. Wir werden die Benutzer:innen über wesentliche Änderungen per E-Mail oder durch einen auffälligen Hinweis in der Anwendung informieren."
+    }
+  },
+  "empowerment": {
+    "dailyMotivationTitle": "Tägliche Motivation",
+    "snippet1": "Du machst das großartig! Ein einzelner hoher Wert ist nur ein Datenpunkt, kein Versagen.",
+    "snippet2": "Denk daran, tief durchzuatmen. Stress kann deinen Blutzucker beeinflussen.",
+    "snippet3": "Wusstest du schon? Die Treppe anstelle des Aufzugs zu nehmen, zählt als Aktivität!",
+    "snippet4": "Schwangerschaftsdiabetes bedeutet nicht, dass du für immer Diabetes haben wirst."
+  },
+  "moods": {
+    "relaxed": "Entspannt",
+    "normal": "Normal",
+    "stressed": "Gestresst",
+    "anxious": "Ängstlich"
+  },
+  "knowledge": {
+    "hubTitle": "Wissensdatenbank",
+    "hubSubtitle": "Evidenzbasierte Artikel und Tipps zur Unterstützung bei Schwangerschaftsdiabetes.",
+    "readMore": "Weiterlesen",
+    "hiddenSugars": {
+      "title": "Versteckte Zucker: Wo sie lauern",
+      "summary": "Zucker steckt nicht nur in Süßigkeiten. Lerne, ihn in alltäglichen Lebensmitteln zu erkennen."
+    },
+    "understandingSpikes": {
+      "title": "Ein hoher Wert ist kein Versagen",
+      "summary": "Ausreißer passieren. Erfahre, wie du ohne Panik damit umgehst."
+    },
+    "postpartumCare": {
+      "title": "Das Leben nach der Geburt: Nachsorge",
+      "summary": "Was dich in Bezug auf Blutzucker und Gesundheit erwartet, wenn dein Baby da ist."
     }
   }
 }

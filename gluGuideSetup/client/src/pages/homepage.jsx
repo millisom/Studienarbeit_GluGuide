@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import GlucoseLog from "../components/GlucoseLog";
 import PostCard from '../components/PostCard';
+import DailyEmpowermentWidget from '../components/DailyEmpowermentWidget';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosConfig';
 import styles from '../styles/Homepage.module.css';
@@ -64,9 +65,10 @@ const Homepage = () => {
 
     if (isLoggedIn) {
         return (
-            <>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+                <DailyEmpowermentWidget />
                 <GlucoseLog />
-            </>
+            </div>
         );
     } else {
         return (

@@ -25,7 +25,8 @@
     "logout": "Log Out",
     "login": "Log In / Register",
     "logout_success": "You have been logged out successfully.",
-    "logout_error": "Failed to log out. Please try again."
+    "logout_error": "Failed to log out. Please try again.",
+    "knowledgeHub": "Knowledge Base"
   },
   "alertForm": {
     "title": "Set Reminder Alerts",
@@ -208,6 +209,8 @@
     "btnShowLess": "Show Less",
     "btnFullHistory": "See Full History",
     "unknownMeal": "Unknown Meal",
+    "labelMood": "How are you feeling today? (Optional)",
+    "moodHint": "Remember, stress can impact your readings!",
     "table": {
       "date": "Date",
       "time": "Time",
@@ -765,6 +768,36 @@
     "s6": {
       "title": "6. Changes to Terms",
       "content": "We reserve the right to modify these terms at any time. We will notify users of any significant changes via email or a prominent notice within the application. Continued use of the app after changes constitutes acceptance of the new terms."
+    }
+  },
+  "empowerment": {
+    "dailyMotivationTitle": "Daily Motivation",
+    "snippet1": "You are doing a great job! A single high reading is just data, not a failure.",
+    "snippet2": "Remember to take a deep breath. Stress can affect your blood sugar.",
+    "snippet3": "Did you know? Taking the stairs instead of the elevator counts as activity!",
+    "snippet4": "Gestational diabetes doesn't mean you will have diabetes forever."
+  },
+  "moods": {
+    "relaxed": "Relaxed",
+    "normal": "Normal",
+    "stressed": "Stressed",
+    "anxious": "Anxious"
+  },
+  "knowledge": {
+    "hubTitle": "Knowledge Hub",
+    "hubSubtitle": "Evidence-based articles and tips to help you manage your gestational diabetes.",
+    "readMore": "Read More",
+    "hiddenSugars": {
+      "title": "Hidden Sugars: Where They Lurk",
+      "summary": "Sugar isn't just in sweets. Learn how to spot it in everyday foods."
+    },
+    "understandingSpikes": {
+      "title": "One High Value is Not a Failure",
+      "summary": "Spikes happen. Learn how to handle them without panic."
+    },
+    "postpartumCare": {
+      "title": "Life After Birth: Postpartum Care",
+      "summary": "What to expect with your blood sugar and health after your baby is born."
     }
   }
 }
