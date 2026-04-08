@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosConfig'; 
 import styles from '../styles/NavBar.module.css'; 
 import { useTranslation } from 'react-i18next'; 
+import WorryModal from './WorryModal';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,12 +15,11 @@ const Navbar = () => {
     const { t, i18n } = useTranslation(); 
 
     const [pollingInterval, setPollingInterval] = useState(300000); 
-
+    const [isWorryModalOpen, setWorryModalOpen] = useState(false);
 
     const changeLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
-
 
     const currentLanguage = i18n.language?.split('-')[0];
 
@@ -119,6 +119,22 @@ const Navbar = () => {
                             <Link to="/meals">{t('nav.meals')}</Link>
                             <Link to="/knowledge">{t('nav.knowledgeHub')}</Link>
                             <Link to="/blogs">{t('nav.blogs')}</Link>
+
+                            <button 
+                                className={styles.worryTrigger} 
+                                onClick={() => setWorryModalOpen(true)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'inherit',
+                                    font: 'inherit',
+                                    cursor: 'pointer',
+                                    padding: '0 10px'
+                                }}
+                            >
+                            {t('worryBox.title')}
+                            </button>
+
                             <Link to="/account">{t('nav.account')}</Link>
                             {isAdmin && <Link to="/admin">{t('nav.admin')}</Link>}
                             <Link to="/about">{t('nav.about')}</Link>
@@ -137,6 +153,12 @@ const Navbar = () => {
                     )}
                 </nav>
             </header>
+
+            {/* Render the Modal component */}
+            <WorryModal 
+                isOpen={isWorryModalOpen} 
+                onClose={() => setWorryModalOpen(false)} 
+            />
         </>
     );
 };
