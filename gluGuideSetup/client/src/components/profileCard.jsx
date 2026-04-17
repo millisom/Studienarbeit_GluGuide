@@ -1,176 +1,265 @@
 import { useEffect, useState } from 'react';
-import { getRecipeById, deleteRecipe } from '../api/recipeApi';
-import styles from '../styles/RecipeCard.module.css';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useTranslation } from 'react-i18next';
+import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBook,
-  faPepperHot,
-  faListCheck,
-  faBalanceScale,
-  faTrashAlt,
-  faPenToSquare
+import { 
+  faEdit, faTrashAlt, faSave, faTimes, faSignOutAlt, 
+  faBlog, faUtensils, faBookOpen, faPlusCircle, faFileAlt,
+  faFileDownload 
 } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../api/axiosConfig';
+import styles from '../styles/ProfileCard.module.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useAuth } from '../context/AuthContext';
+import AlertForm from './AlertForm';
+import AlertsTable from './AlertsTable';
+import ExportReportModal from './ExportReportModal';
+import { useTranslation } from 'react-i18next';
 
-const RecipeCard = ({ recipeId }) => {
+const ProfileCard = () => {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { t } = useTranslation();
 
-  const [recipe, setRecipe] = useState(null);
+  const [bio, setBio] = useState('');
+  const [currentBio, setCurrentBio] = useState('');
+  const [dpUrl, setDpUrl] = useState('');
+
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState(null);
+
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [isEditingDp, setIsEditingDp] = useState(false);
+  const [selectedDpFile, setSelectedDpFile] = useState(null);
+  const [previewDp, setPreviewDp] = useState(null);
+
+  const [alertRefreshTrigger, setAlertRefreshTrigger] = useState(0);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchRecipe = async () => {
+    if (!user) return;
+
+    const fetchProfileData = async () => {
       setLoading(true);
-      setError('');
       try {
-        const data = await getRecipeById(recipeId);
-        setRecipe(data);
+        const [bioRes, dpRes] = await Promise.all([
+          axiosInstance.get('/bio'),
+          axiosInstance.get('/dp').catch(err => {
+            if (err.response && err.response.status === 404) {
+              return { data: { url: '' } };
+            }
+            throw err;
+          })
+        ]);
+
+        setBio(bioRes.data.profile_bio || '');
+        setCurrentBio(bioRes.data.profile_bio || '');
+        setDpUrl(dpRes.data.url || '');
       } catch (err) {
-        console.error('Failed to fetch recipe:', err);
-        setRecipe(null);
-        if (err.response?.status === 403) {
-          setError(t('recipeCard.errorForbidden'));
-        } else {
-          setError(t('recipeCard.errorLoad'));
-        }
+        console.error('Error fetching profile data:', err);
+        setError(t('profileCard.fetchError'));
+        setBio(t('profileCard.bioLoadError'));
       } finally {
         setLoading(false);
       }
     };
 
-    if (recipeId) {
-      fetchRecipe();
-    }
-  }, [recipeId, t]);
+    fetchProfileData();
+  }, [user, t]);
 
-
-  const isOwner = Boolean(
-    user && recipe && (recipe.user_id === (user.id || user.userId))
-  );
-
-  const handleEdit = () => {
-    navigate(`/recipes/${recipeId}/edit`);
+  const handleBioEditToggle = () => {
+    setCurrentBio(bio);
+    setIsEditingBio(!isEditingBio);
   };
 
-  const handleDelete = async () => {
-    if (!isOwner) return;
+  const handleSaveBio = async () => {
+    try {
+      const response = await axiosInstance.post('/setBio', { profile_bio: currentBio });
+      if (response.status === 200) {
+        setBio(currentBio);
+        setIsEditingBio(false);
+        setError(null);
+      }
+    } catch (error) {
+      setError(t('profileCard.bioUpdateError', { error: error.response?.data?.error || error.message }));
+    }
+  };
 
-    const confirmed = window.confirm(t('recipeCard.deleteConfirm'));
-    if (!confirmed) return;
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedDpFile(file);
+      setPreviewDp(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSaveDp = async () => {
+    if (!selectedDpFile) return;
+    const formData = new FormData();
+    formData.append('dp', selectedDpFile);
+    try {
+      const response = await axiosInstance.post('/setDp', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setDpUrl(response.data.url + `?t=${new Date().getTime()}`);
+      setIsEditingDp(false);
+      setSelectedDpFile(null);
+      setPreviewDp(null);
+    } catch (error) {
+      setError(t('profileCard.dpUpdateError', { error: error.message }));
+    }
+  };
+
+  const handleCancelDpEdit = () => {
+    setIsEditingDp(false);
+    setSelectedDpFile(null);
+    setPreviewDp(null);
+  };
+
+  const handleDeleteDp = async () => {
+    if (!window.confirm(t('profileCard.dpDeleteConfirm'))) return;
+    try {
+      await axiosInstance.delete('/deleteDp');
+      setDpUrl('');
+      setIsEditingDp(false);
+    } catch (error) {
+      setError(t('profileCard.dpDeleteError', { error: error.message }));
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmText = t('profileCard.accountDeleteKey');
+    const confirmation = prompt(t('profileCard.accountDeletePrompt', { confirmText }));
+    if (confirmation !== confirmText) return;
 
     try {
-      await deleteRecipe(recipeId);
-      setSuccessMessage(t('recipeCard.deleteSuccess'));
-      setTimeout(() => navigate('/recipes'), 1500);
+      const response = await axiosInstance.post('/deleteAccount', { confirmDelete: user.username });
+      if (response.status === 200) {
+        await logout();
+        navigate('/login');
+      }
     } catch (error) {
-      console.error('Error deleting recipe:', error);
-      setError(t('recipeCard.deleteError'));
+      setError(t('profileCard.accountDeleteError', { error: error.message }));
     }
   };
 
-  if (loading) {
-    return <div className={`${styles.statusMessage} ${styles.loadingMessage}`}>{t('recipeCard.loading')}</div>;
-  }
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline'],
+      [{'list': 'ordered'}, {'list': 'bullet'}],
+      ['clean']
+    ],
+  };
 
-  if (successMessage) {
-    return (
-      <div className={`${styles.statusMessage} ${styles.successMessage}`}>
-        {successMessage}
-      </div>
-    );
-  }
-
-  if (error || !recipe) {
-    return (
-      <div className={`${styles.statusMessage} ${styles.errorMessage}`}>
-        {error || t('recipeCard.notFound')}
-      </div>
-    );
-  }
+  if (!user) return null;
+  if (loading) return <div className={styles.loadingState}>{t('profileCard.loading')}</div>;
 
   return (
-    <div className={styles.recipeDetailContainer}>
-      <div className={styles.recipeHeader}>
-        <h2 className={styles.recipeNameTitle}>
-          <FontAwesomeIcon icon={faBook} style={{ marginRight: '10px' }} />
-          {recipe.name || t('recipeCard.unnamed')}
-        </h2>
+    <div className={styles.profileCardContainer}>
+      {error && <p className={styles.errorMessage}>{error}</p>}
+      <div className={styles.profileHeaderBanner}></div>
+      <div className={styles.profileGrid}>
+        
+        <aside className={styles.profileSidebar}>
+          <div className={styles.dpWrapper}>
+            <img
+              className={styles.profileDp}
+              src={previewDp || dpUrl || 'https://via.placeholder.com/180'}
+              alt={t('profileCard.ariaDp', { username: user.username })}
+            />
+            {!isEditingDp && (
+              <button className={styles.dpEditButton} onClick={() => setIsEditingDp(true)}>
+                <FontAwesomeIcon icon={faEdit} />
+              </button>
+            )}
+          </div>
+
+          {isEditingDp && (
+            <div className={styles.dpEditControls}>
+              <input type='file' onChange={handleFileChange} accept="image/*" className={styles.dpFileInput} />
+              <div className={styles.dpEditActions}>
+                <button onClick={handleSaveDp} className={`${styles.actionButtonSmall} ${styles.saveButtonSmall}`} disabled={!selectedDpFile}>
+                  <FontAwesomeIcon icon={faSave} /> {t('profileCard.btnSave')}
+                </button>
+                <button onClick={handleCancelDpEdit} className={`${styles.actionButtonSmall} ${styles.cancelButtonSmall}`}>
+                  <FontAwesomeIcon icon={faTimes} /> {t('profileCard.btnCancel')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <h1 className={styles.profileUsername}>{user.username}</h1>
+          
+          <nav className={styles.profileActions}>
+            <button className={styles.actionButton} onClick={() => navigate('/myBlogs')}>
+              <FontAwesomeIcon icon={faBlog} className={styles.buttonIcon} /> {t('profileCard.navMyBlogs')}
+            </button>
+
+            <button className={styles.actionButton} onClick={() => setIsExportModalOpen(true)} style={{ backgroundColor: '#27ae60', color: 'white' }}>
+              <FontAwesomeIcon icon={faFileDownload} className={styles.buttonIcon} /> {t('profileCard.navExportPdf')}
+            </button>
+
+            <div style={{ marginTop: '30px', width: '100%' }}>
+              <AlertForm fetchAlerts={() => setAlertRefreshTrigger(prev => prev + 1)} />
+            </div>
+          </nav>
+
+          <div className={styles.dangerZone}>
+            <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
+              <FontAwesomeIcon icon={faSignOutAlt} className={styles.buttonIcon} /> {t('profileCard.btnDeleteAccount')}
+            </button>
+          </div>
+        </aside>
+
+        <main className={styles.profileContent}>
+          <div className={styles.bioSectionHeader}>
+            <h2 className={styles.bioTitle}>{t('profileCard.bioTitle')}</h2>
+            {!isEditingBio && (
+              <button className={styles.bioEditIcon} onClick={handleBioEditToggle}>
+                <FontAwesomeIcon icon={faEdit} />
+              </button>
+            )}
+          </div>
+
+          {isEditingBio ? (
+            <div className={styles.bioEditSection}>
+              <ReactQuill
+                theme='snow'
+                value={currentBio}
+                onChange={setCurrentBio}
+                modules={quillModules}
+                className={styles.quillEditor}
+              />
+              <div className={styles.bioEditActions}>
+                <button onClick={handleSaveBio} className={`${styles.actionButton} ${styles.saveButton}`}>
+                  <FontAwesomeIcon icon={faSave} /> {t('profileCard.btnSaveBio')}
+                </button>
+                <button onClick={handleBioEditToggle} className={`${styles.actionButton} ${styles.cancelButton}`}>
+                  <FontAwesomeIcon icon={faTimes} /> {t('profileCard.btnCancel')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.bioDisplay}>
+              {bio ? parse(bio) : <p>{t('profileCard.noBio')}</p>}
+            </div>
+          )}
+
+          <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
+             <AlertsTable refreshTrigger={alertRefreshTrigger} />
+          </div>
+          
+        </main>
       </div>
 
-      {recipe.ingredients && recipe.ingredients.length > 0 && (
-        <div className={styles.recipeSection}>
-          <h3 className={styles.sectionTitle}>
-            <FontAwesomeIcon icon={faPepperHot} />
-            {t('recipeCard.ingredients')}
-          </h3>
-          <ul className={styles.ingredientList}>
-            {recipe.ingredients.map((ingredient, i) => (
-              <li key={`ing-${i}`}>
-                <span className={styles.ingredientName}>{ingredient.name || t('recipeCard.foodIdLabel', { id: ingredient.food_id || t('recipeCard.na') })}</span>
-                <span className={styles.ingredientQuantity}> – {ingredient.quantity_in_grams != null ? `${ingredient.quantity_in_grams}g` : t('recipeCard.na')}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {recipe.instructions && recipe.instructions.length > 0 && (
-        <div className={styles.recipeSection}>
-          <h3 className={styles.sectionTitle}>
-            <FontAwesomeIcon icon={faListCheck} />
-            {t('recipeCard.instructions')}
-          </h3>
-          <ol className={styles.instructionList}>
-            {recipe.instructions.map((step, i) => (
-              <li key={`instr-${i}`}>{step}</li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      {(recipe.total_calories != null || recipe.total_proteins != null || recipe.total_fats != null || recipe.total_carbs != null) && (
-        <div className={styles.recipeSection}>
-          <h3 className={styles.sectionTitle}>
-            <FontAwesomeIcon icon={faBalanceScale} />
-            {t('recipeCard.nutritionTitle')}
-          </h3>
-          <div className={styles.nutritionGrid}>
-            <p><strong>{t('recipeCard.calories')}</strong> {recipe.total_calories != null ? `${recipe.total_calories} kcal` : t('recipeCard.na')}</p>
-            <p><strong>{t('recipeCard.proteins')}</strong> {recipe.total_proteins != null ? `${recipe.total_proteins} g` : t('recipeCard.na')}</p>
-            <p><strong>{t('recipeCard.fats')}</strong> {recipe.total_fats != null ? `${recipe.total_fats} g` : t('recipeCard.na')}</p>
-            <p><strong>{t('recipeCard.carbs')}</strong> {recipe.total_carbs != null ? `${recipe.total_carbs} g` : t('recipeCard.na')}</p>
-          </div>
-        </div>
-      )}
-
-
-      {isOwner && (
-        <div className={styles.actionButtonContainer}>
-          <button onClick={handleEdit} className={styles.editButton}>
-            <FontAwesomeIcon icon={faPenToSquare} /> {t('recipeCard.btnEdit')}
-          </button>
-          <button onClick={handleDelete} className={styles.deleteButton}>
-            <FontAwesomeIcon icon={faTrashAlt} /> {t('recipeCard.btnDelete')}
-          </button>
-        </div>
-      )}
-
-      {error && !loading && recipe && (
-        <div className={`${styles.statusMessage} ${styles.errorMessage}`} style={{ marginTop: '15px' }}>{error}</div>
-      )}
+      <ExportReportModal 
+        isOpen={isExportModalOpen} 
+        onClose={() => setIsExportModalOpen(false)} 
+      />
     </div>
   );
 };
 
-RecipeCard.propTypes = {
-  recipeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-};
-
-export default RecipeCard;
+export default ProfileCard;

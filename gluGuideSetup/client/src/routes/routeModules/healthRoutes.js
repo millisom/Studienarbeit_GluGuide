@@ -13,7 +13,7 @@ export const healthRoutes = [
   { path: "/meals", element: MealsOverviewPage },
   { path: "/logMeal", element: LogMealPage },
   { path: "/createRecipe", element: CreateRecipePage },
-  { path: "/recipes/:id/edit", element: EditRecipePage },   // UC-07: Rezept bearbeiten
+  { path: "/recipes/:id/edit", element: EditRecipePage },
   { path: "/Recipes", element: SummaryPage },
   { path: "/recipes/:id", element: RecipeCardRoute },
   { path: "/meals/:mealId", element: MealCardRoute },
