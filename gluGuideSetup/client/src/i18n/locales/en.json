@@ -328,7 +328,8 @@
     "author": "Author:",
     "createdOn": "Created on:",
     "btnEdit": "Edit",
-    "btnDelete": "Delete"
+    "btnDelete": "Delete",
+    "errorForbidden": "You are not allowed to view this recipe."
   },
   "profileCard": {
     "loading": "Loading profile...",
@@ -368,20 +369,27 @@
     "proteins": "Proteins:",
     "fats": "Fats:",
     "carbs": "Carbs:",
-    "btnDelete": "Delete Recipe"
+    "btnDelete": "Delete Recipe",
+    "btnEdit": "Edit Recipe"
   },
   "recipeDashboard": {
-    "title": "Create Your Recipe",
-    "loginPrompt": "Please <1>log in</1> to create and save your own recipes.",
-    "placeholderName": "Recipe Name",
-    "btnSave": "Save Recipe",
-    "btnSaving": "Saving...",
-    "success": "Recipe created successfully!",
-    "errorAuth": "You must be logged in to save a recipe.",
-    "errorName": "Please enter a recipe name",
-    "errorIngredients": "Please add at least one ingredient",
-    "errorInstructions": "Please add instructions",
-    "errorFailed": "Failed to create recipe"
+ "title": "Create new recipe",
+    "titleEdit": "Edit recipe",
+    "placeholderName": "Recipe name",
+    "btnSave": "Save recipe",
+    "btnUpdate": "Save changes",
+    "btnSaving": "Saving…",
+    "loading": "Loading recipe…",
+    "success": "Recipe saved successfully.",
+    "successUpdate": "Changes saved.",
+    "errorName": "Please enter a recipe name.",
+    "errorIngredients": "Please add at least one ingredient.",
+    "errorInstructions": "Please add at least one instruction step.",
+    "errorAuth": "You need to be logged in to save recipes.",
+    "errorFailed": "The recipe could not be saved. Please try again.",
+    "errorLoad": "The recipe could not be loaded.",
+    "errorForbidden": "You are not allowed to edit this recipe.",
+    "loginPrompt": "Please log in to create and save your own recipes."
   },
   "recipeInstructions": {
     "placeholderAdd": "Write a step and press Enter",

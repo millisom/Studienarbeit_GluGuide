@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader, faPlusCircle, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
-const RecipesCards = ({ limit }) => {
+const RecipesCards = ({ limit, onCountChange }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -19,35 +19,34 @@ const RecipesCards = ({ limit }) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       if (!user) {
-          setLoading(false);
-          return;
+        setLoading(false);
+        return;
       }
-
       setLoading(true);
       setError('');
       try {
         const data = await getAllRecipes();
         setRecipes(data);
-      } catch (error) {
-        console.error('Failed to fetch recipes:', error);
+        if (onCountChange) onCountChange(data.length);
+      } catch (err) {
+        console.error('Failed to fetch recipes:', err);
         setError(t('recipesCards.errorText'));
       } finally {
         setLoading(false);
       }
     };
-
     fetchRecipes();
-  }, [user, t]);
+  }, [user, t, onCountChange]);
 
   if (!user) {
     return (
       <div className={styles.statusMessageContainer}>
-          <FontAwesomeIcon icon={faUtensils} size="3x" style={{ marginBottom: '20px', color: '#ccc'}} />
-          <h2>{t('recipesCards.loginTitle')}</h2>
-          <p>{t('recipesCards.loginText')}</p>
-          <Link to="/login" style={{ marginTop: '10px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 'bold' }}>
-              {t('recipesCards.goLogin')}
-          </Link>
+        <FontAwesomeIcon icon={faUtensils} size="3x" style={{ marginBottom: '20px', color: '#ccc' }} />
+        <h2>{t('recipesCards.loginTitle')}</h2>
+        <p>{t('recipesCards.loginText')}</p>
+        <Link to="/login" style={{ marginTop: '10px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 'bold' }}>
+          {t('recipesCards.goLogin')}
+        </Link>
       </div>
     );
   }
@@ -76,12 +75,12 @@ const RecipesCards = ({ limit }) => {
         <FontAwesomeIcon icon={faPlusCircle} size="3x" style={{ marginBottom: '20px' }} />
         <h2>{t('recipesCards.emptyTitle')}</h2>
         <p>{t('recipesCards.emptyText')}</p>
-        <button 
-            className={styles.viewRecipeButton} 
-            onClick={() => navigate('/createRecipe')}
-            style={{ marginTop: '15px' }}
+        <button
+          className={styles.viewRecipeButton}
+          onClick={() => navigate('/createRecipe')}
+          style={{ marginTop: '15px' }}
         >
-            {t('recipesCards.btnCreate')}
+          {t('recipesCards.btnCreate')}
         </button>
       </div>
     );
@@ -90,24 +89,24 @@ const RecipesCards = ({ limit }) => {
   const displayedRecipes = limit ? recipes.slice(0, limit) : recipes;
 
   return (
-      <div className={styles.recipesGrid}>
-        {displayedRecipes.map((recipe) => (
-          <div key={recipe.id} className={styles.recipeSummaryCard}>
-            <h3 className={styles.recipeName}>{recipe.name || t('recipesCards.unnamed')}</h3>
-            {recipe.total_calories != null && (
-                <p className={styles.recipeCalories}>
-                    <strong>{t('recipesCards.totalCalories')}</strong> {recipe.total_calories} kcal
-                </p>
-            )}
-            <button
-              className={styles.viewRecipeButton}
-              onClick={() => navigate(`/recipes/${recipe.id}`)}
-            >
-              {t('recipesCards.btnView')}
-            </button>
-          </div>
-        ))}
-      </div>
+    <div className={styles.recipesGrid}>
+      {displayedRecipes.map((recipe) => (
+        <div key={recipe.id} className={styles.recipeSummaryCard}>
+          <h3 className={styles.recipeName}>{recipe.name || t('recipesCards.unnamed')}</h3>
+          {recipe.total_calories != null && (
+            <p className={styles.recipeCalories}>
+              <strong>{t('recipesCards.totalCalories')}</strong> {recipe.total_calories} kcal
+            </p>
+          )}
+          <button
+            className={styles.viewRecipeButton}
+            onClick={() => navigate(`/recipes/${recipe.id}`)}
+          >
+            {t('recipesCards.btnView')}
+          </button>
+        </div>
+      ))}
+    </div>
   );
 };
 

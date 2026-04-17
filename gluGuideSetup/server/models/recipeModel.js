@@ -9,28 +9,26 @@ async function getFoodNameById(food_id) {
 }
 
 const Recipe = {
-    async getAllRecipes() {
-        const query = 'SELECT * FROM recipes';
-    
+    // UC-07: Nur Rezepte der aufrufenden Nutzerin zurückgeben
+    async getAllRecipesByUser(user_id) {
+        const query = 'SELECT * FROM recipes WHERE user_id = $1 ORDER BY created_at DESC';
         try {
-            const result = await pool.query(query);
+            const result = await pool.query(query, [user_id]);
             return result.rows;
         } catch (error) {
             throw error;
         }
     },
 
-
     async getRecipeById(id) {
       const query = 'SELECT * FROM recipes WHERE id = $1';
       const values = [id];
-  
+
       try {
         const result = await pool.query(query, values);
         if (result.rows.length === 0) return null;
-  
+
         const recipe = result.rows[0];
-  
 
         if (Array.isArray(recipe.ingredients)) {
           const enrichedIngredients = await Promise.all(
@@ -42,19 +40,21 @@ const Recipe = {
               };
             })
           );
-  
+
           recipe.ingredients = enrichedIngredients;
         }
-  
+
         return recipe;
       } catch (error) {
         throw error;
       }
     },
-    async getRecipeByName(name) {
-        const query = 'SELECT * FROM recipes WHERE name ILIKE $1';
-        const values = [`%${name}%`];
-    
+
+    // UC-07: Suche nur im eigenen Rezeptbestand
+    async getRecipeByName(user_id, name) {
+        const query = 'SELECT * FROM recipes WHERE user_id = $1 AND name ILIKE $2';
+        const values = [user_id, `%${name}%`];
+
         try {
             const result = await pool.query(query, values);
             return result.rows;
@@ -66,33 +66,32 @@ const Recipe = {
     async createRecipe(user_id, name, ingredients, instructions, created_at) {
         const totalNutrition = await calculateTotalNutrition(ingredients);
 
-
         const ingredientsValue = JSON.stringify(Array.isArray(ingredients) ? ingredients : JSON.parse(ingredients));
         const instructionsValue = JSON.stringify(Array.isArray(instructions) ? instructions : JSON.parse(instructions));
-        
 
         const query = `
             INSERT INTO recipes (user_id, name, ingredients, instructions, created_at, total_calories, total_proteins, total_fats, total_carbs)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *`;
 
-            const values = [
-                user_id,
-                name,
-                ingredientsValue,
-                instructionsValue,
-                created_at,
-                totalNutrition.totalCalories,
-                totalNutrition.totalProteins,
-                totalNutrition.totalFats,
-                totalNutrition.totalCarbs
-              ];
+        const values = [
+            user_id,
+            name,
+            ingredientsValue,
+            instructionsValue,
+            created_at,
+            totalNutrition.totalCalories,
+            totalNutrition.totalProteins,
+            totalNutrition.totalFats,
+            totalNutrition.totalCarbs
+        ];
 
-              const result = await pool.query(query, values);
-              return result.rows[0];
-            },
-          
-    async updateRecipe(id, name, ingredients, instructions, updated_at) {
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    },
+
+    // UC-07: Update nur, wenn Rezept der Nutzerin gehört (Ownership im WHERE)
+    async updateRecipe(id, user_id, name, ingredients, instructions, updated_at) {
         const totalNutrition = await calculateTotalNutrition(ingredients);
 
         const ingredientsValue = JSON.stringify(Array.isArray(ingredients) ? ingredients : JSON.parse(ingredients));
@@ -108,33 +107,34 @@ const Recipe = {
           total_proteins = $6,
           total_fats = $7,
           total_carbs = $8
-      WHERE id = $9
+      WHERE id = $9 AND user_id = $10
       RETURNING *`;
 
-    const values = [
-      name,
-      ingredientsValue,
-      instructionsValue,
-      updated_at,
-      totalNutrition.totalCalories,
-      totalNutrition.totalProteins,
-      totalNutrition.totalFats,
-      totalNutrition.totalCarbs,
-      id
-    ];
+        const values = [
+            name,
+            ingredientsValue,
+            instructionsValue,
+            updated_at,
+            totalNutrition.totalCalories,
+            totalNutrition.totalProteins,
+            totalNutrition.totalFats,
+            totalNutrition.totalCarbs,
+            id,
+            user_id
+        ];
 
-    const result = await pool.query(query, values);
-    return result.rows[0];
-  },
+        const result = await pool.query(query, values);
+        return result.rows[0] || null;
+    },
 
+    // UC-07: Löschen nur, wenn Rezept der Nutzerin gehört
+    async deleteRecipe(id, user_id) {
+        const query = 'DELETE FROM recipes WHERE id = $1 AND user_id = $2 RETURNING *';
+        const values = [id, user_id];
 
-    async deleteRecipe(id) {
-        const query = 'DELETE FROM recipes WHERE id = $1 RETURNING *';
-        const values = [id];
-    
         try {
             const result = await pool.query(query, values);
-            return result.rows[0];
+            return result.rows[0] || null;
         } catch (error) {
             throw error;
         }
@@ -147,7 +147,7 @@ const Recipe = {
           VALUES 
             ($1, $2, $3, $4, $5, $6, $7, $8)
           RETURNING *`;
-    
+
         const values = [
           user_id,
           recipe_id,
@@ -158,15 +158,15 @@ const Recipe = {
           totalNutrition.totalFats,
           totalNutrition.totalCarbs
         ];
-    
+
         const result = await pool.query(query, values);
         return result.rows[0];
-      },
+    },
 
-      async getRecipeIngredients(recipe_id) {
+    async getRecipeIngredients(recipe_id) {
         const query = 'SELECT ingredients FROM recipes WHERE id = $1';
         const values = [recipe_id];
-      
+
         try {
           const result = await pool.query(query, values);
           if (result.rows.length === 0) return null;
@@ -174,34 +174,31 @@ const Recipe = {
         } catch (error) {
           throw error;
         }
-      },
+    },
 
-        async getRecipeLogs(user_id) {
-            const query = 'SELECT * FROM recipe_logs WHERE user_id = $1';
-            const values = [user_id];
-        
-            try {
-                const result = await pool.query(query, values);
-                return result.rows;
-            } catch (error) {
-                throw error;
-            }
-        },
+    async getRecipeLogs(user_id) {
+        const query = 'SELECT * FROM recipe_logs WHERE user_id = $1';
+        const values = [user_id];
 
-        async deleteRecipeLog(id) {
-            const query = 'DELETE FROM recipe_logs WHERE id = $1 RETURNING *';
-            const values = [id];
-        
-            try {
-                const result = await pool.query(query, values);
-                return result.rows[0];
-            } catch (error) {
-                throw error;
-            }
+        try {
+            const result = await pool.query(query, values);
+            return result.rows;
+        } catch (error) {
+            throw error;
         }
-      
-    };
+    },
+
+    async deleteRecipeLog(id) {
+        const query = 'DELETE FROM recipe_logs WHERE id = $1 RETURNING *';
+        const values = [id];
+
+        try {
+            const result = await pool.query(query, values);
+            return result.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+};
 
 module.exports = Recipe;
-
-

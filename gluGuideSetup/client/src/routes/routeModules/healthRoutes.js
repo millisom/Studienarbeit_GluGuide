@@ -7,12 +7,13 @@ const RecipeCardRoute = lazy(() => import('../../components/RecipeCardRoute.jsx'
 const MealsOverviewPage = lazy(() => import('../../pages/MealsOverviewPage.jsx'));
 const MealCardRoute = lazy(() => import('../../components/MealCardRoute.jsx'));
 const MealHistoryPage = lazy(() => import('../../pages/MealHistoryPage.jsx'));
+const EditRecipePage = lazy(() => import('../../pages/EditRecipePage.jsx'));
 
 export const healthRoutes = [
-  { path: "/meals", element: MealsOverviewPage }, 
-  
+  { path: "/meals", element: MealsOverviewPage },
   { path: "/logMeal", element: LogMealPage },
   { path: "/createRecipe", element: CreateRecipePage },
+  { path: "/recipes/:id/edit", element: EditRecipePage },
   { path: "/Recipes", element: SummaryPage },
   { path: "/recipes/:id", element: RecipeCardRoute },
   { path: "/meals/:mealId", element: MealCardRoute },

@@ -3,7 +3,7 @@ import { getRecipeById, deleteRecipe } from '../api/recipeApi';
 import styles from '../styles/RecipeCard.module.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,12 +11,13 @@ import {
   faPepperHot,
   faListCheck,
   faBalanceScale,
-  faTrashAlt
+  faTrashAlt,
+  faPenToSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 const RecipeCard = ({ recipeId }) => {
   const navigate = useNavigate();
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const { t } = useTranslation();
 
   const [recipe, setRecipe] = useState(null);
@@ -34,7 +35,11 @@ const RecipeCard = ({ recipeId }) => {
       } catch (err) {
         console.error('Failed to fetch recipe:', err);
         setRecipe(null);
-        setError(t('recipeCard.errorLoad'));
+        if (err.response?.status === 403) {
+          setError(t('recipeCard.errorForbidden'));
+        } else {
+          setError(t('recipeCard.errorLoad'));
+        }
       } finally {
         setLoading(false);
       }
@@ -45,8 +50,18 @@ const RecipeCard = ({ recipeId }) => {
     }
   }, [recipeId, t]);
 
+  // UC-07: Nur Owner darf editieren/löschen. String-Vergleich wegen PostgreSQL-Typen (BIGINT → String).
+  const isOwner = Boolean(
+    user && recipe &&
+    String(recipe.user_id) === String(user.id || user.userId)
+  );
+
+  const handleEdit = () => {
+    navigate(`/recipes/${recipeId}/edit`);
+  };
+
   const handleDelete = async () => {
-    if (!user) return; 
+    if (!isOwner) return;
 
     const confirmed = window.confirm(t('recipeCard.deleteConfirm'));
     if (!confirmed) return;
@@ -54,10 +69,7 @@ const RecipeCard = ({ recipeId }) => {
     try {
       await deleteRecipe(recipeId);
       setSuccessMessage(t('recipeCard.deleteSuccess'));
-      
-      setTimeout(() => {
-        navigate('/recipes'); 
-      }, 1500);
+      setTimeout(() => navigate('/recipes'), 1500);
     } catch (error) {
       console.error('Error deleting recipe:', error);
       setError(t('recipeCard.deleteError'));
@@ -139,14 +151,17 @@ const RecipeCard = ({ recipeId }) => {
         </div>
       )}
 
-      {user && (
-        <div className={styles.deleteButtonContainer}>
-            <button onClick={handleDelete} className={styles.deleteButton}>
+      {isOwner && (
+        <div className={styles.actionButtonContainer}>
+          <button onClick={handleEdit} className={styles.editButton}>
+            <FontAwesomeIcon icon={faPenToSquare} /> {t('recipeCard.btnEdit')}
+          </button>
+          <button onClick={handleDelete} className={styles.deleteButton}>
             <FontAwesomeIcon icon={faTrashAlt} /> {t('recipeCard.btnDelete')}
-            </button>
+          </button>
         </div>
       )}
-      
+
       {error && !loading && recipe && (
         <div className={`${styles.statusMessage} ${styles.errorMessage}`} style={{ marginTop: '15px' }}>{error}</div>
       )}
@@ -155,7 +170,7 @@ const RecipeCard = ({ recipeId }) => {
 };
 
 RecipeCard.propTypes = {
-  recipeId: PropTypes.string.isRequired
+  recipeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 export default RecipeCard;
