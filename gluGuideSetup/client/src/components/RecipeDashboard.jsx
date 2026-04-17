@@ -11,7 +11,7 @@ import { useTranslation, Trans } from 'react-i18next';
 const RecipeDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { id: routeId } = useParams();       
+  const { id: routeId } = useParams();
   const isEditMode = Boolean(routeId);
   const { t } = useTranslation();
 
@@ -22,7 +22,7 @@ const RecipeDashboard = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
 
-
+  // UC-07: Im Edit-Mode bestehendes Rezept laden; Backend verweigert fremde Rezepte (403)
   useEffect(() => {
     if (!isEditMode || !user) return;
 
@@ -107,11 +107,11 @@ const RecipeDashboard = () => {
 
   if (!user) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2>{t('recipeDashboard.title')}</h2>
-        <p>
+      <div className={styles.container}>
+        <h1 className={styles.title}>{t('recipeDashboard.title')}</h1>
+        <p style={{ textAlign: 'center' }}>
           <Trans i18nKey="recipeDashboard.loginPrompt">
-            Please <Link to="/login" style={{ color: 'blue' }}>log in</Link> to create and save your own recipes.
+            Please <Link to="/login" style={{ color: 'var(--color-primary)' }}>log in</Link> to create and save your own recipes.
           </Trans>
         </p>
       </div>
@@ -119,18 +119,27 @@ const RecipeDashboard = () => {
   }
 
   if (isLoading) {
-    return <p style={{ textAlign: 'center' }}>{t('recipeDashboard.loading')}</p>;
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.title}>{t('recipeDashboard.titleEdit')}</h1>
+        <p>{t('recipeDashboard.loading')}</p>
+      </div>
+    );
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className={styles.container}>
       <h1 className={styles.title}>
         {isEditMode ? t('recipeDashboard.titleEdit') : t('recipeDashboard.title')}
       </h1>
 
       <div className={styles.mealForm}>
         <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor="recipeName">
+            {t('recipeDashboard.placeholderName')}
+          </label>
           <input
+            id="recipeName"
             type="text"
             value={recipeName}
             onChange={(e) => setRecipeName(e.target.value)}
