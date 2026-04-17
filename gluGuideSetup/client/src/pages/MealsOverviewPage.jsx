@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LogMealPage from './LogMealPage'; 
+import LogMealPage from './LogMealPage';
 import MealsCards from '../components/MealsCards';
 import RecipesCards from '../components/RecipesCards';
 import styles from '../styles/MealsOverview.module.css';
@@ -11,6 +11,7 @@ const MealsOverviewPage = () => {
   const { t } = useTranslation();
   const [showAllRecipes, setShowAllRecipes] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [recipeCount, setRecipeCount] = useState(0);
 
   const handleMealLogged = () => {
     setRefreshKey(prev => prev + 1);
@@ -41,8 +42,8 @@ const MealsOverviewPage = () => {
           <h2 className={styles.sectionTitle} style={{ margin: 0 }}>
             {t('mealsOverview.recipesTitle')}
           </h2>
-          <button 
-            className={styles.createBtn} 
+          <button
+            className={styles.createBtn}
             onClick={() => navigate('/createRecipe')}
           >
             {t('mealsOverview.btnCreateRecipe')}
@@ -50,10 +51,13 @@ const MealsOverviewPage = () => {
         </div>
 
         <div className={showAllRecipes ? styles.recipesExpanded : styles.recipesCollapsed}>
-           <RecipesCards limit={showAllRecipes ? undefined : 9} />
+          <RecipesCards
+            limit={showAllRecipes ? undefined : 9}
+            onCountChange={setRecipeCount}
+          />
         </div>
 
-        {!showAllRecipes && (
+        {!showAllRecipes && recipeCount > 9 && (
           <div className={styles.center}>
             <button className={styles.seeMoreBtn} onClick={() => setShowAllRecipes(true)}>
               {t('mealsOverview.btnSeeMore')}

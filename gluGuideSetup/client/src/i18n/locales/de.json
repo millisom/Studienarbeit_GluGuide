@@ -368,20 +368,28 @@
     "proteins": "Eiweiß:",
     "fats": "Fett:",
     "carbs": "Kohlenhydrate:",
-    "btnDelete": "Rezept löschen"
+    "btnDelete": "Rezept löschen",
+    "btnEdit": "Rezept bearbeiten",
+    "errorForbidden": "Du darfst dieses Rezept nicht ansehen."
   },
   "recipeDashboard": {
-    "title": "Erstelle ein Rezept",
-    "loginPrompt": "Bitte <1>logge dich ein</1>, um Rezepte zu erstellen und zu speichern.",
+    "title": "Neues Rezept erstellen",
+    "titleEdit": "Rezept bearbeiten",
     "placeholderName": "Rezeptname",
     "btnSave": "Rezept speichern",
-    "btnSaving": "Wird gespeichert...",
-    "success": "Hervorragend, Rezept erfolgreich erstellt!",
-    "errorAuth": "Bitte logge dich ein, um ein Rezept zu speichern.",
-    "errorName": "Bitte gib einen Rezeptnamen ein.",
+    "btnUpdate": "Änderungen speichern",
+    "btnSaving": "Speichern…",
+    "loading": "Rezept wird geladen…",
+    "success": "Rezept erfolgreich gespeichert.",
+    "successUpdate": "Änderungen gespeichert.",
+    "errorName": "Bitte gib einen Rezeptnamen an.",
     "errorIngredients": "Bitte füge mindestens eine Zutat hinzu.",
-    "errorInstructions": "Bitte füge eine Anleitung hinzu.",
-    "errorFailed": "Rezept konnte nicht erstellt werden."
+    "errorInstructions": "Bitte füge mindestens einen Zubereitungsschritt hinzu.",
+    "errorAuth": "Du musst angemeldet sein, um Rezepte zu speichern.",
+    "errorFailed": "Das Rezept konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "errorLoad": "Das Rezept konnte nicht geladen werden.",
+    "errorForbidden": "Du darfst dieses Rezept nicht bearbeiten.",
+    "loginPrompt": "Bitte melde dich an, um eigene Rezepte zu erstellen und zu speichern."
   },
   "recipeInstructions": {
     "placeholderAdd": "Schritt schreiben und Enter drücken",

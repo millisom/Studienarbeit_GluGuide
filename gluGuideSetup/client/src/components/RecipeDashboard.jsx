@@ -11,7 +11,7 @@ import { useTranslation, Trans } from 'react-i18next';
 const RecipeDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { id: routeId } = useParams();       // UC-07: wenn vorhanden -> Edit-Mode
+  const { id: routeId } = useParams();       
   const isEditMode = Boolean(routeId);
   const { t } = useTranslation();
 
@@ -22,7 +22,7 @@ const RecipeDashboard = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
 
-  // UC-07: Im Edit-Mode bestehendes Rezept laden; Backend verweigert fremde Rezepte (403)
+
   useEffect(() => {
     if (!isEditMode || !user) return;
 

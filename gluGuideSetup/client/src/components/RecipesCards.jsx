@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookReader, faPlusCircle, faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
-const RecipesCards = ({ limit }) => {
+const RecipesCards = ({ limit, onCountChange }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -27,6 +27,7 @@ const RecipesCards = ({ limit }) => {
       try {
         const data = await getAllRecipes();
         setRecipes(data);
+        if (onCountChange) onCountChange(data.length);
       } catch (err) {
         console.error('Failed to fetch recipes:', err);
         setError(t('recipesCards.errorText'));
@@ -35,7 +36,7 @@ const RecipesCards = ({ limit }) => {
       }
     };
     fetchRecipes();
-  }, [user, t]);
+  }, [user, t, onCountChange]);
 
   if (!user) {
     return (
