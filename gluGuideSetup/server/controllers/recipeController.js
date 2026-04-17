@@ -3,7 +3,7 @@ const calculateTotalNutrition = require('../helpers/nutritionHelper');
 
 const recipeController = {
 
-
+  // UC-07: Liefert nur Rezepte der aktuell eingeloggten Nutzerin
   async getAllRecipes(req, res, next) {
     try {
       const user_id = req.session.userId;
@@ -17,26 +17,11 @@ const recipeController = {
     }
   },
 
+  // Autorisierung durch verifyRecipeOwner-Middleware.
+  // req.recipe wird dort gesetzt, ein zweiter DB-Call ist nicht nötig.
   async getRecipeById(req, res, next) {
     try {
-      const user_id = req.session.userId;
-      if (!user_id) {
-        return res.status(401).json({ message: 'Authentication required' });
-      }
-
-      const id = parseInt(req.params.id);
-      const recipe = await Recipe.getRecipeById(id);
-
-      if (!recipe) {
-        return res.status(404).json({ message: 'Recipe not found' });
-      }
-
-
-      if (recipe.user_id !== user_id) {
-        return res.status(403).json({ message: 'You are not allowed to view this recipe' });
-      }
-
-      res.status(200).json(recipe);
+      res.status(200).json(req.recipe);
     } catch (error) {
       next(error);
     }
@@ -99,26 +84,14 @@ const recipeController = {
     }
   },
 
-
+  // Autorisierung durch verifyRecipeOwner-Middleware.
+  // Model-WHERE bleibt als zweite Verteidigungslinie (defense in depth).
   async updateRecipe(req, res, next) {
     try {
       const user_id = req.session.userId;
-      if (!user_id) {
-        return res.status(401).json({ message: 'Authentication required' });
-      }
-
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
       const { name, ingredients, instructions } = req.body;
       const updated_at = new Date();
-
-      // Erst prüfen, ob das Rezept existiert und wem es gehört
-      const existing = await Recipe.getRecipeById(id);
-      if (!existing) {
-        return res.status(404).json({ message: 'Recipe not found' });
-      }
-      if (existing.user_id !== user_id) {
-        return res.status(403).json({ message: 'You are not allowed to edit this recipe' });
-      }
 
       const updatedRecipe = await Recipe.updateRecipe(
         id, user_id, name, ingredients, instructions, updated_at
@@ -137,22 +110,11 @@ const recipeController = {
     }
   },
 
+  // Autorisierung durch verifyRecipeOwner-Middleware.
   async deleteRecipe(req, res, next) {
     try {
       const user_id = req.session.userId;
-      if (!user_id) {
-        return res.status(401).json({ message: 'Authentication required' });
-      }
-
-      const id = parseInt(req.params.id);
-
-      const existing = await Recipe.getRecipeById(id);
-      if (!existing) {
-        return res.status(404).json({ message: 'Recipe not found' });
-      }
-      if (existing.user_id !== user_id) {
-        return res.status(403).json({ message: 'You are not allowed to delete this recipe' });
-      }
+      const id = parseInt(req.params.id, 10);
 
       const deletedRecipe = await Recipe.deleteRecipe(id, user_id);
       if (!deletedRecipe) {
@@ -210,7 +172,7 @@ const recipeController = {
 
   async deleteRecipeLog(req, res, next) {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id, 10);
 
       if (!id) {
         return res.status(400).json({ message: 'Log ID is required in URL' });
