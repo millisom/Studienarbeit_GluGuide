@@ -17,22 +17,24 @@ function validateFoodItem(req, res, next) {
 }
 
 
-function validateRecipe(req, res, next) {
-    const { user_id, name, ingredients, instructions } = req.body;
+const validateRecipe = (req, res, next) => {
+    const { name, ingredients, instructions } = req.body;
 
-    if (!user_id || !name || !ingredients || !instructions) {
-        return res.status(400).json({ 
-            message: 'Missing required fields for Recipe: user_id, name, ingredients, instructions are all required.' 
-        });
-    }
-
-
-    if (!Array.isArray(ingredients) && typeof ingredients !== 'string') {
+    if (!name || typeof name !== 'string' || !name.trim()) {
         return res.status(400).json({
-            message: 'Ingredients must be either an array or a stringified JSON array.'
+        message: 'Recipe name is required.'
         });
     }
-
+    if (!Array.isArray(ingredients) || ingredients.length === 0) {
+        return res.status(400).json({
+        message: 'At least one ingredient is required.'
+        });
+    }
+    if (!Array.isArray(instructions) || instructions.length === 0) {
+        return res.status(400).json({
+        message: 'At least one instruction step is required.'
+        });
+    }
     next();
 }
 
