@@ -20,7 +20,7 @@ describe('Health Routes Module', () => {
     expect(Array.isArray(healthRoutes)).toBe(true);
     
 
-    expect(healthRoutes.length).toBe(7);
+    expect(healthRoutes.length).toBe(8);
     
 
     expect(healthRoutes).toContainEqual(

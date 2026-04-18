@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import GlucoseLog from '../../src/components/GlucoseLog';
 import { AuthContext } from '../../src/context/AuthContext';
 
@@ -55,10 +56,13 @@ describe('GlucoseLog Component - Zero Loop Version', () => {
   };
 
   it('renders the page title without crashing', () => {
+
     render(
-      <AuthContext.Provider value={mockAuthValue}>
-        <GlucoseLog />
-      </AuthContext.Provider>
+      <MemoryRouter>
+        <AuthContext.Provider value={mockAuthValue}>
+          <GlucoseLog />
+        </AuthContext.Provider>
+      </MemoryRouter>
     );
 
     expect(screen.getByText(/glucoseLog\.pageTitle/i)).toBeInTheDocument();
