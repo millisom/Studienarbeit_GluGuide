@@ -4,6 +4,55 @@ import { useAuth } from '../context/AuthContext';
 import styles from '../styles/AlertsTable.module.css';
 import { useTranslation } from 'react-i18next';
 
+
+const formatTime = (reminderTime) => {
+  if (!reminderTime) return '';
+  if (reminderTime.includes('T') || reminderTime.includes('-')) {
+    const d = new Date(reminderTime);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  return reminderTime.substring(0, 5);
+};
+
+
+const formatTimeForInput = (reminderTime) => {
+  if (!reminderTime) return '';
+  if (reminderTime.includes('T') || reminderTime.includes('-')) {
+    const d = new Date(reminderTime);
+    if (isNaN(d.getTime())) return '';
+    return d.toTimeString().substring(0, 5);
+  }
+  return reminderTime.substring(0, 5);
+};
+
+
+const formatMessage = (customMessage, t) => {
+  if (!customMessage) return null;
+  try {
+    const meta = JSON.parse(customMessage);
+    if (meta.type === 'meal_reminder') {
+      const typeLabel = t(`glucoseLog.types.${meta.meal_type}`, { defaultValue: meta.meal_type });
+      return ` ${t('alertsTable.mealReminder', { defaultValue: 'Meal reminder' })}: ${typeLabel}`;
+    }
+    return customMessage;
+  } catch {
+    return customMessage;
+  }
+};
+
+
+const isMealReminder = (alert) => {
+  if (!alert.custom_message) return false;
+  try {
+    const meta = JSON.parse(alert.custom_message);
+    return meta.type === 'meal_reminder';
+  } catch {
+    return false;
+  }
+};
+
 const AlertsTable = ({ refreshTrigger }) => {
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -48,9 +97,9 @@ const AlertsTable = ({ refreshTrigger }) => {
   const handleEditClick = (alert) => {
     setEditingAlertId(alert.alert_id);
     setEditedFrequency(alert.reminder_frequency);
-    setEditedTime(alert.reminder_time);
+    setEditedTime(formatTimeForInput(alert.reminder_time));
     setEditedMethod(alert.notification_method || 'app');
-    setEditedMessage(alert.custom_message || '');
+    setEditedMessage(isMealReminder(alert) ? '' : (alert.custom_message || ''));
   };
 
   const handleCancelEdit = () => {
@@ -147,9 +196,9 @@ const AlertsTable = ({ refreshTrigger }) => {
                           {t(`alertForm.freq${alert.reminder_frequency.charAt(0).toUpperCase() + alert.reminder_frequency.slice(1)}`)}
                         </td>
                         <td>{alert.notification_method === 'app' ? t('alertsTable.methodApp') : t('alertsTable.methodEmail')}</td>
-                        <td>{alert.reminder_time ? alert.reminder_time.substring(0, 5) : ''}</td>
+                        <td>{formatTime(alert.reminder_time)}</td>
                         <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {alert.custom_message || <span style={{ color: '#888', fontStyle: 'italic' }}>{t('alertsTable.statusStandard')}</span>}
+                          {formatMessage(alert.custom_message, t) || <span style={{ color: '#888', fontStyle: 'italic' }}>{t('alertsTable.statusStandard')}</span>}
                         </td>
                         <td style={{ minWidth: '130px' }}>
                           <button onClick={() => handleEditClick(alert)} className={styles.editButton}>{t('alertsTable.btnEdit')}</button>

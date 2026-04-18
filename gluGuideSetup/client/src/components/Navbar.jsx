@@ -23,6 +23,7 @@ const Navbar = () => {
 
     const currentLanguage = i18n.language?.split('-')[0];
 
+
     useEffect(() => {
         if (!user) return;
         const checkActiveAlerts = async () => {
@@ -43,6 +44,7 @@ const Navbar = () => {
         return () => clearInterval(intervalId);
     }, [user]);
 
+
     useEffect(() => {
         if (!user) return;
         const checkNotifications = async () => {
@@ -51,18 +53,82 @@ const Navbar = () => {
                 const unreadNotifs = response.data;
                 if (unreadNotifs && unreadNotifs.length > 0) {
                     unreadNotifs.forEach(async (notif) => {
-                        toast.info(
-                            <div style={{ padding: '20px' }}>
-                                <strong style={{ fontSize: '1.6rem', color: '#2c3e50' }}>{notif.title}</strong>
-                                <p style={{ margin: '15px 0 0 0', fontSize: '1.25rem', lineHeight: '1.5', color: '#34495e' }}>{notif.message}</p>
-                            </div>, 
-                            {
-                                position: "top-center", 
-                                autoClose: false, 
-                                theme: "light",
-                                style: { width: '600px', maxWidth: '90vw', borderRadius: '16px' }
-                            }
-                        );
+
+
+                        let metadata = null;
+                        try {
+                            metadata = JSON.parse(notif.message);
+                        } catch {
+                            metadata = null;
+                        }
+
+                        if (metadata && metadata.type === 'meal_reminder') {
+
+                            toast.info(
+                                ({ closeToast }) => (
+                                    <div style={{ padding: '16px' }}>
+                                        <strong style={{ fontSize: '1.4rem', color: '#2c3e50', display: 'block', marginBottom: '10px' }}>
+                                            {notif.title}
+                                        </strong>
+                                        <p style={{ margin: '0 0 16px 0', fontSize: '1.1rem', lineHeight: '1.5', color: '#34495e' }}>
+                                            {metadata.text}
+                                        </p>
+                                        <button
+                                            onClick={() => {
+                                                closeToast();
+                                                navigate(`/?logGlucose=true&mealId=${metadata.meal_id}&readingType=1h_post_meal`);
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px 20px',
+                                                backgroundColor: '#27ae60',
+                                                color: '#fff',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                fontSize: '1.1rem',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                transition: 'background-color 0.2s'
+                                            }}
+                                            onMouseOver={(e) => e.target.style.backgroundColor = '#219a52'}
+                                            onMouseOut={(e) => e.target.style.backgroundColor = '#27ae60'}
+                                        >
+                                            {t('notification.btnLogNow', { defaultValue: 'Log glucose now' })}
+                                        </button>
+                                    </div>
+                                ), 
+                                {
+                                    position: "top-center", 
+                                    autoClose: false, 
+                                    closeOnClick: false,
+                                    draggable: false,
+                                    theme: "light",
+                                    style: { 
+                                        width: '500px', 
+                                        maxWidth: '90vw', 
+                                        borderRadius: '16px',
+                                        boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+                                    }
+                                }
+                            );
+                        } else {
+
+                            const displayMessage = metadata?.text || notif.message;
+
+                            toast.info(
+                                <div style={{ padding: '20px' }}>
+                                    <strong style={{ fontSize: '1.6rem', color: '#2c3e50' }}>{notif.title}</strong>
+                                    <p style={{ margin: '15px 0 0 0', fontSize: '1.25rem', lineHeight: '1.5', color: '#34495e' }}>{displayMessage}</p>
+                                </div>, 
+                                {
+                                    position: "top-center", 
+                                    autoClose: false, 
+                                    theme: "light",
+                                    style: { width: '600px', maxWidth: '90vw', borderRadius: '16px' }
+                                }
+                            );
+                        }
+
                         await axiosInstance.put(`/notifications/${notif.id}/read`);
                     });
                 }
@@ -73,7 +139,7 @@ const Navbar = () => {
         checkNotifications();
         const intervalId = setInterval(checkNotifications, pollingInterval); 
         return () => clearInterval(intervalId);
-    }, [user, pollingInterval]); 
+    }, [user, pollingInterval, navigate, t]); 
 
     const handleLogout = async () => {
         try {
