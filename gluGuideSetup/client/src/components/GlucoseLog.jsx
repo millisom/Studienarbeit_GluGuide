@@ -5,11 +5,13 @@ import GlucoseChart from './GlucoseChart';
 import styles from '../styles/GlucoseLog.module.css';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 const GlucoseLog = () => {
   const { user, loading: authLoading } = useAuth();
   const { t, i18n } = useTranslation();
   const userId = user?.id || user?.userId || null;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { 
     logs, error, successMessage, filter, setFilter, 
@@ -29,6 +31,24 @@ const GlucoseLog = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingLogId, setEditingLogId] = useState(null);
   const [editedLevel, setEditedLevel] = useState('');
+
+
+  useEffect(() => {
+  const shouldLog = searchParams.get('logGlucose');
+  const mealId = searchParams.get('mealId');
+  const readingType = searchParams.get('readingType');
+  
+  if (shouldLog === 'true') {
+    setFormData(prev => ({
+      ...prev,
+      reading_type: readingType || '1h_post_meal',
+      meal_id: mealId || ''
+    }));
+    setIsExpanded(true); 
+    setSearchParams({});
+  }
+}, [searchParams, setSearchParams]);
+
 
   useEffect(() => {
     const fetchAllMeals = async () => {

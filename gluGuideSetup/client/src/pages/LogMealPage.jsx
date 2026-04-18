@@ -5,7 +5,6 @@ import MealPreview from '../components/MealPreview';
 import { createMeal, recalculateMealNutrition, getAllMealsForUser } from '../api/mealApi';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/LogMealPage.module.css';
-import axiosInstance from '../api/axiosConfig';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useTranslation } from 'react-i18next';
@@ -78,18 +77,15 @@ const LogMealPage = ({ onMealLogged }) => {
         items: foodItems, 
         recipe_id: selectedRecipe?.id || null,
         quantity: Number(selectedRecipe?.quantity || 1),
-        request_reminder: requestReminder
+        request_reminder: requestReminder  // Backend handles persistent scheduling
       };
 
       const meal = await createMeal(payload);
       await recalculateMealNutrition(meal.meal_id); 
 
       setStatus(t('logMeal.success'));
-      
-      if (requestReminder) {
-         scheduleLocalReminder(meal.meal_id, mealTime, mealType);
-      }
 
+      // Reset form
       setMealType('');
       setNotes('');
       setFoodItems([]);
@@ -106,24 +102,6 @@ const LogMealPage = ({ onMealLogged }) => {
       setStatus(t('logMeal.errorSave'));
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const scheduleLocalReminder = async (mealId, timeString, type) => {
-    const mealTimeMs = new Date(timeString).getTime();
-    const oneHourLater = new Date(mealTimeMs + (60 * 60 * 1000));
-    
-    if (oneHourLater.getTime() > Date.now()) {
-      try {
-        await axiosInstance.post('/alerts', {
-          userId: userId,
-          reminderFrequency: 'once', 
-          reminderTime: oneHourLater.toISOString(),
-          notificationMethod: 'app' 
-        });
-      } catch (error) {
-        console.error(error);
-      }
     }
   };
 
