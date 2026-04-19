@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig(({ mode }) => {
-  // Load environment variables from the correct .env file
+
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       }
     },
     define: {
-      'process.env': env // This line is optional for non-Node-style code but safe to include
+      'process.env': env 
     },
     test: {
       environment: 'jsdom',
