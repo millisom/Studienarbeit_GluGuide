@@ -3,7 +3,7 @@ const ExportModel = require('../../models/exportModel');
 const puppeteer = require('puppeteer');
 const generateHtmlTemplate = require('../../templates/reportTemplate'); // Pfad anpassen
 
-// Mocks
+
 jest.mock('../../models/exportModel');
 jest.mock('../../templates/reportTemplate');
 jest.mock('puppeteer');
@@ -11,7 +11,7 @@ jest.mock('puppeteer');
 describe('Export Controller', () => {
   let req, res, next;
 
-  // Puppeteer Mock-Struktur
+
   const mockPage = {
     setContent: jest.fn(),
     pdf: jest.fn().mockResolvedValue(Buffer.from('fake-pdf-content')),
@@ -40,9 +40,9 @@ describe('Export Controller', () => {
 
     next = jest.fn();
 
-    // Puppeteer Launch Mock
+
     puppeteer.launch.mockResolvedValue(mockBrowser);
-    // Template Mock
+
     generateHtmlTemplate.mockReturnValue('<html>Test</html>');
   });
 
@@ -94,14 +94,14 @@ describe('Export Controller', () => {
 
       await exportController.generatePdf(req, res, next);
 
-      // Check Model Aufruf
+ 
       expect(ExportModel.getReportData).toHaveBeenCalledWith(1, ['2023-10-01']);
       
-      // Check Puppeteer Flow
+
       expect(puppeteer.launch).toHaveBeenCalled();
       expect(mockPage.setContent).toHaveBeenCalledWith('<html>Test</html>', expect.any(Object));
       
-      // Check Response
+
       expect(res.writeHead).toHaveBeenCalledWith(200, expect.objectContaining({
         'Content-Type': 'application/pdf'
       }));
@@ -117,10 +117,10 @@ describe('Export Controller', () => {
 
       const transformedData = generateHtmlTemplate.mock.calls[0][0];
       
-      // Fasting Check (parseFloat.toFixed(0))
+
       expect(transformedData['2023-10-01'].fasting.level).toBe('95');
       
-      // Meal Check (Number.toFixed(1))
+ 
       expect(transformedData['2023-10-01'].meals[0].carbs).toBe('50.5');
       expect(transformedData['2023-10-01'].meals[0].type).toBe('lunch');
     });
