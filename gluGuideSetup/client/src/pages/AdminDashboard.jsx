@@ -12,7 +12,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../styles/Admin.module.css';
 import { useTranslation } from 'react-i18next';
-// WICHTIG: Importiere deine axiosInstance
 import axiosInstance from '../api/axiosConfig'; 
 
 const AdminDashboard = () => {
@@ -24,7 +23,7 @@ const AdminDashboard = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  // Umstellung auf axiosInstance für die Sitzungssicherheit
+
   const fetchUsers = async () => {
     try {
       const response = await axiosInstance.get('/admin/users');
@@ -50,7 +49,6 @@ const AdminDashboard = () => {
       setLoading(true);
       setError('');
       try {
-        // Lädt beide Ressourcen gleichzeitig mit den korrekten Anmeldedaten
         await Promise.all([fetchUsers(), fetchArticles()]);
       } catch (err) {
         setError(err.message);
