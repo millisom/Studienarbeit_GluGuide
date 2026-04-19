@@ -1,5 +1,7 @@
 const mealController = require('../../controllers/mealController');
 const Meal = require('../../models/mealModel');
+const Alert = require('../../models/alertModel'); 
+
 
 jest.mock('../../models/mealModel', () => ({
   createMeal: jest.fn(),
@@ -10,16 +12,17 @@ jest.mock('../../models/mealModel', () => ({
   updateMealNutrition: jest.fn()
 }));
 
+jest.mock('../../models/alertModel', () => ({
+  createMealReminder: jest.fn() 
+}));
+
 describe('Meal Controller - Reminder Logic', () => {
   let req, res, next;
 
   beforeEach(() => {
     jest.clearAllMocks();
     
-
-    jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
-    
+  
     const futureDate = new Date();
     futureDate.setHours(futureDate.getHours() + 1);
 
@@ -29,7 +32,7 @@ describe('Meal Controller - Reminder Logic', () => {
         meal_type: 'lunch',
         meal_time: futureDate.toISOString(),
         request_reminder: true, 
-        items: [{ name: 'Apple', calories: 95 }]
+        items: [{ food_id: 1, name: 'Apple', quantity_in_grams: 150 }]
       }
     };
     
@@ -43,43 +46,39 @@ describe('Meal Controller - Reminder Logic', () => {
     const mockMealData = {
       meal_id: 100,
       total_calories: 95,
-      total_carbs: 25,
-      total_protein: 5,
-      total_fat: 2
+      user_id: 69
     };
 
+    // Mocks definieren
     Meal.createMeal.mockResolvedValue(mockMealData);
-    Meal.recalculateMealNutrition.mockResolvedValue(mockMealData);
-    Meal.getMealById.mockResolvedValue(mockMealData);
-    Meal.logFoodForMeal.mockResolvedValue(true);
     Meal.addFoodToMeal.mockResolvedValue(true);
     Meal.updateMealNutrition.mockResolvedValue(mockMealData);
+    Alert.createMealReminder.mockResolvedValue(true); 
   });
 
-  afterEach(() => {
-
-    jest.useRealTimers();
-  });
-
-  it('should create a meal and set a timeout alert if request_reminder is true', async () => {
+  it('should create a meal and call Alert model if request_reminder is true', async () => {
     await mealController.createMeal(req, res, next);
 
     expect(Meal.createMeal).toHaveBeenCalled();
     
-
-    expect(setTimeout).toHaveBeenCalled();
+   
+    expect(Alert.createMealReminder).toHaveBeenCalledWith(
+      69,       
+      100,          
+      'lunch',     
+      expect.any(Date)
+    );
+    
     expect(res.status).toHaveBeenCalledWith(201);
   });
 
-  it('should not set a timeout alert if request_reminder is false', async () => {
+  it('should not create a reminder if request_reminder is false', async () => {
     req.body.request_reminder = false;
 
     await mealController.createMeal(req, res, next);
 
     expect(Meal.createMeal).toHaveBeenCalled();
-    
-
-    expect(setTimeout).not.toHaveBeenCalled();
+    expect(Alert.createMealReminder).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
   });
 });
