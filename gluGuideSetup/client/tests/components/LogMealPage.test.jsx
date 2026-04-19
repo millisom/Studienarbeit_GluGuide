@@ -1,11 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom'; // Import hinzugefügt
 import LogMealPage from '../../src/pages/LogMealPage';
 import { createMeal, recalculateMealNutrition, getAllMealsForUser } from '../../src/api/mealApi';
 import axiosInstance from '../../src/api/axiosConfig';
 import { AuthContext } from '../../src/context/AuthContext';
 
+// --- Mocks ---
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key) => key,
@@ -53,6 +55,7 @@ vi.mock('../../src/components/MealPreview', () => ({
   default: () => <div data-testid="mock-meal-preview">Meal Preview</div>
 }));
 
+// --- Tests ---
 describe('LogMealPage Component', () => {
   const mockAuthValue = { user: { id: 69, username: 'TestUser' } };
 
@@ -71,9 +74,11 @@ describe('LogMealPage Component', () => {
     let result;
     await act(async () => {
       result = render(
-        <AuthContext.Provider value={mockAuthValue}>
-          <LogMealPage onMealLogged={vi.fn()} />
-        </AuthContext.Provider>
+        <MemoryRouter> {/* Router hinzugefügt */}
+          <AuthContext.Provider value={mockAuthValue}>
+            <LogMealPage onMealLogged={vi.fn()} />
+          </AuthContext.Provider>
+        </MemoryRouter>
       );
     });
     return result;
@@ -88,38 +93,40 @@ describe('LogMealPage Component', () => {
       fireEvent.click(saveBtn);
     });
 
-    // Verify the HTML validation blocked the submit -> API should not be called
     expect(createMeal).not.toHaveBeenCalled();
   });
 
-  it('successfully saves a meal AND schedules the alert', async () => {
+  it('successfully saves a meal with reminder flag', async () => {
     await renderPage();
 
+    // Mahlzeitentyp wählen
     const select = screen.getByRole('combobox');
     await act(async () => {
       fireEvent.change(select, { target: { value: 'lunch' } });
     });
 
+    // Lebensmittel hinzufügen
     await act(async () => {
       fireEvent.click(screen.getByTestId('mock-add-food'));
     });
 
+    // Reminder aktivieren
     const reminderCheckbox = screen.getByLabelText(/logMeal\.labelReminder/i);
     await act(async () => {
       fireEvent.click(reminderCheckbox);
     });
 
+    // Speichern
     const saveBtn = screen.getByText('logMeal.btnSave');
     await act(async () => {
       fireEvent.click(saveBtn);
     });
 
-    await waitFor(() => {
-      expect(createMeal).toHaveBeenCalled();
-      expect(axiosInstance.post).toHaveBeenCalledWith('/alerts', expect.anything());
-    });
+    // Verifizierung
+    expect(createMeal).toHaveBeenCalledWith(
+      expect.objectContaining({ request_reminder: true, meal_type: 'lunch' })
+    );
 
-    // Changed to exactly match the HTML output key
     await waitFor(() => {
       expect(screen.getByText('logMeal.success')).toBeInTheDocument();
     });

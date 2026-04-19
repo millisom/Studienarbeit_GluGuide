@@ -3,7 +3,7 @@ const calculateTotalNutrition = require('../helpers/nutritionHelper');
 
 const recipeController = {
 
-  // UC-07: Liefert nur Rezepte der aktuell eingeloggten Nutzerin
+
   async getAllRecipes(req, res, next) {
     try {
       const user_id = req.session.userId;
@@ -17,8 +17,7 @@ const recipeController = {
     }
   },
 
-  // Autorisierung durch verifyRecipeOwner-Middleware.
-  // req.recipe wird dort gesetzt, ein zweiter DB-Call ist nicht nötig.
+
   async getRecipeById(req, res, next) {
     try {
       res.status(200).json(req.recipe);
@@ -84,8 +83,7 @@ const recipeController = {
     }
   },
 
-  // Autorisierung durch verifyRecipeOwner-Middleware.
-  // Model-WHERE bleibt als zweite Verteidigungslinie (defense in depth).
+
   async updateRecipe(req, res, next) {
     try {
       const user_id = req.session.userId;
@@ -110,7 +108,7 @@ const recipeController = {
     }
   },
 
-  // Autorisierung durch verifyRecipeOwner-Middleware.
+
   async deleteRecipe(req, res, next) {
     try {
       const user_id = req.session.userId;
