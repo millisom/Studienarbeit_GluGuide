@@ -6,7 +6,6 @@ import KnowledgeBasePage from '../../src/pages/KnowledgeBasePage'; // Pfad anpas
 import axiosInstance from '../../src/api/axiosConfig';
 import { AuthContext } from '../../src/context/AuthContext';
 
-// --- Mocks ---
 
 const stableT = (key) => key;
 const mockNavigate = vi.fn();
@@ -78,12 +77,12 @@ describe('KnowledgeBasePage', () => {
   it('shows admin actions only when user is admin', async () => {
     axiosInstance.get.mockResolvedValue({ data: mockArticles });
     
-    // Test als Admin
+ 
     const { rerender } = renderPage(true);
     expect(await screen.findByText('postCard.btnEdit')).toBeInTheDocument();
     expect(screen.getByText('postCard.btnDelete')).toBeInTheDocument();
 
-    // Test als normaler User
+ 
     rerender(
       <AuthContext.Provider value={{ isAdmin: false }}>
         <MemoryRouter>
@@ -118,7 +117,6 @@ describe('KnowledgeBasePage', () => {
     expect(window.confirm).toHaveBeenCalled();
     await waitFor(() => {
       expect(axiosInstance.delete).toHaveBeenCalledWith('/admin/knowledge/1');
-      // Nach dem Löschen sollte get erneut aufgerufen werden
       expect(axiosInstance.get).toHaveBeenCalledTimes(2);
     });
   });
