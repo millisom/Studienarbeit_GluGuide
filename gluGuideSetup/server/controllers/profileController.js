@@ -1,7 +1,7 @@
 const Profile = require('../models/profileModel');
 const upload = require('../config/multerConfig');
 const path = require('path');
-const fs = require('fs'); // Added because setDp uses fs.unlink
+const fs = require('fs'); 
 
 const createDpUrl = (req, filename) => {
     return `${req.protocol}://${req.get('host')}/uploads/${filename}`;
@@ -46,7 +46,7 @@ const profileController = {
         }
     },
 
-    // --- NEW: Worry Box Methods ---
+
     async getWorryBox(req, res) {
         const username = req.session?.username;
         if (!username) {
@@ -54,7 +54,7 @@ const profileController = {
         }
         try {
             const result = await Profile.getWorryBox(username);
-            // Return empty string if no content exists yet
+
             return res.json({ content: result ? result.content : '' });
         } catch (error) {
             console.error("Error fetching worry box:", error);
@@ -76,7 +76,7 @@ const profileController = {
             return res.status(500).json({ error: "Internal Server Error" });
         }
     },
-    // ------------------------------
+
 
     async getDp(req, res) {
         const username = req.session?.username;
@@ -183,7 +183,7 @@ const profileController = {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         try {
-            // Assumes id passed in body is the post ID
+
             const rowCount = await Profile.updatePostForUser(id, title, content);
             if (rowCount === 0) {
                 return res.status(404).json({ error: 'Post not found or user unauthorized' });
