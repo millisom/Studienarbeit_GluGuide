@@ -5,7 +5,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import axios from '../../src/api/axiosConfig';
 import ArticleView from '../../src/pages/ArticleView';
 
-// 1. STABILE t-Funktion außerhalb definieren
+
 const stableT = (key) => key;
 
 vi.mock('react-i18next', () => ({
@@ -58,7 +58,7 @@ describe('ArticleView Page', () => {
     axios.get.mockRejectedValue(new Error('fail'));
     renderPage();
     
-    // findByText wartet automatisch asynchron
+
     expect(await screen.findByText('knowledge.errorLoad')).toBeInTheDocument();
   });
 
@@ -95,7 +95,6 @@ describe('ArticleView Page', () => {
     });
     renderPage();
 
-    // Erst warten, bis die Seite geladen ist
     const backBtn = await screen.findByText('knowledge.btnBack');
     fireEvent.click(backBtn);
     
@@ -106,7 +105,7 @@ describe('ArticleView Page', () => {
     axios.get.mockResolvedValue({ data: { title_en: 'T', content_en: 'C', category_en: 'X' } });
     renderPage();
     
-    // Wir warten kurz, bis die API-Abfrage durch ist
+
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledWith('/admin/knowledge/5');
     });
